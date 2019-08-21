@@ -2,9 +2,11 @@
 
 std::string DATADIR_STR_PRE = DATADIR_NAME;
 
-std::string DATADIR_STR_PRE2 = DATADIR_STR_PRE.erase(0,1);
+//std::string DATADIR_STR_PRE2 = DATADIR_STR_PRE.erase(0,1);
 
-std::string DATADIR_STR = DATADIR_STR_PRE2.erase(DATADIR_STR_PRE2.size() - 1,1);
+//std::string DATADIR_STR = DATADIR_STR_PRE2.erase(DATADIR_STR_PRE2.size() - 1,1);
+
+std::string DATADIR_STR = DATADIR_NAME;
 
 //Directories for string
 

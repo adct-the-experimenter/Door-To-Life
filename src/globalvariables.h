@@ -13,7 +13,7 @@
 //DATADIR macro used by automake for path to data files
 //if DATADIR macro is not defined, define it as data
 #ifndef DATADIR
-    #define DATADIR "data"
+    #define DATADIR "../data"
 #endif
 
 #define DATADIR_NAME STR(DATADIR)

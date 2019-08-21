@@ -150,7 +150,7 @@ void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
     
     
     //render collision box of player
-    Player::renderPlayerCollisionBox(camera,gRenderer);
+    //Player::renderPlayerCollisionBox(camera,gRenderer);
     
     Player::renderEquippedWeapon(camera,gRenderer);
 }

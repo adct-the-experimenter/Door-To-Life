@@ -1,4 +1,6 @@
 *.o
 game
-
-
+build/
+debug/
+release/
+Makefile
