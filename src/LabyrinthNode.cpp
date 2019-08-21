@@ -19,7 +19,7 @@ ALuint* source,ALuint* buffer)
         
         //load sound data to buffer
         //load wave file
-        std::string dMusicFilePath = DATADIR_STR + std::string("/Sound/scary_bgm.wav");
+        std::string dMusicFilePath = DATADIR_STR + std::string("/Sound/scary_bgm.ogg");
         Mix_Chunk* dungeonMusic = Mix_LoadWAV(dMusicFilePath.c_str());
 
         if(dungeonMusic == nullptr)
