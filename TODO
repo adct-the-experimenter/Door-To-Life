@@ -1,0 +1,158 @@
+***********************************************************************************************
+----------------------------------------- TODO Release 0.1 ------------------------------------
+***********************************************************************************************
+-Add more enemies to halt progress and add challenge.
+
+
+-Work on system for saving and loading game.
+    -Add option to title to load a game.
+    -Add menu option to save game.
+    -Make function to read and write dungeon map info from a text file. USE SDL_RWOps
+        -Needed for saving a game and coming back to it.
+    -Save the random seed too! 
+
+-Make zelda-like designed levels for special dungeons you can enter.
+    -Make a zelda dungeon level editor outside of game that will save info
+    of dungeon which can be read by a xml DungeonReader in this game.
+
+-Make a gamestate class for a Zelda-like Dungeon. 
+        
+        
+***********************************************************************************************
+----------------------------------------- DONE Relase 0.1 -------------------------------------
+***********************************************************************************************
+-Add weapons to game. DONE
+    -Added basic sword to game.
+
+
+***********************************************************************************************
+---------------------------------------- DONE Release 0.0--------------------------------------
+***********************************************************************************************
+
+
+-Change the filesystem hierarchy to match closely to that of the gnu autotools. DONE
+
+-Fix the paths in include directives. Make them relative. DONE
+
+-Implement enum class into DungeonTile class. Replace bools and integer constants. DONE
+
+-Change the tile colors to make game environment seem minimalist.
+		-EX: Yellow tile is now yellow outline with lighter shade of yellow. DONE
+
+-Add loadmedia functions to sprite,DungeonTile, and DungeonMap class. DONE
+
+-Change graphic style to pencil drawing-like style. DONE
+    -Further work will be done as game comes along.
+        
+-Think about redefining objective of game. DONE
+    -Change is needed because the game relies too much on luck when getting right key as of now. 
+        -This is bad because there is no skill involved.
+    -Decided to make game about finding an exit out of a labrynth with monsters in it. 
+
+-Make gen rule for when no exits are set by setTileTypesRandom function. DONE
+    -In setTileTypesRandom(), made 1st empty tile an exit instead of making a rule to check if there are exit tiles and randomly placing one.
+
+-Fix sprite animation. Try implementing states. DONE
+    -Used lazyfoo tutorial 14. 
+        -Change frame after a frame count variable is incremented. 
+        -Divide by number of frames used to slow down animation.
+        
+-Loop background music. DONE
+    -Used OpenAL Soft.
+    
+-Add globalvariables file for directory and filepath info. DONE
+
+-Add menus to game.Create a base menu class for easy menu creation. DONE
+    -Added simple pause menu to game.
+    
+-Add title screen to game. DONE
+    -Also created title menu class.
+    
+
+-Fix Door opening animation. Try implementing states. DONE
+    -Decided to remove door opening animation because it disrupts flow of game and won't be
+    needed to cover up dungeon generation b/c it will all get generated at beginning.
+    
+-Need to rearrange logic for loading media. DONE
+    -If same media is being loaded. It shouldn't be loaded multiple times.
+        -Ex: Door objects shouldn't each have a copy of same media. 
+            Instead it should be loaded once and door objects would have a pointer to same media.
+
+-Fix segmentation fault from sdl_mixer playing sound. DONE
+    -Used OpenAL to play sounds and sdl mixer to only load sound media.
+    
+-Add randomization to choosing nodes. DONE
+
+-Fix bug where somehow Node pointer conductorNode ends up pointing to nullptr in chooseNodesRandomly. Causes Segfault. DONE
+    -Fixed by setting condition that conductor can only go back if pointer to previous node is not nullptr.
+    
+-Implement hash table for chossing close available node. DONE
+
+-Implement recursive backtracking maze algorithm in labyrinth creation. DONE
+
+-Set outer tiles at border as wall tiles. DONE
+    -Created a function to set tiles at top,left,right,bottom edges as line of wall tiles.
+    
+-Create class for generating a map of dungeon nodes. DONE
+    -Class is called dungeonMap and it takes info from all dungeon nodes created.
+    -Render the nodes during labyrinth setup for debugging purposes. DONE
+    
+-Fix looping of door open fail sound. DONE
+    -Use enum class variable to determine which sound to play.
+    
+-Fix collision detection with doors. DONE
+    -Caused by calling for collision box for door 1 twice instead of door 1 and door 2.
+    
+-Add framerate cap. 60 FPS DONE
+    -Made class to keep track of frame rate.
+    -Not sure if should be using 2 different timers for movement and keeping track of frame rate.
+        -Timer for movement gets slowed down by frame cap anyway.
+        
+-Make function or class in another file to keep track of globals for loading media
+such as enemy media. DONE
+
+-Create collision system for handling collisions between enemies and player. DONE
+
+--Make state to load game resources so it doesn't happen before title state
+rather after title state when player chooses to play game. DONE
+
+-Added cockroach enemy with simple AI for now. DONE
+
+-Abstract event handling and move implementation to another file. DONE
+ 
+-Fix collision with doors. DONE
+
+-Fix sound for gameover and game win states. DONE
+
+-Fix bug with segfault caused from player being pushed out of maze. DONE
+
+-Implement a subscreen for vague map on screen.  DONE
+
+---------------------------------------- TODO Release 1 ----------------------------------
+
+-Change integer to defined integer types with specific sizes defined in stdint.h
+
+
+
+-Port to Unix source,BSD,Linux,Mac OS X, Windows
+
+-Unix Source
+    -Start work on source. Using previous work from Escape source. 
+    
+-BSD
+    -Start work on BSD port. 
+    
+-Linux
+    -Start work on arch linux package.
+    
+-Mac OS X
+    -Do Unix source first then port it over to Mac OS X. 
+        -Previous attempts of doing it natively failed.
+
+-Windows
+    - Compile executable. DONE
+    - Fix crash and bug with node generation state. DONE
+    
+----------------------------------------- TODO Release 0.0 Bug Fixes -----------------------------------
+
+
