@@ -3,6 +3,7 @@
 ***********************************************************************************************
 -Add more enemies to halt progress and add challenge.
 
+-Implement sound for enemies.
 
 -Work on system for saving and loading game.
     -Add option to title to load a game.
@@ -146,8 +147,7 @@ rather after title state when player chooses to play game. DONE
     -Start work on arch linux package.
     
 -Mac OS X
-    -Do Unix source first then port it over to Mac OS X. 
-        -Previous attempts of doing it natively failed.
+	Put in a package. DONE
 
 -Windows
     - Compile executable. DONE

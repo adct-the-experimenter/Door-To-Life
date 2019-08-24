@@ -1,6 +1,6 @@
 # Door To Life
 
-This is a video game in which the player wins by exploring the labyrinth to find a golden door. Avoid monsters and obstacles.
+This is a video game in which the player wins by finding a golden door in a labyrinth. Avoid monsters and obstacles.
 
 ## Libraries Required
 - SDL2
