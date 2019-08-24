@@ -150,7 +150,7 @@ void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
     
     
     //render collision box of player
-    //Player::renderPlayerCollisionBox(camera,gRenderer);
+    Player::renderPlayerCollisionBox(camera,gRenderer);
     
     Player::renderEquippedWeapon(camera,gRenderer);
 }
@@ -224,6 +224,8 @@ void Player::renderEquippedWeapon(SDL_Rect& camera, SDL_Renderer* gRenderer)
 
 void Player::logic(float& timeStep)
 {
+	Player::reactToCollision(timeStep);
+	
     switch(Player::getPlayerState())
     {
         case Player::PlayerState::COLLIDING_CONTRA_WALL:{Player::runLogicState_CollideWithWall(timeStep); break;}
@@ -254,9 +256,6 @@ void Player::runLogicState_Normal(float& timeStep)
     {
         Player::runEquippedWeaponLogic(timeStep);
     }
-    
-    Player::reactToCollision(timeStep);
-    Player::resetCollisionType();
 }
 
 void Player::runLogicState_PushedBack(float& timeStep)
@@ -361,6 +360,8 @@ void Player::reactToCollision(float& timeStep)
             Player::setPlayerState( PlayerState::FALLING_IN_HOLE);
             break;
         }
+        
+        default:{break;}
     }
     
     

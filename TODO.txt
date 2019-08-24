@@ -1,6 +1,8 @@
 ***********************************************************************************************
 ----------------------------------------- TODO Release 0.1 ------------------------------------
 ***********************************************************************************************
+-Fix collision bug where player does not react to collision with cockroach.
+
 -Add more enemies to halt progress and add challenge.
 
 -Implement sound for enemies.

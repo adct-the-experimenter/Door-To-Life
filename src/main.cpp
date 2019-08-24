@@ -250,12 +250,13 @@ void DungeonGameLoop()
     }
     
     baseGameState->handle_events_RNG(rng);
+    run_collision_handler(); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
     
     //Logic
-    run_collision_handler(); //run collision handler to update collision states
+    
     baseGameState->logic(); //run logic module
     
     checkWeaponsOnGround_Collision(); //check if weapon is picked up from ground
