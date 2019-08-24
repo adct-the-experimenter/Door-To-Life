@@ -10,7 +10,7 @@ std::int16_t holeTileDamage = playerHealth / 20;
 
 //Cockroach
 std::int16_t cockroachHealth = 50;
-std::int16_t cockroachDamage = playerHealth / 5; // 1/5 of total hero health 
+std::int16_t cockroachDamage = playerHealth / 10; // 1/5 of total hero health 
 
 std::int16_t cockroach_PushBackHero = 30; // 30 pixel push back distance
 
