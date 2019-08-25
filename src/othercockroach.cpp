@@ -557,7 +557,7 @@ void OtherCockroach::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect*
     }
    
 	//render collision box of enemy
-   OtherCockroach::renderEnemyCollisionBox(camera,gRenderer);
+   //OtherCockroach::renderEnemyCollisionBox(camera,gRenderer);
    //Enemy::renderEnemyView(camera,gRenderer);
 }
 

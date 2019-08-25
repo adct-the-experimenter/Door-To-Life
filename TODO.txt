@@ -1,7 +1,6 @@
 ***********************************************************************************************
 ----------------------------------------- TODO Release 0.1 ------------------------------------
 ***********************************************************************************************
--Fix collision bug where player does not react to collision with cockroach.
 
 -Add more enemies to halt progress and add challenge.
 
@@ -27,6 +26,7 @@
 -Add weapons to game. DONE
     -Added basic sword to game.
 
+-Fix collision bug where player does not react to collision with cockroach. DONE
 
 ***********************************************************************************************
 ---------------------------------------- DONE Release 0.0--------------------------------------
