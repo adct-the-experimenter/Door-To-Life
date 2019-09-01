@@ -349,7 +349,7 @@ void Player::reactToCollision(float& timeStep)
         
         case CollisionType::HIT_BY_COCKROACH:
         {
-			std::cout << "Collision with cockroach! \n" << std::endl;
+			//std::cout << "Collision with cockroach! \n" << std::endl;
             Player::decrementHealth(cockroachDamage); //decrease health
             
             //put in state of push back

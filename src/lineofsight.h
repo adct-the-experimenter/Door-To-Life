@@ -48,6 +48,7 @@ public:
     //function to render line of sight
     void renderLineSight(SDL_Rect& camera,SDL_Renderer* gRenderer);
     
+    CollisionObject* GetLineOfSightCollisionObject();
 private:
     
     //position of enemy

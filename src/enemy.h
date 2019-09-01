@@ -224,6 +224,8 @@ public:
     
     virtual void renderEnemyView(SDL_Rect& camera, SDL_Renderer* gRenderer);
     
+    virtual CollisionObject* GetLineOfSightCollisionObject();
+    
 private:
 
 //members not inherited from sprite class

@@ -165,3 +165,8 @@ void LineOfSight::renderLineSight(SDL_Rect& camera, SDL_Renderer* gRenderer)
     SDL_RenderDrawRect(gRenderer,&renderRect);
     
 }
+
+CollisionObject* LineOfSight::GetLineOfSightCollisionObject()
+{
+	return &LOS_ColliderObject;
+}

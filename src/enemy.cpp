@@ -448,3 +448,8 @@ void Enemy::renderEnemyView(SDL_Rect& camera, SDL_Renderer* gRenderer)
     }
     
 }
+
+CollisionObject* Enemy::GetLineOfSightCollisionObject()
+{
+	enemy_lineofsight.GetLineOfSightCollisionObject();
+}

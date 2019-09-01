@@ -563,8 +563,9 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //add enemy collision objects to collision handler
         for(size_t i = 0; i < thisLabyrinth.GetEnemiesInLabyrinthVector()->size(); i++)
         {
-			CollisionObject* thisCollisionObject = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i)->getCollisionObjectPtr();
-			collisionHandler.addObjectToCollisionSystem(thisCollisionObject);
+			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
+			collisionHandler.addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
+			collisionHandler.addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
 		}
 		
 		//add hole tile collision objects to collision handler
