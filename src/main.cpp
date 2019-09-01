@@ -187,6 +187,8 @@ bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 void freeMedia_HealthBar(LTexture* healthTex); 
 LTexture healthBarTexture;
 
+CollisonHandler collisionHandler;
+
 int main(int argc, char* args[])
 {
     //std::cout << args[0];
@@ -250,7 +252,7 @@ void DungeonGameLoop()
     }
     
     baseGameState->handle_events_RNG(rng);
-    run_collision_handler(); //run collision handler to update collision states
+    collisionHandler.run_collision_handler(); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -260,7 +262,6 @@ void DungeonGameLoop()
     baseGameState->logic(); //run logic module
     
     checkWeaponsOnGround_Collision(); //check if weapon is picked up from ground
-    checkAndRemoveDeadEnemies(camera); //check for and remove dead enemies
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
@@ -423,6 +424,7 @@ void Dungeon1()
     //if setup labyrinth was successful
     if(setupLabyrinth(labyrinth))
     {
+        //add collision objects to be watched by collision handler 
         
         /** GameLoop **/
         //set base game state to gDungeon1
@@ -518,8 +520,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
     //if able to generate labyrinth
     if( thisLabyrinth.generateLabyrinth(rng) )
     {
-        //Setup enemies for labyrinth
-        setupEnemyVector();
+        
        
         //Setup world of labyrinth
         thisLabyrinth.generateDungeonsInLabyrinth(rng,
@@ -550,7 +551,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //thisLabyrinth.setDebugBool(true);
         
         //Setup camera for collision system
-        setCameraForCollisionSystem(&camera);
+        collisionHandler.setCameraForCollisionSystem(&camera);
         
         //setup fps timer
         std::int16_t frame_rate = 60;
@@ -558,6 +559,19 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         
          //set camera for labyrinth 
         thisLabyrinth.setCamera(&camera);
+        
+        //add enemy collision objects to collision handler
+        for(size_t i = 0; i < thisLabyrinth.GetEnemiesInLabyrinthVector()->size(); i++)
+        {
+			CollisionObject* thisCollisionObject = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i)->getCollisionObjectPtr();
+			collisionHandler.addObjectToCollisionSystem(thisCollisionObject);
+		}
+		
+		//add hole tile collision objects to collision handler
+		for(size_t i=0; i < thisLabyrinth.GetCollisionObjectsOfHoleTiles()->size(); ++i)
+		{
+		    collisionHandler.addObjectToCollisionSystem( &thisLabyrinth.GetCollisionObjectsOfHoleTiles()->at(i) );
+		}
         
         return true;
     }
@@ -772,7 +786,7 @@ bool initMainChar()
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
         
         //add player to collision system
-		addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
+		collisionHandler.addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
     }
     
     return success;
@@ -913,7 +927,7 @@ bool initExtLibs()
     }
 
     //initialize SDL_mixer
-    if(Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,2048) < 0) //args: sound frequency,default format, 2 channels,sample size
+    if(Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 1024) < 0) //args: sound frequency,default format, 2 channels,sample size
     {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         success = false;
@@ -1161,7 +1175,6 @@ bool loadMedia_gamewin()
 void close()
 {
     
-    freeEnemyVector();
     freeEnemyMedia();
     freeWeapons();
     freeWeaponsMedia();

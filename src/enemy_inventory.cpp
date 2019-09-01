@@ -1,7 +1,16 @@
 #include "enemy_inventory.h"
 
-std::vector <Enemy*> enemies_vector;
-void setupEnemyVector()
+EnemyInventory::EnemyInventory()
+{
+	
+}
+
+EnemyInventory::~EnemyInventory()
+{
+	
+}
+
+void EnemyInventory::setupEnemyVector()
 {
     enemies_vector.resize(150);
     
@@ -17,7 +26,9 @@ void setupEnemyVector()
     
 }
 
-void run_enemies_handle_events(RNGType& rngSeed,SDL_Rect& camera)
+std::vector <Enemy*> *EnemyInventory::GetEnemyVector(){return &enemies_vector;}
+
+void EnemyInventory::run_enemies_handle_events(RNGType& rngSeed,SDL_Rect& camera)
 {
     //for every enemy 
     for(size_t i=0; i < enemies_vector.size(); ++i)
@@ -35,7 +46,7 @@ void run_enemies_handle_events(RNGType& rngSeed,SDL_Rect& camera)
     }
 }
 
-void run_enemies_logic(float& timeStep,SDL_Rect& camera, 
+void EnemyInventory::run_enemies_logic(float& timeStep,SDL_Rect& camera, 
                         std::vector <DungeonTile*> &labyrinthTilesVector)
 {
     //for every enemy 
@@ -55,7 +66,7 @@ void run_enemies_logic(float& timeStep,SDL_Rect& camera,
 
 }
 
-void run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer )
+void EnemyInventory::run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer )
 {
     //for every enemy 
     for(size_t i=0; i < enemies_vector.size(); ++i)
@@ -75,7 +86,7 @@ void run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer )
 }
 
 
-void checkAndRemoveDeadEnemies(SDL_Rect& camera)
+void EnemyInventory::checkAndRemoveDeadEnemies(SDL_Rect& camera)
 {
     //for all enemies
     for(size_t i = 0; i < enemies_vector.size(); ++i)
@@ -99,7 +110,7 @@ void checkAndRemoveDeadEnemies(SDL_Rect& camera)
     }
 }
 
-void freeEnemyVector()
+void EnemyInventory::freeEnemyVector()
 {
     for(size_t i=0; i < enemies_vector.size(); ++i)
     {

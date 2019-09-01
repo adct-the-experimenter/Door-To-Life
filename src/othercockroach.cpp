@@ -39,7 +39,6 @@ void OtherCockroach::setupCockroachCollisionObject()
 {
     CollisionBoxOwnerType type = CollisionBoxOwnerType::COCKROACH;
     OtherCockroach::setOwnerTypeOfCollisionObject(type);
-    addObjectToCollisionSystem(  OtherCockroach::getCollisionObjectPtr() );
 }
 
 bool loadCockRoachMedia(LTexture* cTexture,

@@ -18,12 +18,12 @@ LineOfSight::~LineOfSight()
 
 void LineOfSight::addLineOfSightToCollisionHandler()
 {
-    addObjectToCollisionSystem(&LOS_ColliderObject);
+    //addObjectToCollisionSystem(&LOS_ColliderObject);
 }
 
 void LineOfSight::removeLineOfSightFromCollisionHandler()
 {
-    removeObjectFromCollisionSystem(&LOS_ColliderObject);
+    //removeObjectFromCollisionSystem(&LOS_ColliderObject);
 }
 
 

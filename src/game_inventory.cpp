@@ -42,7 +42,7 @@ void setupDefaultGunForPlayer(std::int16_t& x, std::int16_t& y)
     def_gun->setMoveClip();
     
     //add weapon to collision handler
-    addObjectToCollisionSystem(def_gun->getCollisionObjectPtr());
+    //addObjectToCollisionSystem(def_gun->getCollisionObjectPtr());
     //put into weapons array as first item
     Weapon* def_weapon = def_gun;
     weaponsArray[0] = def_weapon;

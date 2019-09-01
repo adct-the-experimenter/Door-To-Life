@@ -16,6 +16,7 @@ bool loadCockRoachMedia(LTexture* cTexture,
                         SDL_Renderer* gRenderer );
 void freeCockRoachMedia(LTexture* cTexture);
 
+void freeEnemyMedia();
 
 
 

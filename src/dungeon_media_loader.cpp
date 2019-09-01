@@ -54,7 +54,6 @@ std::vector <SDL_Rect> doorClips;
 bool setupLoad_DoorMedia(SDL_Renderer* gRenderer)
 {
     
-    
     //load door media
     if(!loadDoorMedia(gRenderer,&doorTexture,&doorSource,
                         &doorBufferOpen,&doorBufferFail,doorClips) )

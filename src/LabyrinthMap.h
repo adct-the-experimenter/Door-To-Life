@@ -7,6 +7,8 @@
 #include <algorithm>    // std::random_shuffle
 #include <ctime>
 
+//class to contain graphical part of labyrinth
+
 class LabyrinthMap
 {
 public:

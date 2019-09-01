@@ -1,54 +1,53 @@
 #include "collisionhandler.h"
 
 
-CollisionObject* playerCollisionObject;
+CollisonHandler::CollisonHandler()
+{
+	
+}
 
-Weapon* playerEquippedWeapon;
+CollisonHandler::~CollisonHandler()
+{
+	
+}
 
-std::vector <CollisionObject*> collisionObjectsVector;
-
-void addPlayerToCollisionSystem(CollisionObject* thisObject)
+void CollisonHandler::addPlayerToCollisionSystem(CollisionObject* thisObject)
 {
     //Initialize collision type to none
     thisObject->typeOfCollision = CollisionType::NONE;
     //assign player collision object global pointer to this object
-    playerCollisionObject = thisObject;
+    m_playerCollisionObject_ptr = thisObject;
     
 }
 
-void addObjectToCollisionSystem(CollisionObject* thisObject)
+void CollisonHandler::addObjectToCollisionSystem(CollisionObject* thisObject)
 {
     //Initialize collision type to none
     thisObject->typeOfCollision = CollisionType::NONE;
     collisionObjectsVector.push_back(thisObject);
 }
 
-void addPlayerEquippedWeaponToCollisionSystem(Weapon* thisWeapon)
+void CollisonHandler::addPlayerEquippedWeaponToCollisionSystem(Weapon* thisWeapon)
 {
      //Initialize collision type to none
     thisWeapon->getCollisionObjectPtr()->typeOfCollision = CollisionType::NONE;
     playerEquippedWeapon = thisWeapon;
 }
 
-void removeObjectFromCollisionSystem(CollisionObject* thisObject)
+void CollisonHandler::removeObjectFromCollisionSystem(CollisionObject* thisObject)
 {
     //Initialize collision type to none
     thisObject->typeOfCollision = CollisionType::NONE;
 }
 
-SDL_Rect* cameraCollisionHandler;
-void setCameraForCollisionSystem(SDL_Rect* camera)
+
+void CollisonHandler::setCameraForCollisionSystem(SDL_Rect* camera)
 {
     cameraCollisionHandler = camera;
 }
 
-//function to check if object collided with player
-static void runPlayerCollisionOperations(CollisionObject& thisObject);
 
-//function to check if object collided with player weapon
-static void runPlayerWeaponCollisionOperations(CollisionObject& thisObject);
-
-void run_collision_handler()
+void CollisonHandler::run_collision_handler()
 {
     //for every collision object element in vector
     for(size_t i = 0; i < collisionObjectsVector.size(); ++i)
@@ -70,13 +69,14 @@ void run_collision_handler()
     }
 }
 
-void runPlayerCollisionOperations(CollisionObject& thisObject)
+//function to check if object collided with player
+void CollisonHandler::runPlayerCollisionOperations(CollisionObject& thisObject)
 {
     //if player collision object pointer is not pointing to nullptr
-    if(playerCollisionObject != nullptr)
+    if(m_playerCollisionObject_ptr != nullptr)
     {
         //if collides with player
-        if(checkCollision( *playerCollisionObject->ptrToCollisionBox,
+        if(checkCollision( *m_playerCollisionObject_ptr->ptrToCollisionBox,
                             *thisObject.ptrToCollisionBox ) )
         {
             //set collision type of enemy collision object to type hit player
@@ -91,7 +91,7 @@ void runPlayerCollisionOperations(CollisionObject& thisObject)
                 default:{typeCollisionToPlayer = CollisionType::NONE; break;}
             }
             
-            playerCollisionObject->typeOfCollision = typeCollisionToPlayer;
+            m_playerCollisionObject_ptr->typeOfCollision = typeCollisionToPlayer;
         }
         //else set collision type to none
         else{thisObject.typeOfCollision = CollisionType::NONE;}
@@ -99,8 +99,8 @@ void runPlayerCollisionOperations(CollisionObject& thisObject)
     
 }
 
-
-void runPlayerWeaponCollisionOperations(CollisionObject& thisObject)
+//function to check if object collided with player weapon
+void CollisonHandler::runPlayerWeaponCollisionOperations(CollisionObject& thisObject)
 {
     if(playerEquippedWeapon != nullptr)
     {

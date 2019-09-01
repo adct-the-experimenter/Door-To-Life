@@ -224,6 +224,10 @@ void Player::renderEquippedWeapon(SDL_Rect& camera, SDL_Renderer* gRenderer)
 
 void Player::logic(float& timeStep)
 {
+	//listener change orientation logic
+	
+	
+	//collsion logic
 	Player::reactToCollision(timeStep);
 	
     switch(Player::getPlayerState())
@@ -345,6 +349,7 @@ void Player::reactToCollision(float& timeStep)
         
         case CollisionType::HIT_BY_COCKROACH:
         {
+			std::cout << "Collision with cockroach! \n" << std::endl;
             Player::decrementHealth(cockroachDamage); //decrease health
             
             //put in state of push back
@@ -364,7 +369,7 @@ void Player::reactToCollision(float& timeStep)
         default:{break;}
     }
     
-    
+    Player::resetCollisionType();
 }
 
 void Player::pushBackPlayer(float& timeStep,std::int16_t& pushBackDist)

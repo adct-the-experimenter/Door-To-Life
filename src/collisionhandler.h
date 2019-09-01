@@ -9,38 +9,46 @@
 #include <vector>
 
 
+class CollisonHandler
+{
+	
+public:
+	CollisonHandler();
+	~CollisonHandler();
+	
+	//function to add player to collision system
+	void addPlayerToCollisionSystem(CollisionObject* thisObject);
 
-//pointer to player's collision object
-extern CollisionObject* playerCollisionObject;
-//function to add player to collision system
-void addPlayerToCollisionSystem(CollisionObject* thisObject);
+	//function to add player's current weapon to collision system
+	void addPlayerEquippedWeaponToCollisionSystem(Weapon* thisWeapon);
 
-//pointer to collision object of player's equipped weapon
-extern Weapon* playerEquippedWeapon;
-
-//function to add player's current weapon to collision system
-void addPlayerEquippedWeaponToCollisionSystem(Weapon* thisWeapon);
-
-
-
-//vector of collision objects
-extern std::vector <CollisionObject*> collisionObjectsVector;
-//function to add pointer to collision objects vector
-void addObjectToCollisionSystem(CollisionObject* thisObject);
+	//function to add pointer to collision objects vector
+	void addObjectToCollisionSystem(CollisionObject* thisObject);
 
 
-//function to remove pointer from collision object vector
-void removeObjectFromCollisionSystem(CollisionObject* thisObject);
+	//function to remove pointer from collision object vector
+	void removeObjectFromCollisionSystem(CollisionObject* thisObject);
 
-//pointer to camera 
-extern SDL_Rect* cameraCollisionHandler;
+	//function to set camera for collision system so
+	//only keep track of collisions happening inside player's view 
+	void setCameraForCollisionSystem(SDL_Rect* camera);
 
-//function to set camera for collision system so
-//only keep track of collisions happening inside player's view 
-void setCameraForCollisionSystem(SDL_Rect* camera);
+	//function to do collision process
+	void run_collision_handler();
 
-//function to do collision process
-void run_collision_handler();
+private:
+	CollisionObject* m_playerCollisionObject_ptr;
+
+	Weapon* m_playerEquippedWeaponPtr;
+	std::vector <CollisionObject*> collisionObjectsVector;
+	SDL_Rect* cameraCollisionHandler;
+	
+	void runPlayerCollisionOperations(CollisionObject& thisObject);
+	void runPlayerWeaponCollisionOperations(CollisionObject& thisObject);
+	
+	Weapon* playerEquippedWeapon;
+};
+
 
 
 

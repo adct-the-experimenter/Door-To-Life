@@ -6,11 +6,13 @@ Labyrinth::Labyrinth()
     //initialize array of doubles for generating labyrinth node dimensions
     //probabilites for 0,1,2,3,4
     probabilitiesGenLabyrinthNodeDimensions= {0.3, 0.4,0.0,0.0,0.0}; 
+    
 }
 
 Labyrinth::~Labyrinth()
 {
-    
+    //m_enemy_inventory.freeEnemyMedia();
+    m_enemy_inventory.freeEnemyVector();
 }
 
 void Labyrinth::setCamera(SDL_Rect* thisCamera){labyrinthCamera = thisCamera;}
@@ -118,9 +120,9 @@ void Labyrinth::generateDungeonsInLabyrinth(RNGType& rngSeed,
                                  doorTexture,doorSource,doorOpenSound,doorFailSound,
                                  doorClips);
                                 
-    std::cout << "Placing enemies in Labyrinth! \n";                             
-    Labyrinth::placeEnemiesInLabyrinth(rngSeed,tempLabyrinthNodes, 
-                                        enemies_vector);
+    std::cout << "Placing enemies in Labyrinth! \n";
+    m_enemy_inventory.setupEnemyVector();                             
+    Labyrinth::placeEnemiesInLabyrinth(rngSeed,tempLabyrinthNodes, *m_enemy_inventory.GetEnemyVector());
     std::cout << "Loading map from nodes generated... \n";
     //create dungeon map and all content(tiles,doors) from vector of dungeon nodes
     labyrinthMap.loadMapFromLabyrinthNodes(tempLabyrinthNodes);
@@ -771,32 +773,16 @@ void Labyrinth::handle_events(Event& thisEvent)
     
 }
 
-//function to run event handling for enemies
-void run_enemies_handle_events(RNGType& rngSeed,SDL_Rect& camera);
-
 void Labyrinth::handle_events_RNG(RNGType& rngSeed)
 {
-    run_enemies_handle_events(rngSeed, *labyrinthCamera);
+    m_enemy_inventory.run_enemies_handle_events(rngSeed, *labyrinthCamera);
 }
 
-//for running enemy logic
-void run_enemies_logic(float& timeStep,SDL_Rect& camera, 
-                        std::vector <DungeonTile*> &labyrinthTilesVector);
 
 void Labyrinth::logic()
 {
     //create timestep for moving objects
     float timeStep = labyrinthTimer->getTicks() / 1000.f; //frame rate
-    
-    //move main dot within dungeon map
-    labyrinthMap.moveMainDot(mainDotPointer,timeStep);
-    
-    //push back dot if collide with door
-    labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep);
-    
-    //move enemies 
-    run_enemies_logic(timeStep,*labyrinthCamera, 
-                        labyrinthMap.labyrinthTilesVector);
     
     //logic for player
     if(mainPlayerPointer != nullptr)
@@ -808,6 +794,19 @@ void Labyrinth::logic()
         //win game
         if( checkCollision(exitTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){ Labyrinth::setState(GameState::State::NEXT);}
     }
+    
+    //move main dot within dungeon map
+    labyrinthMap.moveMainDot(mainDotPointer,timeStep);
+    
+    //push back dot if collide with door
+    labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep);
+    
+    //move enemies 
+    m_enemy_inventory.run_enemies_logic(timeStep,*labyrinthCamera, 
+                        labyrinthMap.labyrinthTilesVector);
+    
+    //check for and remove dead enemeies
+    m_enemy_inventory.checkAndRemoveDeadEnemies(*labyrinthCamera);
     
     //Restart timer
     labyrinthTimer->start();
@@ -829,7 +828,7 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     labyrinthMap.renderDoors(gRenderer);
     
     //render enemies
-    run_enemies_render(*labyrinthCamera,gRenderer );
+    m_enemy_inventory.run_enemies_render(*labyrinthCamera,gRenderer );
     
     //render weapons
     //labyrinthMap.renderWeapons(gRenderer);
@@ -1054,3 +1053,12 @@ NodeGenerator& Labyrinth::getNodeGenerator()
     return nodesGen;
 }
 
+std::vector <Enemy*> * Labyrinth::GetEnemiesInLabyrinthVector()
+{
+	return m_enemy_inventory.GetEnemyVector();
+}
+
+std::vector <CollisionObject> *Labyrinth::GetCollisionObjectsOfHoleTiles()
+{
+	return &labyrinthMap.labyrinth_hole_tiles_vector;
+}

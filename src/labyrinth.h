@@ -67,6 +67,10 @@ public:
     
     //function to set tiles in dungeon
     void setTiles();
+    
+    //function to return pointer to vector of enemies
+    std::vector <Enemy*> *GetEnemiesInLabyrinthVector();
+    
 //Game Loop
     virtual void setState(GameState::State thisState);
     virtual GameState::State getState();
@@ -93,6 +97,8 @@ public:
     NodeGenerator& getNodeGenerator();
     
     friend class SubMap;
+    
+    std::vector <CollisionObject> *GetCollisionObjectsOfHoleTiles();
     
 private:
     
@@ -190,6 +196,8 @@ private:
                                         size_t& xNodeCol, size_t& yNodeRow,
                                         std::int8_t& baseNumColumns, std::int8_t& baseNumRows,
                                         RNGType& rngSeed);
+	EnemyInventory m_enemy_inventory;
+	
 };
 
 #endif

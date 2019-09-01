@@ -51,12 +51,6 @@ void LabyrinthMap::loadTilesFromLabyrinthNodes(std::vector <LabyrinthNode> &laby
         }
               
     }
-    
-    //add hole tiles to collision system
-    for(size_t i=0; i < labyrinth_hole_tiles_vector.size(); ++i)
-    {
-        addObjectToCollisionSystem( &labyrinth_hole_tiles_vector[i]);
-    }
 }
 
 void LabyrinthMap::loadDoorsFromLabyrinthNodes(std::vector <LabyrinthNode> &labyrinthNodes)

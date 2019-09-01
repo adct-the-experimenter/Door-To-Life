@@ -201,6 +201,9 @@ private:
     
     //function to render collision box of player
     void renderPlayerCollisionBox(SDL_Rect& camera,SDL_Renderer* gRenderer);
+    
+    //function to run logic for changing listener orienation and position
+    
 };
 
 #endif

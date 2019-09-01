@@ -15,9 +15,9 @@ void equipThisWeaponToPlayer(Weapon* thisWeapon)
     //put weapon in default state of standing with handler no action
     thisWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION);
     //attach player collision box to weapon
-    thisWeapon->attachWeaponToHandlerBox(playerCollisionObject->ptrToCollisionBox);
+    //thisWeapon->attachWeaponToHandlerBox(playerCollisionObject->ptrToCollisionBox);
     //pass collision object pointer to weapon to collision system 
-    addPlayerEquippedWeaponToCollisionSystem(thisWeapon);
+    //addPlayerEquippedWeaponToCollisionSystem(thisWeapon);
 }
 
 void unequipWeaponFromPlayer(){equippedPlayerWeapon = nullptr;}
