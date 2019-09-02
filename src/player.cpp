@@ -369,6 +369,23 @@ void Player::reactToCollision(float& timeStep)
         default:{break;}
     }
     
+    if(equippedPlayerWeapon != nullptr)
+    {
+		if(equippedPlayerWeapon->getCollisionObjectPtr()->typeOfCollision == CollisionType::HIT_BY_COCKROACH)
+		{
+			if(equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION
+			 || equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::MOVING_WITH_HANDLER_NO_ACTION)
+			 {
+				Player::decrementHealth(cockroachDamage); //decrease health
+
+				//put in state of push back
+				Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+				std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+				Player::setNumTimesPushBackPlayer(numTimes);
+			 }
+		}
+	}
+    
     Player::resetCollisionType();
 }
 
