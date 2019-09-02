@@ -8,8 +8,8 @@ project (${PROJECT_NAME} LANGUAGES C CXX)
 option(DATAPATH "Path to data Directory" ON)
 
 #-DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -DDATADIR=${DATAPATH}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -DDATADIR=${DATAPATH}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -DDATADIR=${DATAPATH} -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -DDATADIR=${DATAPATH} -fPIE")
 
 #SDL2 specific stuff and its add on libraries
 INCLUDE(FindPkgConfig)
@@ -25,9 +25,6 @@ set(BOOST_LIBS date_time system random)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 #find_package(Threads REQUIRED)
 
-
-#FreeBSD and linux specific include and libs
-#Note: for FreeBSD, use cmake .. -DwxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wxgtk3u-3.1-config
 
 #For the shared library:
 set ( PROJECT_LINK_LIBS  openal.so ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES})
