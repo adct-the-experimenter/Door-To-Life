@@ -188,6 +188,8 @@ void freeMedia_HealthBar(LTexture* healthTex);
 LTexture healthBarTexture;
 
 CollisonHandler collisionHandler;
+GameInventory gameInventory;
+PlayerInventory playerInventory;
 
 int main(int argc, char* args[])
 {
@@ -261,7 +263,7 @@ void DungeonGameLoop()
     
     baseGameState->logic(); //run logic module
     
-    checkWeaponsOnGround_Collision(); //check if weapon is picked up from ground
+    gameInventory.checkWeaponsOnGround_Collision(&playerInventory); //check if weapon is picked up from ground
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
@@ -421,11 +423,11 @@ void Dungeon1()
 
     Labyrinth labyrinth;
     
+    gameInventory.SetPointerToCollisionHandler(&collisionHandler);
+    
     //if setup labyrinth was successful
     if(setupLabyrinth(labyrinth))
-    {
-        //add collision objects to be watched by collision handler 
-        
+    {   
         /** GameLoop **/
         //set base game state to gDungeon1
         baseGameState = &labyrinth;
@@ -507,7 +509,8 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
     thisLabyrinth.setPointerToMainDot(mainDotPointer.get());
     thisLabyrinth.setPointerToMainPlayer(mainPlayer);
     thisLabyrinth.setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-    
+	thisLabyrinth.SetPointerToGameInventory(&gameInventory);
+	
     //set dimenstions of grid labyrinth will use for generating map
     std::int16_t x = 0;
     std::int16_t y = 0;
@@ -542,7 +545,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //setup default weapon for player
         std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
         std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
-        setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
+        gameInventory.setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
         
         
         //initialize sub map
@@ -788,6 +791,10 @@ bool initMainChar()
         
         //add player to collision system
 		collisionHandler.addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
+		//pass pointer to player to player inventory
+		playerInventory.SetPointerToPlayer(mainPlayer);
+		//pass pointer to player inventory to game inventory
+		gameInventory.SetPointerToPlayerInventory(&playerInventory);
     }
     
     return success;
@@ -1177,7 +1184,7 @@ void close()
 {
     
     freeEnemyMedia();
-    freeWeapons();
+    gameInventory.freeWeapons();
     freeWeaponsMedia();
     
     freeDungeon_Door_Key_Media();

@@ -1,9 +1,27 @@
 #include "game_inventory.h"
 
 
-std::array <Weapon*,1> weaponsArray;
+GameInventory::GameInventory()
+{
+	m_player_inventory_ptr = nullptr;
+}
 
-void setupDefaultGunForPlayer(std::int16_t& x, std::int16_t& y)
+GameInventory::~GameInventory()
+{
+	m_player_inventory_ptr = nullptr;
+}
+
+void GameInventory::SetPointerToPlayerInventory(PlayerInventory* thisInventory)
+{
+	m_player_inventory_ptr = thisInventory;
+}
+
+void GameInventory::SetPointerToCollisionHandler(CollisonHandler* thisHandler)
+{
+	m_collision_handler_ptr = thisHandler;
+}
+
+void GameInventory::setupDefaultGunForPlayer(std::int16_t& x, std::int16_t& y)
 {
 	//setup bullet resources
 	Bullet* thisBullet = new Bullet();
@@ -42,13 +60,13 @@ void setupDefaultGunForPlayer(std::int16_t& x, std::int16_t& y)
     def_gun->setMoveClip();
     
     //add weapon to collision handler
-    //addObjectToCollisionSystem(def_gun->getCollisionObjectPtr());
+    m_collision_handler_ptr->addObjectToCollisionSystem(def_gun->getCollisionObjectPtr());
     //put into weapons array as first item
     Weapon* def_weapon = def_gun;
     weaponsArray[0] = def_weapon;
 }
 
-void checkWeaponsOnGround_Collision()
+void GameInventory::checkWeaponsOnGround_Collision(PlayerInventory* p_inventory)
 {
     for(size_t i=0; i < weaponsArray.size(); ++i)
     {
@@ -56,12 +74,13 @@ void checkWeaponsOnGround_Collision()
         if(weaponsArray[i]->getBool_HeroTouchedWeaponOnGround() )
         {
             //equip weapon to player for now
-            equipThisWeaponToPlayer(weaponsArray[i]);
+            p_inventory->equipThisWeaponToPlayer(weaponsArray[i]);
+            m_collision_handler_ptr->addPlayerEquippedWeaponToCollisionSystem(weaponsArray[i]);
         }
     }
 }
 
-void run_weapons_render(SDL_Renderer* gRenderer, SDL_Rect& camera)
+void GameInventory::run_weapons_render(SDL_Renderer* gRenderer, SDL_Rect& camera)
 {
     //for every weapon 
     for(size_t i=0; i < weaponsArray.size(); ++i)
@@ -80,12 +99,12 @@ void run_weapons_render(SDL_Renderer* gRenderer, SDL_Rect& camera)
     }
 }
 
-void passWeaponToPlayerInventory(Weapon* thisWeapon)
+void GameInventory::passWeaponToPlayerInventory(Weapon* thisWeapon)
 {
     
 }
 
-void freeWeapons()
+void GameInventory::freeWeapons()
 {
     delete weaponsArray[0];
 }

@@ -11,6 +11,8 @@
 
 #include "enemy_inventory.h" // for running enemy handle_events, logic, rendering, sound 
 
+#include "game_inventory.h"
+
 class Labyrinth : public GameState
 {
 public:
@@ -70,6 +72,8 @@ public:
     
     //function to return pointer to vector of enemies
     std::vector <Enemy*> *GetEnemiesInLabyrinthVector();
+    
+    void SetPointerToGameInventory(GameInventory* thisInventory);
     
 //Game Loop
     virtual void setState(GameState::State thisState);
@@ -197,6 +201,8 @@ private:
                                         std::int8_t& baseNumColumns, std::int8_t& baseNumRows,
                                         RNGType& rngSeed);
 	EnemyInventory m_enemy_inventory;
+	
+	GameInventory* m_game_inventory_ptr;
 	
 };
 

@@ -7,6 +7,8 @@
 #include "weapon.h"
 #include "sword.h"
 
+#include "player.h"
+
 //structure to hold a weapon or game item
 struct InventorySlot 
 {
@@ -18,42 +20,57 @@ struct InventorySlot
     bool slotFilled;
 };
 
-//array of slots in inventory which are used to contain weapon or item
-extern std::array <InventorySlot,8> inventory_slots;
+class PlayerInventory
+{
+public:
+	
+	PlayerInventory();
+	~PlayerInventory();
+	
+	void SetPointerToPlayer(Player* thisPlayer);
+	
+	//Prompt
 
-//variable for which slot selector is currently on
-extern std::int8_t currentInventorySlotSelected;
-
-//Prompt
-
-//function to prompt player if want to throw away item
-void promptPlayerThrowAway();
-//function to prompt player to put item in inventory
-void promptPlayer_PutItemInInventory();
-//function to prompt player to put weapon in inventory
-void promptPlayer_PutWeaponInInventory(Weapon* thisWeapon);
-
-
-//Adding to Inventory 
-//function to place weapon in next available inventory slot
-void putWeaponInInventory(Weapon* thisWeapon);
-//function to place item in next available inventory slot
-//void putGameItemInInventory();
-//Removing from Inventory
+	//function to prompt player if want to throw away item
+	void promptPlayerThrowAway();
+	//function to prompt player to put item in inventory
+	void promptPlayer_PutItemInInventory();
+	//function to prompt player to put weapon in inventory
+	void promptPlayer_PutWeaponInInventory(Weapon* thisWeapon);
 
 
-//Using Stuff in Inventory
+	//Adding to Inventory 
+	//function to place weapon in next available inventory slot
+	void putWeaponInInventory(Weapon* thisWeapon);
+	
+	//function to place item in next available inventory slot
+	//void putGameItemInInventory();
+	//Removing from Inventory
 
-//function to use item from inventory
-//void useItem();
 
-//Pointer to Weapon equipped by player
-extern Weapon* equippedPlayerWeapon;
+	//Using Stuff in Inventory
 
-//function to equip weapon to player
-void equipThisWeaponToPlayer(Weapon* thisWeapon);
-//function to unequip weapon from player
-void unequipWeaponFromPlayer();
+	//function to use item from inventory
+	//void useItem();
+
+	
+
+	//function to equip weapon to player
+	void equipThisWeaponToPlayer(Weapon* thisWeapon);
+	//function to unequip weapon from player
+	void unequipWeaponFromPlayer();
+
+private:
+	//array of slots in inventory which are used to contain weapon or item
+	std::array <InventorySlot,8> inventory_slots;
+
+	//variable for which slot selector is currently on
+	std::int8_t currentInventorySlotSelected;
+	
+	Player* m_player_ptr;
+	
+};
+
 
 
 

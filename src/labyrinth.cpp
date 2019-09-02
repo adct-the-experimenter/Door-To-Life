@@ -5,7 +5,9 @@ Labyrinth::Labyrinth()
     Labyrinth::setDebugBool(false);
     //initialize array of doubles for generating labyrinth node dimensions
     //probabilites for 0,1,2,3,4
-    probabilitiesGenLabyrinthNodeDimensions= {0.3, 0.4,0.0,0.0,0.0}; 
+    probabilitiesGenLabyrinthNodeDimensions= {0.3, 0.4,0.0,0.0,0.0};
+    
+    m_game_inventory_ptr = nullptr; 
     
 }
 
@@ -812,10 +814,6 @@ void Labyrinth::logic()
     labyrinthTimer->start();
 }
 
-//function to render enemies
-void run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer );
-//function to render weapons on ground
-void run_weapons_render(SDL_Renderer* gRenderer, SDL_Rect& camera);
 
 void Labyrinth::render(SDL_Renderer* gRenderer)
 {
@@ -832,7 +830,7 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     
     //render weapons
     //labyrinthMap.renderWeapons(gRenderer);
-    run_weapons_render(gRenderer,*labyrinthCamera);
+    m_game_inventory_ptr->run_weapons_render(gRenderer,*labyrinthCamera);
     
     //if debug bool is on
     if(Labyrinth::getDebugBool())
@@ -1061,4 +1059,9 @@ std::vector <Enemy*> * Labyrinth::GetEnemiesInLabyrinthVector()
 std::vector <CollisionObject> *Labyrinth::GetCollisionObjectsOfHoleTiles()
 {
 	return &labyrinthMap.labyrinth_hole_tiles_vector;
+}
+
+void Labyrinth::SetPointerToGameInventory(GameInventory* thisInventory)
+{
+	m_game_inventory_ptr = thisInventory;
 }

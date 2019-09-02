@@ -4,7 +4,6 @@
 #include "sprite.h"
 #include "damage_values.h"
 #include "weapon.h"
-#include "player_inventory.h" //for inventory
 
 class Player : public Sprite
 {
@@ -153,6 +152,7 @@ public:
     virtual std::int8_t getLoopCount();
     virtual void resetLoopCount();
 
+	friend class PlayerInventory;
     
 private:
 
@@ -202,6 +202,7 @@ private:
     //function to render collision box of player
     void renderPlayerCollisionBox(SDL_Rect& camera,SDL_Renderer* gRenderer);
     
+    Weapon* equippedPlayerWeapon;
     //function to run logic for changing listener orienation and position
     
 };

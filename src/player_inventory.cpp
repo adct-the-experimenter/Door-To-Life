@@ -1,24 +1,25 @@
 #include "player_inventory.h"
 
+PlayerInventory::PlayerInventory()
+{
+	m_player_ptr = nullptr;
+}
 
+PlayerInventory::~PlayerInventory()
+{
+	m_player_ptr = nullptr;
+}
 
-std::array <InventorySlot,8> inventory_slots;
-std::int8_t currentInventorySlotSelected;
-
-//Pointer to Weapon equipped by player
-Weapon* equippedPlayerWeapon = nullptr;
-
-void equipThisWeaponToPlayer(Weapon* thisWeapon)
+void PlayerInventory::equipThisWeaponToPlayer(Weapon* thisWeapon)
 {
     //assign equipped player weapon pointer to point to weapon pointer input
-    equippedPlayerWeapon = thisWeapon;    
+    m_player_ptr->equippedPlayerWeapon = thisWeapon;    
     //put weapon in default state of standing with handler no action
     thisWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION);
     //attach player collision box to weapon
-    //thisWeapon->attachWeaponToHandlerBox(playerCollisionObject->ptrToCollisionBox);
-    //pass collision object pointer to weapon to collision system 
-    //addPlayerEquippedWeaponToCollisionSystem(thisWeapon);
+    thisWeapon->attachWeaponToHandlerBox(m_player_ptr->getCollisionObjectPtr()->ptrToCollisionBox);
 }
 
-void unequipWeaponFromPlayer(){equippedPlayerWeapon = nullptr;}
+void PlayerInventory::unequipWeaponFromPlayer(){m_player_ptr->equippedPlayerWeapon = nullptr;}
 
+void PlayerInventory::SetPointerToPlayer(Player* thisPlayer){m_player_ptr = thisPlayer;}
