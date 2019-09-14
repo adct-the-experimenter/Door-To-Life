@@ -624,7 +624,7 @@ void GameWon()
     
     ALint musicState;
 
-    while( stepTimer.getTicks() <= 30000  )
+    while( musicState != AL_STOPPED )
     {
          //play sound from winMusicSource
         alGetSourcei(winMusicSource, AL_SOURCE_STATE, &musicState);
@@ -1144,7 +1144,7 @@ bool loadMedia_gamewin()
     
     }
     //load wave file
-    std::string gameWinMusicFilePath = DATADIR_STR + std::string("/Sound/accomplishment-2.wav");
+    std::string gameWinMusicFilePath = DATADIR_STR + std::string("/Sound/victory-theme-mono.ogg");
     Mix_Chunk* winMusic = Mix_LoadWAV(gameWinMusicFilePath.c_str());
 
     if(winMusic == nullptr)
