@@ -1,4 +1,4 @@
-#How Random Generation Works
+# How Random Generation Works
 
 Let's first explain how it works on the surface in main.cpp and then dive into the ocean of details. 
 
