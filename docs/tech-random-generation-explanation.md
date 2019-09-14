@@ -1,6 +1,9 @@
 # How Random Generation Works
 
-Let's first explain how it works on the surface in main.cpp and then dive into the ocean of details. 
+Let's first explain how it works on the surface in main.cpp and then dive into the ocean of details.
+For a graphical observation of how a non-graphical labyrinth is made, hit right arrow twice to move outside
+of bounds of button selection, then hit enter.
+In the debug mode for random generation, hit keys g,v,b,n. 
 
 ## Implementation in main.cpp
     //set dimenstions of grid labyrinth will use for generating map
