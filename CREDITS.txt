@@ -3,5 +3,19 @@ Thank you to the following people for their contribution!
 -Kalebh Ryals
 	-Music
 		-Run Me Through
+		-Original: https://soundcloud.com/k4lebh/run-me-through
+		-Artist: https://soundcloud.com/k4lebh
+		
+-Buch
+	-Graphics
+		-Dungeon Tile Set
+		-Original:http://opengameart.org/content/a-cute-dungeon
+		-Artist: http://opengameart.org/users/buch
+
+-Wind Astella
+	-Graphics
+		-Main Character Sprite
+		-Original: http://opengameart.org/content/stella
+		-Artist:http://opengameart.org/users/wind-astella
 
 
