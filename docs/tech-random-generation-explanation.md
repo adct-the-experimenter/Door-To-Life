@@ -68,6 +68,7 @@ The labyrinth first starts off as an empty room.
  * Class MazeGenerator is used to generate the maze in the labyrinth.
  * MazeGenerator takes in collection of nodes kept from NodeGenerator using MazeGenerator::loadResourcesFromNodeGenerator(NodeGenerator* node_gen), and then generates the maze with MazeGenerator::generateMaze(rngSeed).
  * MazeGenerator uses Prim's algorithm to generate maze including setting walls and openings.
+   * Reference: https://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm
 
 ## Graphical labyrinth made from non-graphical labyrinth
 1. After the maze is created, graphical labyrinth is made in function Labyrinth::generateDungeonsInLabyrinth(RNGType& rngSeed, 
