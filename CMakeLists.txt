@@ -9,7 +9,7 @@ option(DATAPATH "Path to data Directory" ON)
 
 #-DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -DDATADIR=${DATAPATH} -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -DDATADIR=${DATAPATH} -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -Wall -DDATADIR=${DATAPATH} -fPIE")
 
 #SDL2 specific stuff and its add on libraries
 INCLUDE(FindPkgConfig)
@@ -54,6 +54,7 @@ src/LabyrinthNode.cpp
 src/Dungeon_Tile.cpp src/TileMapDimensions.cpp
 src/door.cpp src/key.cpp
 src/gun.cpp src/bullet.cpp src/sword.cpp src/weapon.cpp
+src/greedy_zombie.cpp
 src/othercockroach.cpp
 src/enemy.cpp src/lineofsight.cpp
 src/player.cpp src/healthbar.cpp src/player_inventory.cpp

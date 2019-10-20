@@ -8,6 +8,7 @@ enum class CollisionBoxOwnerType : std::int8_t { NONE = 0,
                                                 PLAYER ,
                                                 //Enemy 
                                                 COCKROACH, LINE_OF_SIGHT,
+                                                GREEDY_ZOMBIE,
                                                 //Obstacle
                                                 HOLE,
                                                 //Weapons

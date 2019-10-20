@@ -17,11 +17,31 @@ void EnemyInventory::setupEnemyVector()
     //for all enemies
     for(size_t i=0; i < enemies_vector.size(); ++i)
     {
-        //make it a cockroach
-        OtherCockroach* thisCockroach = new OtherCockroach(4,2,55,65);
-        thisCockroach->setPointersToMedia(&cockroach_texture,cockroach_walk_clips);
+		if(i < 70)
+		{
+			//make it a cockroach
+			OtherCockroach* thisCockroach = new OtherCockroach(4,2,55,65);
+			thisCockroach->setPointersToMedia(&cockroach_texture,cockroach_walk_clips);
+			
+			enemies_vector[i] = thisCockroach;
+		}
+		else if(i >= 70 && i <= 80)
+		{
+			//make it a greedy zombie
+			GreedyZombie* thisZombie = new GreedyZombie(4,2,55,65);
+			thisZombie->setPointersToMedia(&greed_zombie_texture,greed_zombie_walk_clips);
+			
+			enemies_vector[i] = thisZombie;
+		}
+		else
+		{
+			//make it a cockroach
+			OtherCockroach* thisCockroach = new OtherCockroach(4,2,55,65);
+			thisCockroach->setPointersToMedia(&cockroach_texture,cockroach_walk_clips);
+			
+			enemies_vector[i] = thisCockroach;
+		}
         
-        enemies_vector[i] = thisCockroach;
     }
     
 }

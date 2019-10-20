@@ -15,7 +15,7 @@ This is a video game in which the player wins by finding a golden door in a laby
 1. git clone or download this project.
 2. cd Door-To-Life
 3. mkdir build
-4. cmake .. -DDATAPATH=../data
+4. cmake .. -DDATAPATH=../data -DCMAKE_BUILD_TYPE=Release
 5. make
 6. ./Door-to-Life
 

@@ -20,6 +20,17 @@ extern std::int16_t cockroach_PushBackBySword;
 extern std::int16_t cockroach_HitByBulletDamage;
 extern std::int16_t cockroach_PushBackByBullet;
 
+//Greedy Zombie
+extern std::int16_t greedZombieHealth;
+extern std::int16_t greedZombieDamage;
+extern std::int16_t greedZombie_PushBackHero;
+
+extern std::int16_t greedZombie_HitBySwordDamage;
+extern std::int16_t greedZombie_PushBackBySword;
+
+extern std::int16_t greedZombie_HitByBulletDamage;
+extern std::int16_t greedZombie_PushBackByBullet;
+
 // one push back is 5 pixels
 extern std::int16_t onePushBack; 
 
