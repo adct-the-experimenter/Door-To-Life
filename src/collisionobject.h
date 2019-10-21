@@ -23,7 +23,8 @@ enum class CollisionType : std::int8_t {
                                         //for enemy
                                         HIT_PLAYER, HIT_BY_SWORD, HIT_BY_BULLET,
                                         //for player
-                                        HIT_BY_COCKROACH,COLLIDING_WITH_HOLE
+                                        HIT_BY_COCKROACH, HIT_BY_ZOMBIE,
+                                        COLLIDING_WITH_HOLE
                                         };
 
 

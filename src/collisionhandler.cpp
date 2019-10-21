@@ -87,6 +87,7 @@ void CollisonHandler::runPlayerCollisionOperations(CollisionObject& thisObject)
             switch(thisObject.ownerType )
             {
                 case CollisionBoxOwnerType::COCKROACH :{ typeCollisionToPlayer = CollisionType::HIT_BY_COCKROACH; break;}
+                case CollisionBoxOwnerType::GREEDY_ZOMBIE :{ typeCollisionToPlayer = CollisionType::HIT_BY_ZOMBIE; break;}
                 case CollisionBoxOwnerType::HOLE:{ typeCollisionToPlayer = CollisionType::COLLIDING_WITH_HOLE; break;}
                 default:{typeCollisionToPlayer = CollisionType::NONE; break;}
             }

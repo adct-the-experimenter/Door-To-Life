@@ -9,7 +9,7 @@ option(DATAPATH "Path to data Directory" ON)
 
 #-DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -DDATADIR=${DATAPATH} -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -Wall -DDATADIR=${DATAPATH} -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -DDATADIR=${DATAPATH} -fPIE")
 
 #SDL2 specific stuff and its add on libraries
 INCLUDE(FindPkgConfig)
