@@ -1,19 +1,19 @@
-#ifndef GREEDY_ZOMBIE_H
-#define GREEDY_ZOMBIE_H
+#ifndef MY_ENEMY_H
+#define MY_ENEMY_H
 
 #include "enemy.h"
 #include <array>
 
-class GreedyZombie : public Enemy
+class MyEnemy : public Enemy
 {
     
 public:
 
  //constructor to set up resources
-    GreedyZombie( int x, int y,int width,int height);
+    MyEnemy( int x, int y,int width,int height);
 
     //destructor to free resources
-    virtual ~GreedyZombie();
+    virtual ~MyEnemy();
                                     
     //functions to manipulate sprite state variable
     virtual void setSpriteState(Sprite::State state);
@@ -37,11 +37,11 @@ public:
     virtual LTexture* getPointerToTexture();
     
     //function to load media outside class
-    friend bool loadGreedyZombieMedia(LTexture* cTexture,
+    friend bool loadMyEnemyMedia(LTexture* cTexture,
                                     std::vector <SDL_Rect> &clips,
                                     SDL_Renderer* gRenderer );
                                     
-    friend void freeGreedyZombieMedia(LTexture* cTexture);                                
+    friend void freeMyEnemyMedia(LTexture* cTexture);                                
                         
     
     //function to set 
@@ -202,7 +202,7 @@ public:
     virtual void resetLoopCount();
     
     //state specific to greedy zombie
-    enum class GreedyZombieState : std::int8_t {MOVE_UP = 0,MOVE_DOWN,MOVE_LEFT,MOVE_RIGHT,
+    enum class MyEnemyState : std::int8_t {MOVE_UP = 0,MOVE_DOWN,MOVE_LEFT,MOVE_RIGHT,
                                             PAUSE,
                                             DETERMINE_DIRECTION};
     
@@ -227,13 +227,13 @@ private:
     //Array for probabilities of which direction to take
     std::array <double,5> probabilitiesDirection;
     
-    std::stack <GreedyZombie::GreedyZombieState> state_stack;
+    std::stack <MyEnemy::MyEnemyState> state_stack;
     
-    void pushState(GreedyZombie::GreedyZombieState state);
+    void pushState(MyEnemy::MyEnemyState state);
     void popState();
-    GreedyZombie::GreedyZombieState getCurrentState();
+    MyEnemy::MyEnemyState getCurrentState();
     
-    void setupGreedyZombieCollisionObject();
+    void setupMyEnemyCollisionObject();
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
 };
