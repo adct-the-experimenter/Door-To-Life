@@ -669,3 +669,8 @@ void MyEnemy::setEnemyView(Enemy::EnemyViewOption option){Enemy::setEnemyView(op
 void MyEnemy::setLineOfSightDimensions(std::int16_t& w, std::int16_t& h){Enemy::setLineOfSightDimensions(w,h);}
 void MyEnemy::setLineOfSightToEnemyBox(){Enemy::setLineOfSightToEnemyBox();}
 void MyEnemy::checkViewForPlayer(){Enemy::checkViewForPlayer();}
+
+void MyEnemy::sound(AudioRenderer* gAudioRenderer)
+{
+	
+}

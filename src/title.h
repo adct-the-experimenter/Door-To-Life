@@ -1,6 +1,7 @@
 #ifndef TITLE_H
 #define TITLE_H
 
+#include "gamestate.h"
 #include "titlemenu.h"
 
 class Title : public GameState
@@ -22,7 +23,7 @@ public:
     virtual void handle_events(Event& thisEvent);
     virtual void handle_events_RNG(RNGType& rngSeed);
     virtual void logic();
-    virtual void sound();
+    virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
     
     TitleMenu::TitleOptions getTitleMenuOptionSelect();

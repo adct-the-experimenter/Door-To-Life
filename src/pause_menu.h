@@ -24,7 +24,7 @@ public:
         virtual void handle_events(Event& thisEvent);
         virtual void handle_events_RNG(RNGType& rngSeed);
         virtual void logic();
-        virtual void sound();
+        virtual void sound(AudioRenderer* gAudioRenderer);
         virtual void render(SDL_Renderer* gRenderer);
 
         bool loadMedia(SDL_Renderer* gRenderer);

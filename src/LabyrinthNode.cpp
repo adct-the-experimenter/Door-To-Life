@@ -1139,7 +1139,7 @@ void LabyrinthNode::doorCollision(float timeStep)
 }
 
 //play sounds
-void LabyrinthNode::sound()
+void LabyrinthNode::sound(AudioRenderer* gAudioRenderer)
 {
     
     //play dungeon music

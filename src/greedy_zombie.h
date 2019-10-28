@@ -220,6 +220,9 @@ public:
     //depending on what was set. Line of Sight or field of view or none
     //and set enemy state to see player if true
     virtual void checkViewForPlayer();
+
+//Sound
+	virtual void sound(AudioRenderer* gAudioRenderer);
     
 private:
     //members not inherited from enemy

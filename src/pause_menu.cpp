@@ -103,7 +103,7 @@ void PauseMenu::render(SDL_Renderer* gRenderer)
 }
 
 
-void PauseMenu::sound()
+void PauseMenu::sound(AudioRenderer* gAudioRenderer)
 {
     switch(PauseMenu::getCurrentMenuState())
     {

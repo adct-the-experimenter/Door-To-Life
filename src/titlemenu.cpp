@@ -101,7 +101,7 @@ void TitleMenu::render(SDL_Renderer* gRenderer)
 }
 
 
-void TitleMenu::sound()
+void TitleMenu::sound(AudioRenderer* gAudioRenderer)
 {
     switch(TitleMenu::getCurrentMenuState())
     {

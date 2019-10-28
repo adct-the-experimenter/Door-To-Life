@@ -203,7 +203,18 @@ private:
     void renderPlayerCollisionBox(SDL_Rect& camera,SDL_Renderer* gRenderer);
     
     Weapon* equippedPlayerWeapon;
-    //function to run logic for changing listener orienation and position
+    
+    //function to change listener position along with player
+    void MoveListener();
+    
+    void SetListenerDirection();
+    
+    void FaceListenerNorth();
+    void FaceListenerNorthEast();
+    void FaceListenerEast();
+    void FaceListenerSouthEast();
+    void FaceListenerSouth();
+    void FaceListenerSouthWest();
     
 };
 

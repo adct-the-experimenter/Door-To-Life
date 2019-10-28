@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#include "audio_renderer.h"
+
 //class to generate enemies in labyrinth and handle their logic and events
 
 class EnemyInventory
@@ -26,8 +28,12 @@ public:
 	//function to run logic for enemies
 	void run_enemies_logic(float& timeStep,SDL_Rect& camera, 
 							std::vector <DungeonTile*> &labyrinthTilesVector);
-
+	
+	//function to render enemies
 	void run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer );
+	
+	//function to render sound of enemies
+	void run_enemies_sound(SDL_Rect& camera, AudioRenderer* gAudioRenderer);
 
 	//function to check remove enemies on screen that died
 	void checkAndRemoveDeadEnemies(SDL_Rect& camera);

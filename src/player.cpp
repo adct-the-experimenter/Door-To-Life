@@ -13,7 +13,14 @@ Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
     Player::resetLoopCount();
     clipPlayer.w = 35; clipPlayer.h = 31;
     
-    
+    //set where head is facing
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 0.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 1.0f; //forward vector z value
+	//set direction of top of head surface vector
+	listener_orientation_vector[ORIENTATION_INDEX::UP_X] = 0.0f; //up vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::UP_Y] = 1.0f; //up vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::UP_Z] = 0.0f; //up vector z value
 }
 
 Player::~Player()
@@ -109,6 +116,7 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
     {
         Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
     }
+    
     
     return tileType;
 }
@@ -435,3 +443,59 @@ void Player::resetCountPushBack(){countPushBack = 0;}
 void Player::incrementLoopCount(){loopCount++;}
 std::int8_t Player::getLoopCount(){return loopCount;}
 void Player::resetLoopCount(){loopCount = 0;}
+
+void Player::MoveListener()
+{
+	
+		
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+	
+	//Initialize Listener speed
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
+	
+	//initialize listener position
+	alListener3f(AL_POSITION, 
+					listener_position_vector[POSITION_INDEX::X], 
+					listener_position_vector[POSITION_INDEX::Y], 
+					listener_position_vector[POSITION_INDEX::Z]);
+}
+
+void Player::SetListenerDirection()
+{
+	switch(Player::getFaceDirection())
+    {
+        case Player::FaceDirection::NORTH:
+        {
+            equippedPlayerWeapon->faceWeaponNorth(); break;
+        }
+        case Player::FaceDirection::NORTHEAST:
+        {
+            equippedPlayerWeapon->faceWeaponNorthEast(); break;
+        }
+        case Player::FaceDirection::EAST:
+        {
+            equippedPlayerWeapon->faceWeaponEast(); break;
+        }
+        case Player::FaceDirection::SOUTHEAST:
+        {
+            equippedPlayerWeapon->faceWeaponSouthEast(); break;
+        }
+        case Player::FaceDirection::SOUTH:
+        {
+            equippedPlayerWeapon->faceWeaponSouth(); break;
+        }
+        case Player::FaceDirection::SOUTHWEST:
+        {
+            equippedPlayerWeapon->faceWeaponSouthWest(); break;
+        }
+        case Player::FaceDirection::WEST:
+        {
+            equippedPlayerWeapon->faceWeaponWest(); break;
+        }
+        case Player::FaceDirection::NORTHWEST:
+        {
+            equippedPlayerWeapon->faceWeaponNorthWest(); break;
+        }
+    }
+}

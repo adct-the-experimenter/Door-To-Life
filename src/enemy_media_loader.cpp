@@ -15,17 +15,25 @@ bool loadEnemyMedia(SDL_Renderer* gRenderer)
 //Setup cockroach media
 LTexture cockroach_texture;
 std::vector <SDL_Rect> cockroach_walk_clips;
+ALuint cockroach_scream_buffer;
 bool setupLoad_Cockroach(SDL_Renderer* gRenderer)
 {
-    //load cockroach media
-    if(!loadCockRoachMedia(&cockroach_texture,
+    //load cockroach visual media
+    if(!loadCockRoachVisualMedia(&cockroach_texture,
                         cockroach_walk_clips,
                         gRenderer )
     )
     {
-        printf("Failed to load cockroach media! \n");
+        printf("Failed to load cockroach visual media! \n");
         return false;
     }
+    
+    //load cockroach audio media
+    if(!loadCockRoachAudioMedia(&cockroach_scream_buffer))
+    {
+		printf("Failed to load cockroach audio media! \n");
+        return false;
+	}
     
     return true;
 }
@@ -50,6 +58,9 @@ bool setupLoad_GreedyZombie(SDL_Renderer* gRenderer)
 
 void freeEnemyMedia()
 {
-    freeCockRoachMedia(&cockroach_texture);
+    freeCockRoachVisualMedia(&cockroach_texture);
+    freeCockRoachAudioMedia(&cockroach_scream_buffer);
+    freeGreedyZombieMedia(&greed_zombie_texture);
+    
 }
 

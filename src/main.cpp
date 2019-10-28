@@ -51,6 +51,8 @@ TTF_Font* gFont = nullptr;
 //Set text color as gray
 SDL_Color textColor = {96,96,96 };
 
+//renderer that plays audio
+AudioRenderer gAudioRenderer;
 
 // Game Over
 
@@ -267,7 +269,7 @@ void DungeonGameLoop()
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
-    baseGameState->sound();
+    baseGameState->sound(&gAudioRenderer);
 
     //clear screen
     SDL_SetRenderDrawColor(gRenderer,0,0,0,50);
@@ -309,7 +311,7 @@ void GameLoop()
     
     baseGameState->logic(); //run logic module
     //play audio
-    baseGameState->sound();
+    baseGameState->sound(&gAudioRenderer);
 
     //clear screen
     SDL_RenderClear(gRenderer);
@@ -682,7 +684,7 @@ void MenuState()
         gPauseMenu->render(gRenderer);
         SDL_RenderPresent(gRenderer);
 
-        gPauseMenu->sound();
+        gPauseMenu->sound(&gAudioRenderer);
 
         if(gPauseMenu->getCurrentMenuState() == Menu::MenuState::NOT_RUNNING
                 || gPauseMenu->getCurrentMenuState() == Menu::MenuState::QUIT)

@@ -1,6 +1,8 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include "audio_renderer.h"
+
 #include "sprite.h"
 
 #include "globalvariables.h"
@@ -79,13 +81,11 @@ public:
     virtual void moveDown(float& timeStep);
     virtual void pause(float& timeStep);
     
-     //Frame animation 
+//Frame animation 
     virtual void setDirection();
     virtual void setMoveClip();
     //function to determine which frame to use
     virtual void setFrame();
-    
-    //Frame Animation
     
     //functions to determine frame count
     virtual void incrementFrameCount();
@@ -225,6 +225,9 @@ public:
     virtual void renderEnemyView(SDL_Rect& camera, SDL_Renderer* gRenderer);
     
     virtual CollisionObject* GetLineOfSightCollisionObject();
+
+//Sound
+	virtual void sound(AudioRenderer* gAudioRenderer) = 0;
     
 private:
 

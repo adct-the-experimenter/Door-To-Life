@@ -105,6 +105,24 @@ void EnemyInventory::run_enemies_render(SDL_Rect& camera,SDL_Renderer* gRenderer
     }
 }
 
+void EnemyInventory::run_enemies_sound(SDL_Rect& camera, AudioRenderer* gAudioRenderer)
+{
+	//for every enemy 
+    for(size_t i=0; i < enemies_vector.size(); ++i)
+    {
+        //if enemy pointer isn't pointing to nullptr
+        //means it is not dead
+        if( enemies_vector[i] != nullptr)
+        {
+            //if enemy within camera
+            if(checkCollision(camera,enemies_vector[i]->getCollisionBox() ) )
+            {
+                enemies_vector[i]->sound(gAudioRenderer);
+            }
+        }
+        
+    }
+}
 
 void EnemyInventory::checkAndRemoveDeadEnemies(SDL_Rect& camera)
 {

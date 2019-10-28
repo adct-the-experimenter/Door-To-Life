@@ -221,6 +221,9 @@ public:
     //and set enemy state to see player if true
     virtual void checkViewForPlayer();
     
+//Sound
+	virtual void sound(AudioRenderer* gAudioRenderer);
+    
 private:
     //members not inherited from enemy
     

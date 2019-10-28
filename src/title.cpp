@@ -49,9 +49,9 @@ void Title::logic()
     }
 }
 
-void Title::sound()
+void Title::sound(AudioRenderer* gAudioRenderer)
 {
-    titleMenu.sound();
+    titleMenu.sound(gAudioRenderer);
 }
 
 void Title::render(SDL_Renderer* gRenderer)
