@@ -1,9 +1,13 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <array>
+
 #include "sprite.h"
 #include "damage_values.h"
 #include "weapon.h"
+
+#include "audio_renderer.h"
 
 class Player : public Sprite
 {
@@ -153,7 +157,10 @@ public:
     virtual void resetLoopCount();
 
 	friend class PlayerInventory;
-    
+
+//Sound
+	void sound(AudioRenderer* gAudioRenderer);
+	
 private:
 
 //members not inherited from sprite class
@@ -204,8 +211,15 @@ private:
     
     Weapon* equippedPlayerWeapon;
     
+    //orientation of Listener
+	std::array <float,6> listener_orientation_vector; //vector to hold values of listener orientation
+	//first 3 values are forward vector xyz , last 3 values are up vector xyz
+	//enum to help set orientation vector
+	enum ORIENTATION_INDEX { FORWARD_X=0,FORWARD_Y=1,FORWARD_Z=2,
+												 UP_X=3, UP_Y=4, UP_Z=5 };
+													 
     //function to change listener position along with player
-    void MoveListener();
+    void MoveListener(AudioRenderer* gAudioRenderer);
     
     void SetListenerDirection();
     
@@ -215,6 +229,8 @@ private:
     void FaceListenerSouthEast();
     void FaceListenerSouth();
     void FaceListenerSouthWest();
+    void FaceListenerWest();
+    void FaceListenerNorthWest();
     
 };
 

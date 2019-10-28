@@ -558,6 +558,9 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //Setup camera for collision system
         collisionHandler.setCameraForCollisionSystem(&camera);
         
+        //setup camera for audio renderer
+        gAudioRenderer.SetPointerToCamera(&camera);
+        
         //setup fps timer
         std::int16_t frame_rate = 60;
         frameRateCap.setFrameRate(frame_rate);

@@ -889,6 +889,8 @@ void Labyrinth::sound(AudioRenderer* gAudioRenderer)
     
     m_enemy_inventory.run_enemies_sound(*labyrinthCamera,gAudioRenderer);
     
+    mainPlayerPointer->sound(gAudioRenderer);
+    
 }
 
 void Labyrinth::freeResources()

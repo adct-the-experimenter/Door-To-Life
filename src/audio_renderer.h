@@ -11,6 +11,8 @@ public:
 	AudioSource();
 	~AudioSource();
 	
+	void InitSource();
+	
 	//function to tell if source is being used
 	bool IsOccupied();
 	
@@ -33,9 +35,12 @@ public:
 	//function to play buffer at a position x,y,z
 	void renderAudio(float& x, float& y, ALuint* buffer);
 	
+	void SetPointerToCamera(SDL_Rect* camera);
+	SDL_Rect* GetPointerToCamera();
+	
 private:
 	std::array <AudioSource,10> source_pool;
-	
+	SDL_Rect* m_camera_ptr;
 };
 
 #endif
