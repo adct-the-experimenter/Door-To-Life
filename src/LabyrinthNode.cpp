@@ -42,7 +42,7 @@ ALuint* source,ALuint* buffer)
             //allocate buffer
             alGenBuffers(1, buffer);
             //transfer Mix_Chunk data and length to OpenAL buffer
-            alBufferData(*buffer, AL_FORMAT_STEREO16, dungeonMusic->abuf, dungeonMusic->alen, 44100); 
+            alBufferData(*buffer, AL_FORMAT_MONO16, dungeonMusic->abuf, dungeonMusic->alen, 44100); 
             //set buffer to source that is playing sound
             alSourcei(*source, AL_BUFFER, *buffer);
             

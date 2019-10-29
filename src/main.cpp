@@ -51,8 +51,7 @@ TTF_Font* gFont = nullptr;
 //Set text color as gray
 SDL_Color textColor = {96,96,96 };
 
-//renderer that plays audio
-AudioRenderer gAudioRenderer;
+
 
 // Game Over
 
@@ -65,7 +64,7 @@ bool loadMedia_gameover();
 
 //Win Game
 LTexture gameWonTexture;
-//Mix_Music* gameWinMusic;
+
 ALuint winMusicSource;
 ALuint winMusicBuffer;
 bool loadMedia_gamewin();
@@ -169,6 +168,8 @@ ALCdevice* gAudioDevice = nullptr; //audio device to be used
 ALCcontext* alContext = nullptr; //context of where audio is played
 bool initOpenALSoft();
 void cleanup_openALSoft();
+//renderer that plays audio
+AudioRenderer gAudioRenderer;
 
 //Menu
 std::unique_ptr <PauseMenu> gPauseMenu;
@@ -940,7 +941,7 @@ bool initExtLibs()
     }
 
     //initialize SDL_mixer
-    if(Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 1024) < 0) //args: sound frequency,default format, 2 channels,sample size
+    if(Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 1024) == -1) //args: sound frequency,default format, 2 channels,sample size
     {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         success = false;
@@ -955,19 +956,36 @@ bool initExtLibs()
 bool initOpenALSoft()
 {
     bool success = true;
+    
     //use default audio device
     gAudioDevice = alcOpenDevice(NULL);
-    if(gAudioDevice == nullptr){success = false;}
+    if(gAudioDevice == nullptr){return false;}
+    
     //create context
     alContext = alcCreateContext(gAudioDevice, NULL);
-    if(alContext == nullptr){success = false;}
+    if(alContext == nullptr){return false;}
+	
 	alcMakeContextCurrent(alContext);
     
     //define listener, what is hearing the sound
 	//For 2D sound, we tell openAL soft that listener
-	alListener3f(AL_POSITION, 0, 0, 0);//is at the origin
-	alListener3f(AL_VELOCITY, 0, 0, 0);//is not moving in 3d space
-	alListener3f(AL_ORIENTATION, 0, 0, -1);//Orientation is default 
+	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);//is at the origin
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
+	
+	ALenum test_error_flag = alGetError();
+	if(test_error_flag != AL_NO_ERROR)
+	{
+		std::cout << "\nError found in setting listener properties" << ": " << alGetString(test_error_flag) << "\n";
+		return false;
+	}
+	
+	//initialize audio renderer
+    if(!gAudioRenderer.InitSourcePool())
+    {
+		std::cout << "Could not initialze source pool of audio renderer!\n";
+		cleanup_openALSoft();
+		return false;
+	}
     
     return success;
 }
@@ -1028,6 +1046,7 @@ bool loadMedia()
         printf("Failed to load game over media! \n");
         success = false;
     }
+    alGetError();
     //load game win resources
     if(!loadMedia_gamewin())
     {
@@ -1071,6 +1090,7 @@ bool loadMedia()
 		printf("Failed to load player media! \n");
 		success = false;
 	}
+	alGetError();
     //load enemy media
     if(!loadEnemyMedia(gRenderer))
     {
@@ -1100,38 +1120,25 @@ bool loadMedia_gameover()
 	    success = false;
 	}
 
-    //load wave file
-    std::string gameOverMusicFilePath = DATADIR_STR + std::string("/Sound/Evil_Laugh_8-Bit.wav");
-    Mix_Chunk* gameOverMusic  = Mix_LoadWAV(gameOverMusicFilePath.c_str());
-
-    if(gameOverMusic  == nullptr)
+    std::string path = ("/Sound/Evil_Laugh_8-Bit.wav");
+    if(!LoadBuffer(&gameOverMusicBuffer,path))
     {
-        fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
+        std::cout << "Failed to load evil laugh 8 bit theme! \n";
         success = false;
     }
     else
     {
         //setup source of dungeon music
         alGenSources(1, &gameOverMusicSource); //allocate source 
-
-        alSourcef(gameOverMusicSource, AL_PITCH, 1); //how fast the sound is playing, 1 = normal speed
-        alSourcef(gameOverMusicSource, AL_GAIN, 1); //
-        alSource3f(gameOverMusicSource, AL_POSITION, 0, 0, 0); //source position is at the origin
-        alSource3f(gameOverMusicSource, AL_VELOCITY, 0, 0, 0); //source is not moving
-        alSourcei(gameOverMusicSource, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
+		
+        alSource3f(winMusicSource, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
+        alSource3f(winMusicSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
+        alSourcei(winMusicSource, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
         
         //setup buffer of dungeon music
         
-        //allocate buffer
-        alGenBuffers(1, &gameOverMusicBuffer);
-        //transfer Mix_Chunk data and length to OpenAL buffer
-        alBufferData(gameOverMusicBuffer, AL_FORMAT_STEREO16, gameOverMusic->abuf, gameOverMusic->alen, 44100); 
-        //set buffer to source that is playing sound
+        //attach buffer to source that is playing sound
         alSourcei(gameOverMusicSource, AL_BUFFER, gameOverMusicBuffer);
-        
-        //free win music media
-        Mix_FreeChunk(gameOverMusic);
-        gameOverMusic = nullptr;
     }
 
     return success;
@@ -1148,38 +1155,25 @@ bool loadMedia_gamewin()
         success = false;
     
     }
-    //load wave file
-    std::string gameWinMusicFilePath = DATADIR_STR + std::string("/Sound/victory-theme-mono.ogg");
-    Mix_Chunk* winMusic = Mix_LoadWAV(gameWinMusicFilePath.c_str());
-
-    if(winMusic == nullptr)
+    
+    std::string path = ("/Sound/victory-theme-mono.ogg");
+    if(!LoadBuffer(&winMusicBuffer,path))
     {
-        fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
-        success = false;
-    }
+		std::cout << "Failed to load victory theme! \n";
+		return false;
+	}
     else
     {
         //setup source of dungeon music
         alGenSources(1, &winMusicSource); //allocate source 
-
-        alSourcef(winMusicSource, AL_PITCH, 1); //how fast the sound is playing, 1 = normal speed
-        alSourcef(winMusicSource, AL_GAIN, 1); //
-        alSource3f(winMusicSource, AL_POSITION, 0, 0, 0); //source position is at the origin
-        alSource3f(winMusicSource, AL_VELOCITY, 0, 0, 0); //source is not moving
+		
+		//attach buffer to source that is playing sound
+        alSourcei(winMusicSource, AL_BUFFER, gameOverMusicBuffer);
+        
+        alSource3f(winMusicSource, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
+        alSource3f(winMusicSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
         alSourcei(winMusicSource, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
         
-        //setup buffer of dungeon music
-        
-        //allocate buffer
-        alGenBuffers(1, &winMusicBuffer);
-        //transfer Mix_Chunk data and length to OpenAL buffer
-        alBufferData(winMusicBuffer, AL_FORMAT_STEREO16, winMusic->abuf, winMusic->alen, 44100); 
-        //set buffer to source that is playing sound
-        alSourcei(winMusicSource, AL_BUFFER, winMusicBuffer);
-        
-        //free win music media
-        Mix_FreeChunk(winMusic);
-        winMusic = nullptr;
     }
     return success;
 }
@@ -1211,6 +1205,8 @@ void close()
     //free global font
     TTF_CloseFont( gFont );
 	gFont = NULL;
+    
+    //destroy audio renderer
     
     //close OpenAL Soft
     cleanup_openALSoft();

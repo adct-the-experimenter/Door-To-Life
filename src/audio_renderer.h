@@ -5,24 +5,10 @@
 
 //Uses OpenAL Soft and assumes OpenAL Soft system is initialized
 
-class AudioSource
+struct AudioSource
 {
-public:
-	AudioSource();
-	~AudioSource();
-	
-	void InitSource();
-	
-	//function to tell if source is being used
-	bool IsOccupied();
-	
-	//function to play a buffer with a source
-	void playSoundXZPlane(float& x, float& y, ALuint* buffer);
-	
-private:
-	ALuint source;
+	ALuint* sourcePtr;
 	bool occupied;
-	
 };
 
 class AudioRenderer
@@ -32,6 +18,9 @@ public:
 	AudioRenderer();
 	~AudioRenderer();
 	
+	//function to initialize audio renderer source pool
+	bool InitSourcePool();
+	
 	//function to play buffer at a position x,y,z
 	void renderAudio(float& x, float& y, ALuint* buffer);
 	
@@ -39,8 +28,14 @@ public:
 	SDL_Rect* GetPointerToCamera();
 	
 private:
-	std::array <AudioSource,10> source_pool;
+	//std::array <ALuint,10> source_pool;
+	ALuint source_pool;
 	SDL_Rect* m_camera_ptr;
+	
+	bool InitThisSource(ALuint* source);
+	
+	//function to play a buffer with a source in 2.5D space
+	void playSoundXZPlane(ALuint* source,float& x, float& y, ALuint* buffer);
 };
 
 #endif

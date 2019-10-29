@@ -114,36 +114,6 @@ void freeCockRoachVisualMedia(LTexture* cTexture)
     }
 }
 
-static bool LoadBuffer(ALuint* buffer, std::string& rel_path)
-{
-	bool success = true;
-	
-	 //load wave file
-    std::string filePath = DATADIR_STR + std::string(rel_path);
-    Mix_Chunk* chunkWAV = Mix_LoadWAV(filePath.c_str());
-
-    if(chunkWAV == nullptr)
-    {
-        fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
-        success = false;
-    }
-    else
-    {        
-        //setup buffer 
-        
-        //allocate buffer
-        alGenBuffers(1, buffer);
-        //transfer Mix_Chunk data and length to OpenAL buffer
-        alBufferData(*buffer, AL_FORMAT_MONO16, chunkWAV->abuf, chunkWAV->alen, 44100); 
-        
-        //free win music media
-        Mix_FreeChunk(chunkWAV);
-        chunkWAV = nullptr;
-    }
-    
-    return success;
-}
-
 bool loadCockRoachAudioMedia(ALuint* cockroachScreamBuffer)
 {
 	std::string path = "/Sound/Cockroach_Scream.ogg";
@@ -719,9 +689,11 @@ void OtherCockroach::setLineOfSightToEnemyBox(){Enemy::setLineOfSightToEnemyBox(
 void OtherCockroach::checkViewForPlayer(){Enemy::checkViewForPlayer();}
 
 
-extern ALuint cockroach_scream_buffer;
+
 void OtherCockroach::sound(AudioRenderer* gAudioRenderer)
-{	
+{
+	extern ALuint cockroach_scream_buffer;
+		
 	if(OtherCockroach::getEnemyState() == Enemy::EnemyState::PUSHED_BACK)
 	{
 		std::cout << "cockroach scream called! \n";
