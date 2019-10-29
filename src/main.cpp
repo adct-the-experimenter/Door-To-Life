@@ -1046,7 +1046,7 @@ bool loadMedia()
         printf("Failed to load game over media! \n");
         success = false;
     }
-    alGetError();
+    
     //load game win resources
     if(!loadMedia_gamewin())
     {
@@ -1059,6 +1059,7 @@ bool loadMedia()
         printf("Failed to load menu media! \n");
         success = false;
     }
+   
     //load dungeon door key media
     if(!loadDungeon_Door_Key_Media(gRenderer) )
     {
@@ -1090,7 +1091,7 @@ bool loadMedia()
 		printf("Failed to load player media! \n");
 		success = false;
 	}
-	alGetError();
+	//alGetError();
     //load enemy media
     if(!loadEnemyMedia(gRenderer))
     {
@@ -1131,9 +1132,9 @@ bool loadMedia_gameover()
         //setup source of dungeon music
         alGenSources(1, &gameOverMusicSource); //allocate source 
 		
-        alSource3f(winMusicSource, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
-        alSource3f(winMusicSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
-        alSourcei(winMusicSource, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
+        alSource3f(gameOverMusicSource, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
+        alSource3f(gameOverMusicSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
+        alSourcei(gameOverMusicSource, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
         
         //setup buffer of dungeon music
         

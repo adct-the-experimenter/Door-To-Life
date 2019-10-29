@@ -88,8 +88,11 @@ void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint*
     ALint state;
     alGetSourcei(*source, AL_SOURCE_STATE, &state);
     
-    
-	alSourcePlay(*source);
+    if(state == AL_INITIAL || state == AL_STOPPED)
+    {
+		alSourcePlay(*source);
+	}
+	
 	
 	//detach buffer from source
 	alSourcei(*source, AL_BUFFER, NULL);

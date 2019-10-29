@@ -699,6 +699,6 @@ void OtherCockroach::sound(AudioRenderer* gAudioRenderer)
 		std::cout << "cockroach scream called! \n";
 		float x = OtherCockroach::getPosX();
 		float y = OtherCockroach::getPosY();
-		gAudioRenderer->renderAudio(x,y,&cockroach_scream_buffer);
+		if(cockroach_scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&cockroach_scream_buffer);}
 	}
 }

@@ -672,5 +672,13 @@ void MyEnemy::checkViewForPlayer(){Enemy::checkViewForPlayer();}
 
 void MyEnemy::sound(AudioRenderer* gAudioRenderer)
 {
-	
+	extern ALuint scream_buffer;
+		
+	if(OtherCockroach::getEnemyState() == Enemy::EnemyState::PUSHED_BACK)
+	{
+		std::cout << "cockroach scream called! \n";
+		float x = OtherCockroach::getPosX();
+		float y = OtherCockroach::getPosY();
+		if(scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&scream_buffer);}
+	}
 }

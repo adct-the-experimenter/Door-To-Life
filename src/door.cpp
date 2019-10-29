@@ -31,12 +31,11 @@ std::vector <SDL_Rect> &doorClips)
     
     
 
-  //initialize doors sound effects
+    //initialize doors sound effects
   
     std::string path = ("/Sound/Door_Open_Fail1.wav");
     if(!LoadBuffer(doorBufferFail,path))
     {
-        
         printf( "Failed to load door open fail sound effect!\n");
         return false;
     }
@@ -51,12 +50,9 @@ std::vector <SDL_Rect> &doorClips)
     //setup source of door
 	alGenSources(1, source); //allocate source 
 
-	alSourcef(*source, AL_PITCH, 1); //how fast the sound is playing, 1 = normal speed
-	alSourcef(*source, AL_GAIN, 1); //
-	alSource3f(*source, AL_POSITION, 0, 0, 0); //source position is at the origin
-	alSource3f(*source, AL_VELOCITY, 0, 0, 0); //source is not moving
-	alSourcei(*source, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
-    
+	alSource3f(*source, AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+	
     return success;
 }
 
