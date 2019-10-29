@@ -80,7 +80,7 @@ void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint*
     ALenum test_error_flag = alGetError();
 	if(test_error_flag != AL_NO_ERROR)
 	{
-		std::cout << "\nError found in attaching buffer to source:" << alGetString(test_error_flag) << "\n";
+		//std::cout << "\nError found in attaching buffer to source:" << alGetString(test_error_flag) << "\n";
 		return;
 	}
 	

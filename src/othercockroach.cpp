@@ -696,7 +696,7 @@ void OtherCockroach::sound(AudioRenderer* gAudioRenderer)
 		
 	if(OtherCockroach::getEnemyState() == Enemy::EnemyState::PUSHED_BACK)
 	{
-		std::cout << "cockroach scream called! \n";
+		//std::cout << "cockroach scream called! \n";
 		float x = OtherCockroach::getPosX();
 		float y = OtherCockroach::getPosY();
 		if(cockroach_scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&cockroach_scream_buffer);}
