@@ -41,7 +41,7 @@ void OtherCockroach::setupCockroachCollisionObject()
     OtherCockroach::setOwnerTypeOfCollisionObject(type);
 }
 
-bool loadCockRoachMedia(LTexture* cTexture,
+bool loadCockRoachVisualMedia(LTexture* cTexture,
                         std::vector <SDL_Rect> &walk_clips,
                         SDL_Renderer* gRenderer )
 {
@@ -105,7 +105,7 @@ bool loadCockRoachMedia(LTexture* cTexture,
     return success;
 }
 
-void freeCockRoachMedia(LTexture* cTexture)
+void freeCockRoachVisualMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
@@ -113,6 +113,24 @@ void freeCockRoachMedia(LTexture* cTexture)
         cTexture = nullptr;
     }
 }
+
+bool loadCockRoachAudioMedia(ALuint* cockroachScreamBuffer)
+{
+	std::string path = "/Sound/Cockroach_Scream.ogg";
+	if(!LoadBuffer(cockroachScreamBuffer,path))
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+void freeCockRoachAudioMedia(ALuint* cockroachScreamBuffer)
+{
+	alDeleteBuffers(1, cockroachScreamBuffer); 
+}
+
+
 
 void OtherCockroach::setSpeed(float& speed){Enemy::setSpeed(speed);}
 
@@ -669,3 +687,18 @@ void OtherCockroach::setEnemyView(Enemy::EnemyViewOption option){Enemy::setEnemy
 void OtherCockroach::setLineOfSightDimensions(std::int16_t& w, std::int16_t& h){Enemy::setLineOfSightDimensions(w,h);}
 void OtherCockroach::setLineOfSightToEnemyBox(){Enemy::setLineOfSightToEnemyBox();}
 void OtherCockroach::checkViewForPlayer(){Enemy::checkViewForPlayer();}
+
+
+
+void OtherCockroach::sound(AudioRenderer* gAudioRenderer)
+{
+	extern ALuint cockroach_scream_buffer;
+		
+	if(OtherCockroach::getEnemyState() == Enemy::EnemyState::PUSHED_BACK)
+	{
+		std::cout << "cockroach scream called! \n";
+		float x = OtherCockroach::getPosX();
+		float y = OtherCockroach::getPosY();
+		if(cockroach_scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&cockroach_scream_buffer);}
+	}
+}

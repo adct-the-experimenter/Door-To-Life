@@ -37,12 +37,15 @@ public:
     virtual LTexture* getPointerToTexture();
     
     //function to load media outside class
-    friend bool loadCockRoachMedia(LTexture* cTexture,
+    friend bool loadCockRoachVisualMedia(LTexture* cTexture,
                                     std::vector <SDL_Rect> &clips,
                                     SDL_Renderer* gRenderer );
                                     
-    friend void freeCockRoachMedia(LTexture* cTexture);                                
+    friend void freeCockRoachVisualMedia(LTexture* cTexture);                                
+    
+    friend bool loadCockRoachAudioMedia(ALuint* cockroachScreamBuffer);
                         
+    friend void freeCockRoachAudioMedia(); 
     
     //function to set 
     void setPointersToMedia(LTexture* cTexture,std::vector <SDL_Rect> &clips);
@@ -220,6 +223,9 @@ public:
     //depending on what was set. Line of Sight or field of view or none
     //and set enemy state to see player if true
     virtual void checkViewForPlayer();
+
+//Sound
+	virtual void sound(AudioRenderer* gAudioRenderer);
     
 private:
     //members not inherited from enemy

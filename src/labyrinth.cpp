@@ -873,7 +873,7 @@ void Labyrinth::renderExitInMazeGeneration(SDL_Renderer* gRenderer)
      mazeGen.renderSquareInMazeNode(gRenderer,exitCol,exitRow,r,g,b);
 }
 
-void Labyrinth::sound()
+void Labyrinth::sound(AudioRenderer* gAudioRenderer)
 {
    //play dungeon music
     //play sound from dgmSource
@@ -886,6 +886,11 @@ void Labyrinth::sound()
     else{alSourceStop(*dgmSource);}
 
     labyrinthMap.play_door_sounds();
+    
+    m_enemy_inventory.run_enemies_sound(*labyrinthCamera,gAudioRenderer);
+    
+    mainPlayerPointer->sound(gAudioRenderer);
+    
 }
 
 void Labyrinth::freeResources()

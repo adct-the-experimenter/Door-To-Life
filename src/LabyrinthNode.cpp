@@ -10,45 +10,30 @@ ALuint* source,ALuint* buffer)
     //load texture for member tileTextureMap
     if(!tileMap->loadFromFile(tileFilePath.c_str(), gRenderer))
     {
-        success = false;
         std::cout << "Couldn't load tileTextureMap! \n";
+        return false;
     }
     else
     {
         //if tileTextureMap loaded successfully
         
-        //load sound data to buffer
-        //load wave file
-        std::string dMusicFilePath = DATADIR_STR + std::string("/Sound/scary_bgm.ogg");
-        Mix_Chunk* dungeonMusic = Mix_LoadWAV(dMusicFilePath.c_str());
-
-        if(dungeonMusic == nullptr)
+        std::string path = std::string("/Sound/scary_bgm.ogg");
+        if(!LoadBuffer(buffer,path))
         {
-            fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
-        }
+			printf("Failed to load dungeon music! \n");
+			return false;
+		}
         else
         {
             //setup source of dungeon music
             alGenSources(1, source); //allocate source 
 
-            alSourcef(*source, AL_PITCH, 1); //how fast the sound is playing, 1 = normal speed
-            alSourcef(*source, AL_GAIN, 1); //
-            alSource3f(*source, AL_POSITION, 0, 0, 0); //source position is at the origin
-            alSource3f(*source, AL_VELOCITY, 0, 0, 0); //source is not moving
-            alSourcei(*source, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
+            alSource3f(*source, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
+            alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
             
-            //setup buffer of dungeon music
+            //attach buffer to source
+			alSourcei(*source, AL_BUFFER, (ALint)(*buffer));
             
-            //allocate buffer
-            alGenBuffers(1, buffer);
-            //transfer Mix_Chunk data and length to OpenAL buffer
-            alBufferData(*buffer, AL_FORMAT_STEREO16, dungeonMusic->abuf, dungeonMusic->alen, 44100); 
-            //set buffer to source that is playing sound
-            alSourcei(*source, AL_BUFFER, *buffer);
-            
-            //free dungeon music media
-            Mix_FreeChunk(dungeonMusic);
-            dungeonMusic = nullptr;
         }        
     }
     
@@ -1139,7 +1124,7 @@ void LabyrinthNode::doorCollision(float timeStep)
 }
 
 //play sounds
-void LabyrinthNode::sound()
+void LabyrinthNode::sound(AudioRenderer* gAudioRenderer)
 {
     
     //play dungeon music

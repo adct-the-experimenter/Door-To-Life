@@ -29,60 +29,30 @@ std::vector <SDL_Rect> &doorClips)
         doorClips[2] = {142,0,width,height};
     }
     
-    //setup source of door
-    alGenSources(1, source); //allocate source 
-
-    alSourcef(*source, AL_PITCH, 1); //how fast the sound is playing, 1 = normal speed
-    alSourcef(*source, AL_GAIN, 1); //
-    alSource3f(*source, AL_POSITION, 0, 0, 0); //source position is at the origin
-    alSource3f(*source, AL_VELOCITY, 0, 0, 0); //source is not moving
-    alSourcei(*source, AL_LOOPING, AL_FALSE); //loop the audio that source is playing
-
-  //initialize doors sound effects
-    std::string doorFailFilePath = DATADIR_STR + std::string("/Sound/Door_Open_Fail1.wav");
-    Mix_Chunk* doorFailSound =  Mix_LoadWAV(doorFailFilePath.c_str());
-    if(doorFailSound == nullptr)
-    {
-        success = false;
-        printf( "Failed to load door open fail sound effect! %s\n", Mix_GetError() );
-    }
-    else
-    {
-        //setup buffer of door open fail sound
-        
-        //allocate buffer
-        alGenBuffers(1, doorBufferFail);
-        //transfer Mix_Chunk data and length to OpenAL buffer
-        alBufferData(*doorBufferFail, AL_FORMAT_STEREO16, doorFailSound->abuf, doorFailSound->alen, 44100); 
-        
-        
-        //free dungeon music media
-        Mix_FreeChunk(doorFailSound);
-        doorFailSound = nullptr;
-    }
-
-    std::string doorOpenFilePath = DATADIR_STR + std::string("/Sound/Door_Open_Success.wav");
-    Mix_Chunk* doorOpenSound =  Mix_LoadWAV(doorOpenFilePath.c_str());
-    if(doorOpenSound == nullptr)
-    {
-        success = false;
-        printf( "Failed to load door open success sound effect! %s\n", Mix_GetError() );
-    }
-    else
-    {
-        //setup buffer of door open  sound
-        
-        //allocate buffer
-        alGenBuffers(1, doorBufferOpen);
-        //transfer Mix_Chunk data and length to OpenAL buffer
-        alBufferData(*doorBufferOpen, AL_FORMAT_STEREO16, doorOpenSound->abuf, doorOpenSound->alen, 44100); 
-        
-        
-        //free dungeon music media
-        Mix_FreeChunk(doorOpenSound);
-        doorOpenSound = nullptr;
-    }
     
+
+    //initialize doors sound effects
+  
+    std::string path = ("/Sound/Door_Open_Fail1.wav");
+    if(!LoadBuffer(doorBufferFail,path))
+    {
+        printf( "Failed to load door open fail sound effect!\n");
+        return false;
+    }
+
+    path = ("/Sound/Door_Open_Success.wav");
+    if(!LoadBuffer(doorBufferOpen,path))
+    {
+		printf( "Failed to load door open success sound effect! %s\n");
+		return false;
+	}
+	
+    //setup source of door
+	alGenSources(1, source); //allocate source 
+
+	alSource3f(*source, AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+	
     return success;
 }
 

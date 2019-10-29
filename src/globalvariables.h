@@ -153,8 +153,8 @@ typedef boost::mt19937_64 RNGType;
 #endif
 
 
-
-
+//global function to load buffer
+bool LoadBuffer(ALuint* buffer, std::string& rel_path);
 
 
 #endif // GLOBALVARIABLES

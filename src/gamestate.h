@@ -17,6 +17,8 @@
 
 #include <cmath>
 
+#include "audio_renderer.h"
+
 //Base class for game state
 class GameState
 {
@@ -37,7 +39,7 @@ class GameState
         virtual void handle_events(Event& thisEvent) = 0;
         virtual void handle_events_RNG(RNGType& rngSeed) = 0;
         virtual void logic() = 0;
-        virtual void sound() = 0;
+        virtual void sound(AudioRenderer* gAudioRenderer) = 0;
         virtual void render(SDL_Renderer* gRenderer) = 0;
 		
       

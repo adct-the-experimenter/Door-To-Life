@@ -1,5 +1,7 @@
 #include "player.h"
 
+#include <iostream>
+
 //constructor
 Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
 {
@@ -13,7 +15,23 @@ Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
     Player::resetLoopCount();
     clipPlayer.w = 35; clipPlayer.h = 31;
     
-    
+    //set where head is facing
+    //initially set facing south
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 0.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 1.0f; //forward vector z value
+	//set direction of top of head surface vector
+	listener_orientation_vector[ORIENTATION_INDEX::UP_X] = 0.0f; //up vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::UP_Y] = 1.0f; //up vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::UP_Z] = 0.0f; //up vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+	
+	//Initialize Listener speed
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
+	
+	equippedPlayerWeapon = nullptr;
 }
 
 Player::~Player()
@@ -82,10 +100,11 @@ void Player::setCamera( SDL_Rect& camera  ) //set camera relative to dot and int
 	Sprite::setCamera(camera);
 }
 
-void Player::move(float& timeStep){Sprite::move(timeStep);}
+void Player::move(float& timeStep){Sprite::move(timeStep); }
 
 bool Player::moveOnTiles(float& timeStep, std::vector<DungeonTile*> &dungeonTiles)
 {
+	
     //if sprite is not moving on tiles and is colliding with wall
     if(!Sprite::moveOnTiles(timeStep, dungeonTiles))
     {
@@ -109,6 +128,7 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
     {
         Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
     }
+    
     
     return tileType;
 }
@@ -383,19 +403,24 @@ void Player::reactToCollision(float& timeStep)
     
     if(equippedPlayerWeapon != nullptr)
     {
-		if(equippedPlayerWeapon->getCollisionObjectPtr()->typeOfCollision == CollisionType::HIT_BY_COCKROACH)
+		if(equippedPlayerWeapon->getCollisionObjectPtr())
 		{
-			if(equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION
-			 || equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::MOVING_WITH_HANDLER_NO_ACTION)
-			 {
-				Player::decrementHealth(cockroachDamage); //decrease health
+			if(equippedPlayerWeapon->getCollisionObjectPtr()->typeOfCollision == CollisionType::HIT_BY_COCKROACH)
+			{
+				if(equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION
+				 || equippedPlayerWeapon->getWeaponState() == Weapon::WeaponState::MOVING_WITH_HANDLER_NO_ACTION)
+				 {
+					Player::decrementHealth(cockroachDamage); //decrease health
 
-				//put in state of push back
-				Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
-				std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
-				Player::setNumTimesPushBackPlayer(numTimes);
-			 }
+					//put in state of push back
+					Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+					std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+					Player::setNumTimesPushBackPlayer(numTimes);
+				 }
+			}
+			
 		}
+		
 	}
     
     Player::resetCollisionType();
@@ -435,3 +460,147 @@ void Player::resetCountPushBack(){countPushBack = 0;}
 void Player::incrementLoopCount(){loopCount++;}
 std::int8_t Player::getLoopCount(){return loopCount;}
 void Player::resetLoopCount(){loopCount = 0;}
+
+void Player::sound(AudioRenderer* gAudioRenderer)
+{
+	Player::MoveListener(gAudioRenderer);
+}
+
+void Player::MoveListener(AudioRenderer* gAudioRenderer)
+{
+	Player::SetListenerDirection();
+    
+	//set velocity based on direciton of movement
+	alListener3f(AL_VELOCITY, Player::getVelX(), 0.0f, Player::getVelY());
+	
+	//set listener position
+	alListener3f(AL_POSITION,0, 0, 0);
+}
+
+void Player::SetListenerDirection()
+{
+	switch(Player::getFaceDirection())
+    {
+        case Player::FaceDirection::NORTH:
+        {
+            Player::FaceListenerNorth(); break;
+        }
+        case Player::FaceDirection::NORTHEAST:
+        {
+            Player::FaceListenerNorthEast(); break;
+        }
+        case Player::FaceDirection::EAST:
+        {
+            Player::FaceListenerEast(); break;
+        }
+        case Player::FaceDirection::SOUTHEAST:
+        {
+            Player::FaceListenerSouthEast(); break;
+        }
+        case Player::FaceDirection::SOUTH:
+        {
+            Player::FaceListenerSouth(); break;
+        }
+        case Player::FaceDirection::SOUTHWEST:
+        {
+            Player::FaceListenerSouthWest(); break;
+        }
+        case Player::FaceDirection::WEST:
+        {
+            Player::FaceListenerWest(); break;
+        }
+        case Player::FaceDirection::NORTHWEST:
+        {
+            Player::FaceListenerNorthWest(); break;
+        }
+    }
+}
+
+void Player::FaceListenerNorth()
+{
+	//set facing north
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 0.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = -1.0f; //forward vector z value
+	
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerNorthEast()
+{
+	//set facing north east
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = -1.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerEast()
+{
+	//set facing east
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 0.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerSouthEast()
+{
+	//set facing south east
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 1.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerSouth()
+{
+	//set facing south
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = 0.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 1.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerSouthWest()
+{
+	//set facing south
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = -1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 1.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerWest()
+{
+	//set facing south
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = -1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = 0.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}
+
+void Player::FaceListenerNorthWest()
+{
+	//set facing south
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_X] = -1.0f; //forward vector x value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Y] = 0.0f; //forward vector y value
+	listener_orientation_vector[ORIENTATION_INDEX::FORWARD_Z] = -1.0f; //forward vector z value
+	
+	//set current listener orientation
+	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
+}

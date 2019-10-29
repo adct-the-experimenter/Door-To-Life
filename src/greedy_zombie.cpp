@@ -61,45 +61,45 @@ bool loadGreedyZombieMedia(LTexture* cTexture,
         std::int8_t width = 51;
         std::int8_t height = 65;
         
-        walk_clips[Sprite::UP_1] = {6,192,51,65};
-        walk_clips[Sprite::UP_2] = {70,192,51,65}; 
-        walk_clips[Sprite::UP_3] = {136,192,51,65}; 
-        walk_clips[Sprite::UP_4] = {199,192,51,65};
-        
-        walk_clips[Sprite::UP_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::UP_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::UP_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::UP_LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::DOWN_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::DOWN_1] = {5,3,51,65};
-        walk_clips[Sprite::DOWN_2] = {68,3,51,65};
-        walk_clips[Sprite::DOWN_3] = {134,3,51,65};
-        walk_clips[Sprite::DOWN_4] = {198,3,51,65};
-        
-        walk_clips[Sprite::RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::RIGHT_4] = {191,138,64,54};
-        
-        walk_clips[Sprite::DOWN_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_4] = {191,138,64,54};
-        
-        walk_clips[Sprite::UP_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_4] = {191,138,64,54};
+        walk_clips[Sprite::UP_1] = {15,196,width,height};
+		walk_clips[Sprite::UP_2] = {80,196,width,height}; 
+		walk_clips[Sprite::UP_3] = {143,196,width,height}; 
+		walk_clips[Sprite::UP_4] = {207,196,width,height};
+		
+		walk_clips[Sprite::LEFT_1] = {15,64,width,height};
+		walk_clips[Sprite::LEFT_2] = {80,64,width,height};
+		walk_clips[Sprite::LEFT_3] = {143,64,width,height};
+		walk_clips[Sprite::LEFT_4] = {207,64,width,height};
+		
+		walk_clips[Sprite::DOWN_1] = {16,1,width,height};
+		walk_clips[Sprite::DOWN_2] = {80,1,width,height};
+		walk_clips[Sprite::DOWN_3] = {143,1,width,height};
+		walk_clips[Sprite::DOWN_4] = {207,1,width,height};
+		
+		walk_clips[Sprite::RIGHT_1] = {15,128,width,height};
+		walk_clips[Sprite::RIGHT_2] = {80,128,width,height};
+		walk_clips[Sprite::RIGHT_3] = {143,128,width,height};
+		walk_clips[Sprite::RIGHT_4] = {207,128,width,height};
+		
+		walk_clips[Sprite::DOWN_RIGHT_1] = {12,257,width,height};
+		walk_clips[Sprite::DOWN_RIGHT_2] = {76,258,width,height};
+		walk_clips[Sprite::DOWN_RIGHT_3] = {140,258,width,height};
+		walk_clips[Sprite::DOWN_RIGHT_4] = {204,258,width,height};
+		
+		walk_clips[Sprite::DOWN_LEFT_1] = {17,321,width,height};
+		walk_clips[Sprite::DOWN_LEFT_2] = {81,321,width,height};
+		walk_clips[Sprite::DOWN_LEFT_3] = {145,321,width,height};
+		walk_clips[Sprite::DOWN_LEFT_4] = {209,321,width,height};
+		
+		walk_clips[Sprite::UP_LEFT_1] = {17,385,width,height};
+		walk_clips[Sprite::UP_LEFT_2] = {81,385,width,height};
+		walk_clips[Sprite::UP_LEFT_3] = {145,385,width,height};
+		walk_clips[Sprite::UP_LEFT_4] = {209,385,width,height};
+		
+		walk_clips[Sprite::UP_RIGHT_1] = {12,450,width,height};
+		walk_clips[Sprite::UP_RIGHT_2] = {76,450,width,height};
+		walk_clips[Sprite::UP_RIGHT_3] = {140,450,width,height};
+		walk_clips[Sprite::UP_RIGHT_4] = {204,450,width,height};
     }
     
     return success;
@@ -669,3 +669,8 @@ void GreedyZombie::setEnemyView(Enemy::EnemyViewOption option){Enemy::setEnemyVi
 void GreedyZombie::setLineOfSightDimensions(std::int16_t& w, std::int16_t& h){Enemy::setLineOfSightDimensions(w,h);}
 void GreedyZombie::setLineOfSightToEnemyBox(){Enemy::setLineOfSightToEnemyBox();}
 void GreedyZombie::checkViewForPlayer(){Enemy::checkViewForPlayer();}
+
+void GreedyZombie::sound(AudioRenderer* gAudioRenderer)
+{
+	
+}

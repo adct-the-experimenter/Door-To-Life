@@ -26,3 +26,41 @@ std::string MENU_IMAGE_DIR_STR = "/Graphics/";
  //tile dimensions 
 std::int16_t globalTileWidth = 80;
 std::int16_t globalTileHeight = 80;
+
+//global function to load buffer
+bool LoadBuffer(ALuint* buffer, std::string& rel_path)
+{
+	bool success = true;
+	
+	 //load wave file
+    std::string filePath = DATADIR_STR + std::string(rel_path);
+    Mix_Chunk* chunkWAV = Mix_LoadWAV(filePath.c_str());
+
+    if(chunkWAV == nullptr)
+    {
+        fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
+        success = false;
+    }
+    else
+    {        
+        //setup buffer 
+        
+        //allocate buffer
+        alGenBuffers(1, buffer);
+        
+        //transfer Mix_Chunk data and length to OpenAL buffer
+        alBufferData(*buffer, AL_FORMAT_MONO16, chunkWAV->abuf, chunkWAV->alen, 44100); 
+        ALenum test_error_flag = alGetError();
+		if(test_error_flag != AL_NO_ERROR)
+		{
+			std::cout << "\nError found in making buffer:" << alGetString(test_error_flag) << "\n";
+			return false;
+		}
+        
+        //free win music media
+        Mix_FreeChunk(chunkWAV);
+        chunkWAV = nullptr;
+    }
+    
+    return success;
+}
