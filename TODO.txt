@@ -1,10 +1,6 @@
 ***********************************************************************************************
------------------------------------------ TODO Release 0.1 ------------------------------------
+----------------------------------------- TODO Release 0.2 ------------------------------------
 ***********************************************************************************************
-
--Add more enemies to halt progress and add challenge.
-
--Implement sound for enemies.
 
 -Work on system for saving and loading game.
     -Add option to title to load a game.
@@ -17,8 +13,15 @@
     -Make a zelda dungeon level editor outside of game that will save info
     of dungeon which can be read by a xml DungeonReader in this game.
 
--Make a gamestate class for a Zelda-like Dungeon. 
-        
+-Make a gamestate class for a Zelda-like Dungeon. For entering from labyrinth. 
+
+***********************************************************************************************
+----------------------------------------- DONE Release 0.2 ------------------------------------
+***********************************************************************************************
+
+-Add more enemies to halt progress and add challenge. DONE
+
+-Implement sound for enemies. DONE
         
 ***********************************************************************************************
 ----------------------------------------- DONE Relase 0.1 -------------------------------------
