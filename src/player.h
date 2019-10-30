@@ -161,6 +161,7 @@ public:
 //Sound
 	void sound(AudioRenderer* gAudioRenderer);
 	
+	int getPlayerHeight();
 private:
 
 //members not inherited from sprite class

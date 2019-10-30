@@ -26,6 +26,8 @@ OtherCockroach::OtherCockroach(int x,int y,int width,int height) : Enemy(x,y,wid
     
     OtherCockroach::resetPushBackVariables();
     
+    m_cockroachHeight = 10;
+    
     //std::cout << "\n OtherCockroach constructor called! \n";
 }
 
@@ -699,6 +701,6 @@ void OtherCockroach::sound(AudioRenderer* gAudioRenderer)
 		//std::cout << "cockroach scream called! \n";
 		float x = OtherCockroach::getPosX();
 		float y = OtherCockroach::getPosY();
-		if(cockroach_scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&cockroach_scream_buffer);}
+		if(cockroach_scream_buffer != 0){gAudioRenderer->renderAudioRelativeToPlayerHeight(x,y,m_cockroachHeight,&cockroach_scream_buffer);}
 	}
 }

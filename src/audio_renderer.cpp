@@ -12,6 +12,7 @@ AudioRenderer::AudioRenderer()
 	//	source_pool[i].InitSource();
 	//}
 	
+	playerHeight = 0;
 }
 
 AudioRenderer::~AudioRenderer()
@@ -98,6 +99,50 @@ void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint*
 	alSourcei(*source, AL_BUFFER, NULL);
 }
 
+
+
+void AudioRenderer::renderAudioRelativeToPlayerHeight(float& x, float& y,  int& height, ALuint* buffer)
+{
+	//convert to relative coordinates
+	float relX = x - m_camera_ptr->x - m_camera_ptr->w/2;
+	float relY = y - m_camera_ptr->y  - m_camera_ptr->h/2;
+	
+	relX = 4*relX / m_camera_ptr->w;
+	relY = 4*relY / m_camera_ptr->h;
+	
+	AudioRenderer::playSoundXZPlaneHeightY(&source_pool,relX,relY,height,buffer);
+}
+
+void AudioRenderer::playSoundXZPlaneHeightY(ALuint* source,float& x, float& y, int& height, ALuint* buffer)
+{
+	float diff = (height - playerHeight) / 10;
+	
+	//2d only using xz plane
+	alSource3f(*source, AL_POSITION, x, diff, y);
+	
+	//attach buffer to source
+    alSourcei(*source, AL_BUFFER, (ALint)(*buffer));
+    	
+    ALenum test_error_flag = alGetError();
+	if(test_error_flag != AL_NO_ERROR)
+	{
+		//std::cout << "\nError found in attaching buffer to source:" << alGetString(test_error_flag) << "\n";
+		return;
+	}
+	
+    //play source
+    ALint state;
+    alGetSourcei(*source, AL_SOURCE_STATE, &state);
+    
+    if(state == AL_INITIAL || state == AL_STOPPED)
+    {
+		alSourcePlay(*source);
+	}
+	
+	//detach buffer from source
+	alSourcei(*source, AL_BUFFER, NULL);
+}
+
 void AudioRenderer::SetPointerToCamera(SDL_Rect* camera)
 {
 	m_camera_ptr = camera;
@@ -106,4 +151,9 @@ void AudioRenderer::SetPointerToCamera(SDL_Rect* camera)
 SDL_Rect* AudioRenderer::GetPointerToCamera()
 {
 	return m_camera_ptr;
+}
+
+void AudioRenderer::SetPlayerHeight(int& height)
+{
+	playerHeight = height;
 }

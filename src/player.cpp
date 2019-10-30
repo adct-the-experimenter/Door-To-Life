@@ -604,3 +604,5 @@ void Player::FaceListenerNorthWest()
 	//set current listener orientation
 	alListenerfv(AL_ORIENTATION, listener_orientation_vector.data());
 }
+
+int Player::getPlayerHeight(){return Sprite::getHeight();}

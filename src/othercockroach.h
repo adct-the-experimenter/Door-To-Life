@@ -242,6 +242,8 @@ private:
     void setupCockroachCollisionObject();
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
+    
+    int m_cockroachHeight;
 };
 
 #endif

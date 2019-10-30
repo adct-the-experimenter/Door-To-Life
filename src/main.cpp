@@ -781,7 +781,7 @@ bool initMainChar()
     if(!ptrToMC)
     {
         printf("Failed to initialize Hero. \n");
-        success = false;
+        return false;
     }
     else
     {
@@ -801,6 +801,9 @@ bool initMainChar()
 		playerInventory.SetPointerToPlayer(mainPlayer);
 		//pass pointer to player inventory to game inventory
 		gameInventory.SetPointerToPlayerInventory(&playerInventory);
+		//add player height to audio renderer
+		int pHeight = mainPlayer->getPlayerHeight();
+		gAudioRenderer.SetPlayerHeight(pHeight);
     }
     
     return success;
