@@ -636,8 +636,6 @@ void GameWon()
         alGetSourcei(winMusicSource, AL_SOURCE_STATE, &musicState);
         
         if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(winMusicSource);}
-        
-        //else{alSourceStop(winMusicSource);}
 
         //render game win screen
         gameWonTexture.render(0,0,gRenderer);
@@ -1172,7 +1170,7 @@ bool loadMedia_gamewin()
         alGenSources(1, &winMusicSource); //allocate source 
 		
 		//attach buffer to source that is playing sound
-        alSourcei(winMusicSource, AL_BUFFER, gameOverMusicBuffer);
+        alSourcei(winMusicSource, AL_BUFFER, winMusicBuffer);
         
         alSource3f(winMusicSource, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
         alSource3f(winMusicSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
