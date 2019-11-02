@@ -48,6 +48,11 @@ SDL_Renderer* gRenderer = nullptr;
 //Globally used font
 TTF_Font* gFont = nullptr;
 
+//renderer driver to use
+int num_render_driver = -1;
+bool use_software_fallback = false;
+int checkForRendererDriverInput(int& argc, char* argv[]);
+
 //Set text color as gray
 SDL_Color textColor = {96,96,96 };
 
@@ -194,10 +199,15 @@ CollisonHandler collisionHandler;
 GameInventory gameInventory;
 PlayerInventory playerInventory;
 
+
+
 int main(int argc, char* args[])
 {
     //std::cout << args[0];
-    
+    if(checkForRendererDriverInput(argc,args) != 0)
+    {
+		return -1;
+	}
     //Start up SDL and create window
 
 	if( !init() )
@@ -814,15 +824,6 @@ bool init()
 	//Initialization flag
 	bool success = true;
 
-    std::cout << "Number of video drivers:" << SDL_GetNumVideoDrivers() << std::endl;
-
-	//display all video drivers available
-	for(int i=0; i < SDL_GetNumVideoDrivers(); ++i)
-	{
-		//display video driver
-		std::cout << SDL_GetVideoDriver(i) << std::endl;
-	}
-
 
 	if(!initSDL2())
     {
@@ -905,8 +906,18 @@ bool initSDL2()
 		else
 		{
 			//Create renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, 2, SDL_RENDERER_ACCELERATED);
-			 // Note that providing no flags gives priority to available SDL_RENDERER_ACCELERATED renderers. This should fallback to Software if no renderer is available.
+			
+			if(use_software_fallback)
+			{
+				gRenderer = SDL_CreateRenderer( gWindow, num_render_driver, SDL_RENDERER_SOFTWARE);
+				std::cout << "\nRenderer created with software fallback! \n";
+			}
+			else
+			{
+				gRenderer = SDL_CreateRenderer( gWindow, num_render_driver, SDL_RENDERER_ACCELERATED);
+				std::cout << "\nRenderer created with hardware acceleration enabled! \n";
+			}
+			
 			if( gRenderer == nullptr )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -1226,4 +1237,112 @@ void close()
 	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
+}
+
+int checkForRendererDriverInput(int& argc, char* argv[])
+{
+	//return 0 if want program to continue
+	//return -1 if want program to not continue
+	int status = 0;
+	
+	if(argc == 1)
+	{
+		return 0;
+	}
+	else
+	{
+		std::vector <std::string> sources;
+		std::string destination;
+		for (int i = 1; i < argc; ++i) 
+		{
+			if(std::string(argv[i]) == "--help")
+			{
+				std::cout << "\n Usage: \n--renderer-software-fallback Forces program to use software fallback instead of hardware acceleration. \n--renderer-driver NUM Choses renderer driver(NUM) to use. \n--show-renderer-drivers-info Shows info on drivers especially NUM place of driver. \n--show-video-drivers-info Shows info on video cards to use. \n";
+				return -1;
+			}
+			
+			if (std::string(argv[i]) == "--renderer-driver") 
+			{
+				if (i + 1 < argc) 
+				{ 
+					// Make sure we aren't at the end of argv!
+					num_render_driver = std::stoi( std::string(argv[i+1]) ); // Increment 'i' so we don't get the argument as the next argv[i].
+					std::cout << "num_renderer_driver:" << num_render_driver << std::endl;
+					
+					SDL_RendererInfo drinfo;
+					SDL_GetRenderDriverInfo (num_render_driver, &drinfo);
+					std::cout << "\n\n" << drinfo.name << " is being used." << std::endl;
+					return 0;
+				} 
+				else 
+				{ 
+					// Uh-oh, there was no argument to the destination option.
+					std::cerr << "--renderer-driver option requires one argument." << std::endl;
+					return -1;
+				}  
+			} 
+			
+			if(std::string(argv[i]) == "--show-renderer-drivers-info")
+			{
+				
+				int numdrivers = SDL_GetNumRenderDrivers ();
+				
+				std::cout << "Render driver count: " << numdrivers << std::endl;
+				
+				for (int i=0; i<numdrivers; i++) 
+				{
+					SDL_RendererInfo drinfo;
+					SDL_GetRenderDriverInfo (i, &drinfo);
+					std::cout << "Renderer Driver name ("<<i<<"): " << drinfo.name << std::endl;
+					
+					//check if renderer driver is a software fallback, and create a renderer that uses software if so
+					if (drinfo.flags & SDL_RENDERER_SOFTWARE)
+					{
+						std::cout << " the renderer is a software fallback" << std::endl;
+					} 
+					//check if renderer driver supports hardware acceleration, create a renderer that uses hardware acceleration if so
+					if (drinfo.flags & SDL_RENDERER_ACCELERATED)
+					{
+						std::cout << " the renderer uses hardware acceleration" << std::endl;
+					} 
+					if (drinfo.flags & SDL_RENDERER_PRESENTVSYNC)
+					{
+						std::cout << " present is synchronized with the refresh rate" << std::endl;
+					} 
+					if (drinfo.flags & SDL_RENDERER_TARGETTEXTURE)
+					{
+						std::cout << " the renderer supports rendering to texture" << std::endl;
+					}
+				}
+				
+				return -1;
+				 
+			}
+			
+			if(std::string(argv[i]) == "--show-video-drivers-info")
+			{
+				std::cout << "Render driver count: " << SDL_GetNumVideoDrivers() << std::endl;
+				
+				//display all video drivers available
+				for(int i=0; i < SDL_GetNumVideoDrivers(); ++i)
+				{
+					//display video driver
+					std::cout << "Video Driver" << "(" << i << "):" << SDL_GetVideoDriver(i) << std::endl;
+				}
+				
+				return -1;
+			}
+			
+			if(std::string(argv[i]) == "--renderer-software-fallback")
+			{
+				std::cout << "\nSoftware fallback forced! \n";
+				use_software_fallback = true;
+				return 0;
+			}
+			
+		}
+	}
+	
+	
+	return status;
 }
