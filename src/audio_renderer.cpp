@@ -5,6 +5,7 @@ AudioRenderer::AudioRenderer()
 {
 	m_camera_ptr = nullptr;
 	
+	source_pool = 0;
 	//source_pool.resize(10);
 	
 	//for(size_t i = 0; i < source_pool.size(); i++)
@@ -96,7 +97,7 @@ void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint*
 	
 	
 	//detach buffer from source
-	alSourcei(*source, AL_BUFFER, NULL);
+	alSourcei(*source, AL_BUFFER, 0);
 }
 
 
@@ -140,7 +141,7 @@ void AudioRenderer::playSoundXZPlaneHeightY(ALuint* source,float& x, float& y, i
 	}
 	
 	//detach buffer from source
-	alSourcei(*source, AL_BUFFER, NULL);
+	alSourcei(*source, AL_BUFFER, 0);
 }
 
 void AudioRenderer::SetPointerToCamera(SDL_Rect* camera)

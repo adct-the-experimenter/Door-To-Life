@@ -20,14 +20,14 @@ class LTexture
 
     bool loadFromRenderedText(std::string textureText, SDL_Color textColor,TTF_Font* lFont,SDL_Renderer* lRenderer);
 
-    bool loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window* lWindow = NULL, bool manipulate = false); //added new bool manipulate to enable/disable texture manipulation for a loaded texture
+    bool loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window* lWindow = nullptr, bool manipulate = false); //added new bool manipulate to enable/disable texture manipulation for a loaded texture
     void free(); //deallocate textures
     void setColor(Uint8 red, Uint8 green, Uint8 bluee); // set color modulation to texture
 
     void setBlendMode(SDL_BlendMode blending); //set blending for alpha modulation
     void setAlpha(Uint8 alpha); //set alpha modulation
 
-    void render(int x, int y,SDL_Renderer* lRenderer,SDL_Rect* clip = NULL); //render texture at certain point
+    void render(int x, int y,SDL_Renderer* lRenderer,SDL_Rect* clip = nullptr); //render texture at certain point
 
     //Pixel Manipulation
     bool lockTexture(); //lock textuer to change it's pixels

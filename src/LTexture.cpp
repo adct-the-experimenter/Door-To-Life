@@ -8,10 +8,10 @@ LTexture::LTexture()
     /*This piece of code was originally from Lazy Foo' Productions
 (http://lazyfoo.net/)*/
     //Initialize
-	mTexture = NULL;
+	mTexture = nullptr;
 	mWidth = 0;
 	mHeight = 0;
-	mPixels = NULL;
+	mPixels = nullptr;
 	mPitch = 0;
 
 	targetStatus = false;
@@ -32,7 +32,7 @@ bool LTexture::loadFromRenderedText(std::string textureText,SDL_Color textColor,
 
 	//Render text surface
 	SDL_Surface* textSurface = TTF_RenderText_Solid( lFont, textureText.c_str(), textColor );
-	if( textSurface == NULL )
+	if( textSurface == nullptr )
 	{
 		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
 	}
@@ -40,7 +40,7 @@ bool LTexture::loadFromRenderedText(std::string textureText,SDL_Color textColor,
 	{
 		//Create texture from surface pixels
         mTexture = SDL_CreateTextureFromSurface( lRenderer, textSurface );
-		if( mTexture == NULL )
+		if( mTexture == nullptr )
 		{
 			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
 		}
@@ -54,7 +54,7 @@ bool LTexture::loadFromRenderedText(std::string textureText,SDL_Color textColor,
 		//Get rid of old surface
 		SDL_FreeSurface( textSurface );
 	}
-	return mTexture != NULL;
+	return mTexture != nullptr;
 }
 
 
@@ -72,16 +72,16 @@ bool LTexture::loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window*
 	free();
 
 	//The final texture
-	SDL_Texture* newTexture = NULL;
+	SDL_Texture* newTexture = nullptr;
 
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
+	if( loadedSurface == nullptr )
 	{
 		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
 	}
 	//No Texture manipulation
-	else if(manipulate == false && lWindow == NULL)
+	else if(manipulate == false && lWindow == nullptr)
     {
 //Color key image
 		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
@@ -91,6 +91,7 @@ bool LTexture::loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window*
 		if( newTexture == NULL )
 		{
 			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+			return false;
 		}
 		else
 		{
@@ -107,7 +108,7 @@ bool LTexture::loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window*
     }
 
 	//Texture manipulation
-	else if(manipulate == true && lWindow != NULL)
+	else if(manipulate == true && lWindow != nullptr)
 	{
 		//Convert surface to display format
 		SDL_Surface* formattedSurface = SDL_ConvertSurface( loadedSurface, SDL_GetWindowSurface( lWindow )->format,0 );
@@ -128,7 +129,7 @@ bool LTexture::loadFromFile(std::string path,SDL_Renderer* lRenderer,SDL_Window*
 			    std::cout << " Texture created with target flag! \n";
 			}
 
-			if( newTexture == NULL )
+			if( newTexture == nullptr )
 			{
 				printf( "Unable to create blank texture! SDL Error: %s\n", SDL_GetError() );
 			}
