@@ -21,6 +21,9 @@ public:
 	//function to initialize audio renderer source pool
 	bool InitSourcePool();
 	
+	//function to free audio renderer source pool
+	void FreeSourcePool();
+	
 	//function to play buffer at a position x,y
 	void renderAudio(float& x, float& y, ALuint* buffer);
 	

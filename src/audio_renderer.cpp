@@ -20,10 +20,7 @@ AudioRenderer::~AudioRenderer()
 {
 	m_camera_ptr = nullptr;
 	
-	if(source_pool != 0)
-	{
-		alDeleteSources(1, &source_pool);
-	}
+	
 	
 }
 	
@@ -31,7 +28,15 @@ bool AudioRenderer::InitSourcePool()
 {
 	return AudioRenderer::InitThisSource(&source_pool);
 	
-}	
+}
+
+void AudioRenderer::FreeSourcePool()
+{
+	if(source_pool != 0)
+	{
+		alDeleteSources(1, &source_pool);
+	}
+}
 
 bool AudioRenderer::InitThisSource(ALuint* source)
 {

@@ -231,7 +231,7 @@ int main(int argc, char* args[])
         //When while loop ends
 
         //Set pointers to sprite object to nullptr
-        mainDotPointer=nullptr;
+        mainDotPointer = nullptr;
         
         close();
         return 0;
@@ -906,6 +906,7 @@ bool initSDL2()
 		{
 			//Create renderer for window
 			gRenderer = SDL_CreateRenderer( gWindow, 2, SDL_RENDERER_ACCELERATED);
+			 // Note that providing no flags gives priority to available SDL_RENDERER_ACCELERATED renderers. This should fallback to Software if no renderer is available.
 			if( gRenderer == nullptr )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -1209,6 +1210,7 @@ void close()
 	gFont = NULL;
     
     //destroy audio renderer
+    gAudioRenderer.FreeSourcePool();
     
     //close OpenAL Soft
     cleanup_openALSoft();
