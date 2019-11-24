@@ -2,6 +2,7 @@
 
 This is a video game in which the player wins by finding a golden tile in a labyrinth. Avoid monsters and obstacles.
 
+Wear headphones to hear sound effects in 3D audio or use a 5.1, 6.1, 7.1 surround sound system with alsoft-config.
 ## Libraries Required
 - SDL2
 - SDL2 Image
