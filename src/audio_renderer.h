@@ -7,8 +7,8 @@
 
 struct AudioSource
 {
-	ALuint* sourcePtr;
-	bool occupied;
+	ALuint openal_source = 0;
+	bool occupied = false;
 };
 
 class AudioRenderer
@@ -38,11 +38,10 @@ public:
 	void SetPlayerHeight(int& height);
 	
 private:
-	//std::array <ALuint,10> source_pool;
-	ALuint source_pool;
-	SDL_Rect* m_camera_ptr;
+
+	std::array <AudioSource,10> source_pool;
 	
-	bool InitThisSource(ALuint* source);
+	SDL_Rect* m_camera_ptr;
 	
 	//function to play a buffer with a source in 2.5D space
 	void playSoundXZPlane(ALuint* source,float& x, float& y, ALuint* buffer);

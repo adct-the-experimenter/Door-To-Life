@@ -5,14 +5,6 @@ AudioRenderer::AudioRenderer()
 {
 	m_camera_ptr = nullptr;
 	
-	source_pool = 0;
-	//source_pool.resize(10);
-	
-	//for(size_t i = 0; i < source_pool.size(); i++)
-	//{
-	//	source_pool[i].InitSource();
-	//}
-	
 	playerHeight = 0;
 }
 
@@ -20,32 +12,17 @@ AudioRenderer::~AudioRenderer()
 {
 	m_camera_ptr = nullptr;
 	
-	
-	
-}
-	
-bool AudioRenderer::InitSourcePool()
-{
-	return AudioRenderer::InitThisSource(&source_pool);
-	
 }
 
-void AudioRenderer::FreeSourcePool()
+static bool InitThisSource(AudioSource* aSource)
 {
-	if(source_pool != 0)
-	{
-		alDeleteSources(1, &source_pool);
-	}
-}
-
-bool AudioRenderer::InitThisSource(ALuint* source)
-{
-	alGetError();
+	
 	
 	//initialize source
-	alGenSources(1, source);
-	alSourcei(*source, AL_SOURCE_RELATIVE, AL_FALSE);
+	alGenSources(1, &aSource->openal_source);
+	alSourcei(aSource->openal_source, AL_SOURCE_RELATIVE, AL_FALSE);
 	
+	alGetError();
 	ALenum test_error_flag = alGetError();
 	if(test_error_flag != AL_NO_ERROR)
 	{
@@ -55,15 +32,42 @@ bool AudioRenderer::InitThisSource(ALuint* source)
 	
 	return true;
 }
+	
+bool AudioRenderer::InitSourcePool()
+{
+	//Initialize sources in source pool
+	for(size_t i = 0; i < source_pool.size(); i++)
+	{
+		if(!InitThisSource(&source_pool[i]))
+		{
+			return false;
+		}
+	}
+	
+	
+	return true;
+	
+}
+
+void AudioRenderer::FreeSourcePool()
+{
+	
+}
+
+
 
 void AudioRenderer::renderAudio(float& x, float& y, ALuint* buffer)
 {
 	//find an available source to play
 	
-	//for(size_t i=0; i < source_pool.size(); i++)
-	//{
-		//if(!source_pool[i].IsOccupied())
-		//{
+	for(size_t i=0; i < source_pool.size(); i++)
+	{
+		//if source in pool is not occupied
+		if(!source_pool[i].occupied)
+		{
+			//change status to occupied
+			source_pool[i].occupied = true;
+			
 			//convert to relative coordinates
 			float relX = x - m_camera_ptr->x - m_camera_ptr->w/2;
 			float relY = y - m_camera_ptr->y  - m_camera_ptr->h/2;
@@ -71,9 +75,11 @@ void AudioRenderer::renderAudio(float& x, float& y, ALuint* buffer)
 			relX = 4*relX / m_camera_ptr->w;
 			relY = 4*relY / m_camera_ptr->h;
 			
-			AudioRenderer::playSoundXZPlane(&source_pool,relX,relY,buffer);
-		//}
-	//}
+			AudioRenderer::playSoundXZPlane(&source_pool[i].openal_source,relX,relY,buffer);
+			
+			source_pool[i].occupied = false;
+		}
+	}
 }
 
 void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint* buffer)
@@ -109,14 +115,26 @@ void AudioRenderer::playSoundXZPlane(ALuint* source, float& x, float& y, ALuint*
 
 void AudioRenderer::renderAudioRelativeToPlayerHeight(float& x, float& y,  int& height, ALuint* buffer)
 {
-	//convert to relative coordinates
-	float relX = x - m_camera_ptr->x - m_camera_ptr->w/2;
-	float relY = y - m_camera_ptr->y  - m_camera_ptr->h/2;
-	
-	relX = 4*relX / m_camera_ptr->w;
-	relY = 4*relY / m_camera_ptr->h;
-	
-	AudioRenderer::playSoundXZPlaneHeightY(&source_pool,relX,relY,height,buffer);
+	for(size_t i=0; i < source_pool.size(); i++)
+	{
+		//if source in pool is not occupied
+		if(!source_pool[i].occupied)
+		{
+			//change status to occupied
+			source_pool[i].occupied = true;
+			
+			//convert to relative coordinates
+			float relX = x - m_camera_ptr->x - m_camera_ptr->w/2;
+			float relY = y - m_camera_ptr->y  - m_camera_ptr->h/2;
+			
+			relX = 4*relX / m_camera_ptr->w;
+			relY = 4*relY / m_camera_ptr->h;
+			
+			AudioRenderer::playSoundXZPlaneHeightY(&source_pool[i].openal_source,relX,relY,height,buffer);
+			
+			source_pool[i].occupied = false;
+		}
+	}
 }
 
 void AudioRenderer::playSoundXZPlaneHeightY(ALuint* source,float& x, float& y, int& height, ALuint* buffer)

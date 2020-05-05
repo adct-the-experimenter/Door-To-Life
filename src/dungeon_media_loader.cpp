@@ -35,7 +35,6 @@ LTexture dungeonTilesTexture;
 bool setupLoad_LabyrinthMedia(SDL_Renderer* gRenderer)
 {
     
-    
     //load dungeon media
     if(!loadLabyrinthMedia(gRenderer,&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer) )
     {
