@@ -3,7 +3,7 @@
 
 CollisonHandler::CollisonHandler()
 {
-	
+	repeatPlay = false;
 }
 
 CollisonHandler::~CollisonHandler()
@@ -55,15 +55,37 @@ void CollisonHandler::run_collision_handler()
         //if collision object pointer not pointing to nullptr
         if(collisionObjectsVector[i] != nullptr)
         {
-            //if object is within camera
-            if(checkCollision( *collisionObjectsVector.at(i)->ptrToCollisionBox,*cameraCollisionHandler ))
-            {
-                //check if object hits player
-                runPlayerCollisionOperations(*collisionObjectsVector[i]);
-                
-                //check if object collided with player's equipped weapon
-                runPlayerWeaponCollisionOperations(*collisionObjectsVector[i]);
-            }
+			if(repeatPlay)
+			{
+				std::cout << "repeat Play" << std::endl;
+			}
+			
+			if(collisionObjectsVector.at(i)->ownerType != CollisionBoxOwnerType::NONE)
+			{
+				if(collisionObjectsVector.at(i)->ptrToCollisionBox)
+				{	
+					//if object is within camera
+					if(checkCollision( *collisionObjectsVector.at(i)->ptrToCollisionBox,*cameraCollisionHandler ))
+					{
+						//check if object hits player
+						CollisonHandler::runPlayerCollisionOperations(*collisionObjectsVector[i]);
+						
+						//check if object collided with player's equipped weapon
+						CollisonHandler::runPlayerWeaponCollisionOperations(*collisionObjectsVector[i]);
+					}
+				}
+				else
+				{
+					std::cout << "Error, i: " << i << " collision pointer is not initialized.\n";
+				}
+				
+			}
+			else
+			{
+				std::cout << "Uninitialized collision object at i=" << i <<" ! \n";
+			}
+			
+            
         }
                
     }
@@ -103,14 +125,12 @@ void CollisonHandler::runPlayerCollisionOperations(CollisionObject& thisObject)
 //function to check if object collided with player weapon
 void CollisonHandler::runPlayerWeaponCollisionOperations(CollisionObject& thisObject)
 {
+	
     if(playerEquippedWeapon != nullptr)
     {
-        //if collides with player weapon
-        //if(checkCollision( *playerEquippedWeaponCollisionObject->ptrToCollisionBox,
-        //                    *thisObject.ptrToCollisionBox ) )
+		
         if(playerEquippedWeapon->checkCollisionWithWeapon(*thisObject.ptrToCollisionBox))
         {
-            
             
             //type of collision to object
             //initialize to previous collision type
@@ -134,4 +154,13 @@ void CollisonHandler::runPlayerWeaponCollisionOperations(CollisionObject& thisOb
     
 }
 
+void CollisonHandler::EmptyCollisionObjectVector()
+{
+	collisionObjectsVector.empty();
+}
+
+void CollisonHandler::EmptyPlayerEquippedWeapon()
+{
+	playerEquippedWeapon = nullptr;
+}
 

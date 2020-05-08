@@ -268,7 +268,7 @@ void NodeGenerator::genNodesFromThisNode(Node* thisNode,RNGType& rngSeed,std::in
                 //break loop if all directions are banned
                 if(directionsBanned.all())
                 {
-                    std::cout << "Hit a wall of nodes in genNodeRoot!Stop! \n";
+                    //std::cout << "Hit a wall of nodes in genNodeRoot!Stop! \n";
                     
                     //reset bitset
                     NodeGenerator::resetBannedDirections();
@@ -411,7 +411,7 @@ void NodeGenerator::nodeKeepProcess_AddNodes(Node* conductor,Node* root,RNGType&
         if(conductor == nullptr)
         {
             conductor = root;
-            std::cout << " \n Conductor ended up back to root. \n";
+            ///std::cout << " \n Conductor ended up back to root. \n";
             break;
         }
     }

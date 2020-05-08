@@ -9,6 +9,7 @@ Labyrinth::Labyrinth()
     
     m_game_inventory_ptr = nullptr; 
     
+    
 }
 
 Labyrinth::~Labyrinth()
@@ -897,6 +898,7 @@ void Labyrinth::freeResources()
 {
     labyrinthMap.freeTiles();
     labyrinthMap.freeDoorsAndKeys();
+    //m_enemy_inventory.freeEnemyVector();
 }
 
 void Labyrinth::randomlyPlaceDotInMazeNode()

@@ -12,12 +12,12 @@ EnemyInventory::~EnemyInventory()
 
 void EnemyInventory::setupEnemyVector()
 {
-    enemies_vector.resize(150);
+    enemies_vector.resize(1);
     
     //for all enemies
     for(size_t i=0; i < enemies_vector.size(); ++i)
     {
-		if(i < 70)
+		if(i < 50)
 		{
 			//make it a cockroach
 			OtherCockroach* thisCockroach = new OtherCockroach(4,2,55,65);
@@ -25,7 +25,7 @@ void EnemyInventory::setupEnemyVector()
 			
 			enemies_vector[i] = thisCockroach;
 		}
-		else if(i >= 70 && i <= 80)
+		else if(i >= 50 && i <= 70)
 		{
 			//make it a greedy zombie
 			GreedyZombie* thisZombie = new GreedyZombie(4,2,55,65);
@@ -152,6 +152,10 @@ void EnemyInventory::freeEnemyVector()
 {
     for(size_t i=0; i < enemies_vector.size(); ++i)
     {
-        if(enemies_vector[i] != nullptr){delete enemies_vector[i];}
+        if(enemies_vector[i] != nullptr)
+        {
+			delete enemies_vector[i];
+			enemies_vector[i] = nullptr;
+		}
     }
 }

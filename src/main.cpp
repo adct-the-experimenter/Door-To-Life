@@ -121,6 +121,8 @@ GameState* baseGameState = NULL;
 // stack of structure stateStruct
 std::stack<StateStruct> state_stack;
 
+bool pauseStack = false;
+
 //Runs a loop of functions for the game like event handling, logic, rendering
 void GameLoop();
 void DungeonGameLoop();
@@ -195,9 +197,10 @@ bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 void freeMedia_HealthBar(LTexture* healthTex); 
 LTexture healthBarTexture;
 
-CollisonHandler collisionHandler;
-GameInventory gameInventory;
-PlayerInventory playerInventory;
+std::unique_ptr <CollisonHandler> collisionHandler;
+std::unique_ptr <GameInventory> gameInventory;
+
+std::unique_ptr <PlayerInventory> playerInventory;
 
 
 
@@ -226,17 +229,14 @@ int main(int argc, char* args[])
 
         state_stack.push(gTitleStateStructure); //push game title to stack
 
-        while(!state_stack.empty()) //while state_stack is not empty, terminates if game_intro is popped off
+        while(!quitGame) //while state_stack is not empty, terminates if game_intro is popped off
         {
             //call the function pointer of the StateStruct on top of the stack
-            state_stack.top().StatePointer();
-            
-            //if quit game bool is true, empty stack
-            if(quitGame)
-            {
-                while(!state_stack.empty()){state_stack.pop(); }
-            }
+            if(!pauseStack){state_stack.top().StatePointer();}
         }
+        
+        //empty stack
+        while(!state_stack.empty()){state_stack.pop(); }
 
         //When while loop ends
 
@@ -267,7 +267,7 @@ void DungeonGameLoop()
     }
     
     baseGameState->handle_events_RNG(rng);
-    collisionHandler.run_collision_handler(); //run collision handler to update collision states
+    collisionHandler->run_collision_handler(); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -276,7 +276,7 @@ void DungeonGameLoop()
     
     baseGameState->logic(); //run logic module
     
-    gameInventory.checkWeaponsOnGround_Collision(&playerInventory); //check if weapon is picked up from ground
+    gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
@@ -433,17 +433,63 @@ void NodeGeneration()
 
 void Dungeon1()
 {
+    
+	std::unique_ptr <Labyrinth> labyrinthUPtr(new Labyrinth() );
+	
+    
+    std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
+    if(!ptrToCollisionHandler){return;}
+    else
+    {
+        collisionHandler = std::move(ptrToCollisionHandler);
+    }
+    
+    std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
+    if(!ptrToGameInventory){return;}
+	else
+	{
+		gameInventory = std::move(ptrToGameInventory);
+		gameInventory->SetPointerToCollisionHandler(collisionHandler.get());
+	}
+	
 
-    Labyrinth labyrinth;
-    
-    gameInventory.SetPointerToCollisionHandler(&collisionHandler);
-    
+	
+	std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
+    if(!ptrToPlayerInventory){return;}
+	else
+	{
+		playerInventory = std::move(ptrToPlayerInventory);
+	}
+	
+	//add player to collision system
+	collisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
+	//pass pointer to player to player inventory
+	playerInventory->SetPointerToPlayer(mainPlayer);
+	//pass pointer to player inventory to game inventory
+	gameInventory->SetPointerToPlayerInventory(playerInventory.get());
+	//add player height to audio renderer
+	int pHeight = mainPlayer->getPlayerHeight();
+	gAudioRenderer.SetPlayerHeight(pHeight);
+	
+	//reset player attributes
+	std::int16_t initialHealth = 100;
+	mainPlayer->setHealth(initialHealth);
+	mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
+	
+	playerInventory->unequipWeaponFromPlayer();
+	collisionHandler->EmptyPlayerEquippedWeapon();
+	
+	
     //if setup labyrinth was successful
-    if(setupLabyrinth(labyrinth))
-    {   
+    if(setupLabyrinth(*labyrinthUPtr.get()))
+    {
+		//set up collision handler and game inventory
+		
+		
+		   
         /** GameLoop **/
         //set base game state to gDungeon1
-        baseGameState = &labyrinth;
+        baseGameState = labyrinthUPtr.get();
         baseGameState->setState(GameState::State::RUNNING);
         //start timers 
         stepTimer.start();
@@ -477,29 +523,29 @@ void Dungeon1()
 
         }
         
+        collisionHandler->EmptyCollisionObjectVector();
+		gameInventory->freeWeapons();
+		
+        //delete doors and keys
+		//delete tiles
+		labyrinthUPtr->freeResources();
+		
         if(baseGameState->getState() == GameState::State::EXIT )
         {
-            //delete doors and keys
-            //delete tiles
-            labyrinth.freeResources();
+            
             
             baseGameState = nullptr;
 
             quitGame = true;
         }
         else if(baseGameState->getState() == GameState::State::GAME_OVER )
-        {
-            labyrinth.freeResources();
+        {	
             baseGameState = nullptr;
             GameOver();
-            quitGame = true;
         }
 
         else if(baseGameState->getState() == GameState::State::NEXT)
         {
-            //delete tiles
-            labyrinth.freeResources();
-
             //go to next dungeon
             baseGameState = nullptr;
             
@@ -513,7 +559,7 @@ void Dungeon1()
     }
     //else do nothing
     else{std::cout << "Failed to setup labyrinth! \n";}
-
+	
 }
 
 bool setupLabyrinth(Labyrinth& thisLabyrinth)
@@ -522,7 +568,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
     thisLabyrinth.setPointerToMainDot(mainDotPointer.get());
     thisLabyrinth.setPointerToMainPlayer(mainPlayer);
     thisLabyrinth.setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-	thisLabyrinth.SetPointerToGameInventory(&gameInventory);
+	thisLabyrinth.SetPointerToGameInventory(gameInventory.get());
 	
     //set dimenstions of grid labyrinth will use for generating map
     std::int16_t x = 0;
@@ -558,7 +604,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //setup default weapon for player
         std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
         std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
-        gameInventory.setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
+        gameInventory->setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
         
         
         //initialize sub map
@@ -567,7 +613,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //thisLabyrinth.setDebugBool(true);
         
         //Setup camera for collision system
-        collisionHandler.setCameraForCollisionSystem(&camera);
+        collisionHandler->setCameraForCollisionSystem(&camera);
         
         //setup camera for audio renderer
         gAudioRenderer.SetPointerToCamera(&camera);
@@ -582,15 +628,19 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //add enemy collision objects to collision handler
         for(size_t i = 0; i < thisLabyrinth.GetEnemiesInLabyrinthVector()->size(); i++)
         {
+			if(collisionHandler->repeatPlay)
+			{
+				std::cout << " ";
+			}
 			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
-			collisionHandler.addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
-			collisionHandler.addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
+			collisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
+			collisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
 		}
 		
 		//add hole tile collision objects to collision handler
 		for(size_t i=0; i < thisLabyrinth.GetCollisionObjectsOfHoleTiles()->size(); ++i)
 		{
-		    collisionHandler.addObjectToCollisionSystem( &thisLabyrinth.GetCollisionObjectsOfHoleTiles()->at(i) );
+		    collisionHandler->addObjectToCollisionSystem( &thisLabyrinth.GetCollisionObjectsOfHoleTiles()->at(i) );
 		}
         
         return true;
@@ -627,6 +677,21 @@ void GameOver()
         SDL_RenderPresent(gRenderer);
 
     }
+    
+    //pause the state stack operations 
+    pauseStack = true;
+    
+    //empty stack
+    while(!state_stack.empty()){state_stack.pop(); }
+	
+	//go to game intro
+	state_stack.push(gTitleStateStructure); //push game title to stack
+	
+	
+	
+	pauseStack = false;
+	
+	collisionHandler->repeatPlay = true;
 
 }
 
@@ -723,6 +788,9 @@ void MenuState()
 void TitleState()
 {
     baseGameState = gTitle.get();
+    
+    baseGameState->setState(GameState::State::RUNNING);
+    
     bool quit = false;
     
     while(!quit)
@@ -802,16 +870,6 @@ bool initMainChar()
         mainDotPointer = std::move(ptrToMC);
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
-        
-        //add player to collision system
-		collisionHandler.addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
-		//pass pointer to player to player inventory
-		playerInventory.SetPointerToPlayer(mainPlayer);
-		//pass pointer to player inventory to game inventory
-		gameInventory.SetPointerToPlayerInventory(&playerInventory);
-		//add player height to audio renderer
-		int pHeight = mainPlayer->getPlayerHeight();
-		gAudioRenderer.SetPlayerHeight(pHeight);
     }
     
     return success;
@@ -1197,7 +1255,6 @@ void close()
 {
     
     freeEnemyMedia();
-    gameInventory.freeWeapons();
     freeWeaponsMedia();
     
     freeDungeon_Door_Key_Media();

@@ -28,7 +28,7 @@ ALuint* source,ALuint* buffer)
             //setup source of dungeon music
             alGenSources(1, source); //allocate source 
 
-            alSource3f(*source, AL_POSITION, 0.0f, 0.0f, 0.0f); //source position is at the origin
+            alSource3f(*source, AL_POSITION, 0.0f, 1.0f, 0.0f); //source position is above player(origin)
             alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
             
             //attach buffer to source

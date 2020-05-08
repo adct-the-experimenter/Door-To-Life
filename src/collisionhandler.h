@@ -35,7 +35,16 @@ public:
 
 	//function to do collision process
 	void run_collision_handler();
+	
+	//function to empty the collision objects vector of all collision objects.
+	//used for restarting the game safely.
+	void EmptyCollisionObjectVector();
+	
+	//function to remove the collisoin object pointer to player equipped weapon.
+	void EmptyPlayerEquippedWeapon();
 
+	bool repeatPlay;
+	
 private:
 	CollisionObject* m_playerCollisionObject_ptr;
 

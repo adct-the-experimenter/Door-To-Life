@@ -37,13 +37,13 @@ enum class CollisionDirection : std::int8_t {
 struct CollisionObject
 {
     //pointer to SDL_Rect
-    SDL_Rect* ptrToCollisionBox;
+    SDL_Rect* ptrToCollisionBox = nullptr;
     //Info on who owns collision object
-    CollisionBoxOwnerType ownerType;
+    CollisionBoxOwnerType ownerType = CollisionBoxOwnerType::NONE;
     //Info on what is colliding with owner of collision object
-    CollisionType typeOfCollision;
+    CollisionType typeOfCollision = CollisionType::NONE;
     //Info on direction of collision
-    CollisionDirection directionOfCollision;
+    CollisionDirection directionOfCollision = CollisionDirection::NONE;
 };
 
 //function to check collision between SDL_Rect
