@@ -13,7 +13,7 @@ Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
     Player::setupPlayerCollisionObject();
     
     Player::resetLoopCount();
-    clipPlayer.w = 35; clipPlayer.h = 31;
+    clipPlayer.w = 35; clipPlayer.h = 30;
     
     //set where head is facing
     //initially set facing south
@@ -170,7 +170,7 @@ void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
     
     
     //render collision box of player
-    Player::renderPlayerCollisionBox(camera,gRenderer);
+    //Player::renderPlayerCollisionBox(camera,gRenderer);
     
     Player::renderEquippedWeapon(camera,gRenderer);
 }

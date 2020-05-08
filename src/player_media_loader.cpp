@@ -9,7 +9,7 @@ void setupPlayerSpriteClips()
     player_clips.resize(32);
     
     std::int8_t width = 35;
-    std::int8_t height = 62;
+    std::int8_t height = 58;
     
     player_clips[Sprite::UP_1] = {15,196,width,height};
     player_clips[Sprite::UP_2] = {80,196,width,height}; 
