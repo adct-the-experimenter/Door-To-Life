@@ -13,6 +13,8 @@ Weapon::Weapon()
     handlerWidth = 0;
     handlerHeight = 0;
     
+    heightFromGround = 0;
+    
     //initialize ground box dimensions
     weaponGroundWidth = 0; weaponGroundHeight = 0;
     
@@ -128,7 +130,7 @@ void Weapon::faceSpriteSouth()
     //move render position left of handler
     xRenderPos = xWeaponPos - (handlerWidth / 2);
     //move render position below handler
-    yRenderPos = yWeaponPos + handlerWidth;
+    yRenderPos = yWeaponPos + handlerWidth - heightFromGround;
 }
 
 void Weapon::faceSpriteNorth()
@@ -144,7 +146,7 @@ void Weapon::faceSpriteWest()
     //move render position left of handler
     xRenderPos = xWeaponPos - handlerWidth;
     //keep at same y position
-    yRenderPos = yWeaponPos;
+    yRenderPos = yWeaponPos - heightFromGround;
 }
 
 void Weapon::faceSpriteEast()
@@ -154,7 +156,7 @@ void Weapon::faceSpriteEast()
     //move render x position right of handler
     xRenderPos = xWeaponPos + handlerWidth;
     //keep at same y position
-    yRenderPos = yWeaponPos;
+    yRenderPos = yWeaponPos  - heightFromGround;
 }
 
 void Weapon::faceSpriteNorthEast()
@@ -169,7 +171,7 @@ void Weapon::faceSpriteSouthEast()
     //move render x position right of handler
     xRenderPos = xWeaponPos + handlerWidth;
     //move render y position below handler
-    yRenderPos = yWeaponPos + handlerWidth;
+    yRenderPos = yWeaponPos + handlerHeight - heightFromGround;
 }
 
 void Weapon::faceSpriteSouthWest()
@@ -179,7 +181,7 @@ void Weapon::faceSpriteSouthWest()
     //move render x position left of handler
     xRenderPos = xWeaponPos - (handlerWidth / 2);
     //move render y position below handler
-    yRenderPos = yWeaponPos + handlerWidth;
+    yRenderPos = yWeaponPos + handlerHeight - heightFromGround;
 }
 
 void Weapon::faceSpriteNorthWest()
@@ -189,7 +191,7 @@ void Weapon::faceSpriteNorthWest()
     //move render x position left of handler
     xRenderPos = xWeaponPos - (3 * handlerWidth / 2);
     //move render y position above handler
-    yRenderPos = yWeaponPos;
+    yRenderPos = yWeaponPos - heightFromGround;
 }
 
 void Weapon::faceSpriteGroundNorth()
@@ -562,3 +564,8 @@ bool Weapon::checkCollisionWithWeapon(SDL_Rect& thisBox)
 {
 	return checkCollision(weapon_collisionBox,thisBox);
 } 
+
+void Weapon::SetHeightFromGround(std::int16_t height)
+{
+	heightFromGround = height;
+}

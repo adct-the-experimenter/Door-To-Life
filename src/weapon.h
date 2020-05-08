@@ -217,6 +217,7 @@ public:
 	//Shows the sprite on screen
     virtual void render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip = nullptr); 
 
+	void SetHeightFromGround(std::int16_t height);
     
 private:
 
@@ -250,6 +251,7 @@ private:
     //where to render weapon sprite
     std::int16_t xRenderPos;
     std::int16_t yRenderPos;
+    
 
 //Collision Box
     //position of weapon
@@ -259,6 +261,9 @@ private:
     //dimensions of handler
     std::int16_t handlerWidth;
     std::int16_t handlerHeight;
+    
+    //height from ground
+    std::int16_t heightFromGround;
     
     //collision box of handler
     SDL_Rect* handlerBox;
@@ -272,7 +277,7 @@ private:
     std::int16_t attackBoxHeight;
     
     //Final box to use for collider object
-    //Manipulate for ground and attack an non attack 
+    //Manipulate for ground and attack
     SDL_Rect weapon_collisionBox;
     
     //Collision Object member

@@ -483,9 +483,6 @@ void Dungeon1()
     //if setup labyrinth was successful
     if(setupLabyrinth(*labyrinthUPtr.get()))
     {
-		//set up collision handler and game inventory
-		
-		
 		   
         /** GameLoop **/
         //set base game state to gDungeon1
@@ -852,7 +849,7 @@ bool initMainChar()
     bool success = true;
     
     //make hero
-    std::unique_ptr <Dot> ptrToMC(new Player(10,20,15,30) );
+    std::unique_ptr <Dot> ptrToMC(new Player(10,30,15,20) );
 
     if(!ptrToMC)
     {
