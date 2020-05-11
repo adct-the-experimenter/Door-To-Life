@@ -24,7 +24,6 @@ void LabyrinthMap::loadTilesFromLabyrinthNodes(std::vector <LabyrinthNode> &laby
     //for every dungeon node element
     for(size_t iNode = 0; iNode < labyrinthNodes.size(); iNode++ )
     {
-        labyrinthNodes[iNode].initializeHoleTileVector();
         
         if(iNode != 0)
         {
@@ -33,9 +32,6 @@ void LabyrinthMap::loadTilesFromLabyrinthNodes(std::vector <LabyrinthNode> &laby
                                         labyrinthNodes[iNode].dungeonTileSet.begin(),
                                         labyrinthNodes[iNode].dungeonTileSet.end());
             
-            labyrinth_hole_tiles_vector.insert(labyrinth_hole_tiles_vector.end(),
-                                                labyrinthNodes[iNode].hole_tiles_vector.begin(),
-                                                labyrinthNodes[iNode].hole_tiles_vector.end() ); 
             
         }
         //append at beginning
@@ -45,9 +41,6 @@ void LabyrinthMap::loadTilesFromLabyrinthNodes(std::vector <LabyrinthNode> &laby
                                         labyrinthNodes[iNode].dungeonTileSet.begin(),
                                         labyrinthNodes[iNode].dungeonTileSet.end());
                                         
-           labyrinth_hole_tiles_vector.insert(labyrinth_hole_tiles_vector.begin(),
-                                                labyrinthNodes[iNode].hole_tiles_vector.begin(),
-                                                labyrinthNodes[iNode].hole_tiles_vector.end() );
         }
               
     }

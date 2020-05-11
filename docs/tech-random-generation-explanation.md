@@ -43,8 +43,6 @@ In the debug mode for random generation, hit keys g,v,b,n.
          //set camera for labyrinth 
         
         //add labyrinth enemy collision objects to collision handler
-		
-        //add hole tile collision objects of hole tiles in labyrinth to collision handler
     }
 
 

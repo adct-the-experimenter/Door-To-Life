@@ -1386,24 +1386,7 @@ void LabyrinthNode::setInvisibleWallOnThisColumn(size_t& colNum)
     
 }
 
-void LabyrinthNode::initializeHoleTileVector()
-{
-    //for every hole tile in node
-    for(size_t i_Tile = 0; i_Tile < dungeonTileSet.size(); ++i_Tile )
-    {
-        if(dungeonTileSet[i_Tile]->getType() 
-                == DungeonTile::TileType::CENTER )
-        {
-            //set collision object object for hole tile
-            CollisionObject hole_tile;
-            hole_tile.ownerType = CollisionBoxOwnerType::HOLE;
-            hole_tile.ptrToCollisionBox = getTileBoxPointer(dungeonTileSet[i_Tile]);
-            
-            hole_tiles_vector.push_back(hole_tile);
-        }
-    }
-        
-}
+
 
 /*
 

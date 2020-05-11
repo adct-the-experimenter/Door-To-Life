@@ -247,8 +247,6 @@ private:
     //function to place 1 enemy in node
     void placeThisOneEnemy(RNGType& rngSeed,Enemy* thisEnemy);
     
-    std::vector <CollisionObject> hole_tiles_vector;
-    void initializeHoleTileVector();
 };
 
 #endif

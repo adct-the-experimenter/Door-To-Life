@@ -1063,11 +1063,6 @@ std::vector <Enemy*> * Labyrinth::GetEnemiesInLabyrinthVector()
 	return m_enemy_inventory.GetEnemyVector();
 }
 
-std::vector <CollisionObject> *Labyrinth::GetCollisionObjectsOfHoleTiles()
-{
-	return &labyrinthMap.labyrinth_hole_tiles_vector;
-}
-
 void Labyrinth::SetPointerToGameInventory(GameInventory* thisInventory)
 {
 	m_game_inventory_ptr = thisInventory;

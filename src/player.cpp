@@ -129,6 +129,10 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
         Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
     }
     
+    if(tileType == DungeonTile::TileType::CENTER)
+    {
+		Player::setPlayerState(Player::PlayerState::FALLING_IN_HOLE);
+	}
     
     return tileType;
 }

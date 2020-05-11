@@ -283,8 +283,8 @@ void DungeonGameLoop()
     baseGameState->sound(&gAudioRenderer);
 
     //clear screen
-     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-     SDL_RenderClear( gRenderer );
+    SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
+    SDL_RenderClear(gRenderer);
 
     //Render
     baseGameState->render(gRenderer);
@@ -632,12 +632,6 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
 			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
 			collisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
 			collisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
-		}
-		
-		//add hole tile collision objects to collision handler
-		for(size_t i=0; i < thisLabyrinth.GetCollisionObjectsOfHoleTiles()->size(); ++i)
-		{
-		    collisionHandler->addObjectToCollisionSystem( &thisLabyrinth.GetCollisionObjectsOfHoleTiles()->at(i) );
 		}
         
         return true;

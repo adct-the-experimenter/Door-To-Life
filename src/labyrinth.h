@@ -102,7 +102,6 @@ public:
     
     friend class SubMap;
     
-    std::vector <CollisionObject> *GetCollisionObjectsOfHoleTiles();
     
 private:
     

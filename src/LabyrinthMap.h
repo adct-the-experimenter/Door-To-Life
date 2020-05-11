@@ -79,9 +79,6 @@ private:
     //vector of tiles in Labyrinth map
     std::vector <DungeonTile*> labyrinthTilesVector;
     
-    //vector of vector of tiles in labyrinth map
-    //std::vector < std::vector <DungeonTile*> > labyrinthTileVectors;
-    
     //camera for dungeon map
     SDL_Rect* lCamera;
 
