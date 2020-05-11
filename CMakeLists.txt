@@ -14,6 +14,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -DDATADIR=${DATAPATH} -fPI
 #SDL2 specific stuff and its add on libraries
 INCLUDE(FindPkgConfig)
 
+pkg_check_modules(openal REQUIRED openal)
+
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 pkg_check_modules(SDL2image REQUIRED SDL2_image)
 
@@ -27,7 +29,7 @@ find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS  openal.so ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES})
+set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 

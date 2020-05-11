@@ -12,7 +12,7 @@ EnemyInventory::~EnemyInventory()
 
 void EnemyInventory::setupEnemyVector()
 {
-    enemies_vector.resize(1);
+    enemies_vector.resize(90);
     
     //for all enemies
     for(size_t i=0; i < enemies_vector.size(); ++i)

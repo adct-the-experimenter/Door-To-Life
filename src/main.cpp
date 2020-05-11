@@ -283,8 +283,8 @@ void DungeonGameLoop()
     baseGameState->sound(&gAudioRenderer);
 
     //clear screen
-    SDL_SetRenderDrawColor(gRenderer,0,0,0,50);
-    SDL_RenderClear(gRenderer);
+     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+     SDL_RenderClear( gRenderer );
 
     //Render
     baseGameState->render(gRenderer);
@@ -1009,7 +1009,7 @@ bool initExtLibs()
     }
 
     //initialize SDL_mixer
-    if(Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 1024) == -1) //args: sound frequency,default format, 2 channels,sample size
+    if(Mix_OpenAudio(48000, AUDIO_S16SYS, 1, 1024) == -1) //args: sound frequency,default format, 2 channels,sample size
     {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         success = false;

@@ -51,7 +51,14 @@ bool AudioRenderer::InitSourcePool()
 
 void AudioRenderer::FreeSourcePool()
 {
-	
+	for(size_t i=0; i < source_pool.size(); i++)
+	{
+		if(source_pool[i].openal_source != 0)
+		{
+			alDeleteSources(1,&source_pool[i].openal_source);
+		}
+	}
+	  
 }
 
 

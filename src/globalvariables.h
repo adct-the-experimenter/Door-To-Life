@@ -115,8 +115,8 @@ typedef boost::mt19937_64 RNGType;
 #include "SDL_mixer.h"
 #include "SDL_ttf.h"
 
-#include "al.h" //header for OpenAL Soft
-#include "alc.h" //header for OpenAL Soft
+#include "AL/al.h" //header for OpenAL Soft
+#include "AL/alc.h" //header for OpenAL Soft
 
 #include <ctime>
 #include <boost\random\mersenne_twister.hpp>
