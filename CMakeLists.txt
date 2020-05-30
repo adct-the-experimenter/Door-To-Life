@@ -38,6 +38,10 @@ set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2m
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR})
 
+if (MINGW)
+    # need to link with mingw32 before SDL2
+    list(APPEND _link_libraries mingw32)
+endif ()
 
 set(SOURCES src/main.cpp
 src/submap.cpp

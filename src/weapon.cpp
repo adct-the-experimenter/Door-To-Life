@@ -29,6 +29,9 @@ Weapon::Weapon()
     
     //initialize weapon to face right
     //Weapon::faceWeaponEast();
+    
+    clipPtr = nullptr;
+    weapon_clips = nullptr;
 }
 
 Weapon::~Weapon()
@@ -545,7 +548,7 @@ void Weapon::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
         if( weapon_clips != nullptr)
         {
             //face right
-            clipPtr = &(*weapon_clips)[Weapon::RIGHT_1];
+            Weapon::setClipToShow(&(*weapon_clips)[Weapon::RIGHT_1]);
         }
         
     }
