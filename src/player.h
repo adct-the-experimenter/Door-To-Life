@@ -28,21 +28,6 @@ public:
     void setPlayerState(Player::PlayerState thisState);
     Player::PlayerState getPlayerState();
     
-                                                                            
-    //functions to manipulate sprite state variable
-    virtual void setSpriteState(Sprite::State state);
-    virtual Sprite::State getSpriteState();
-    
-    //set speed
-    virtual void setSpeed(float& speed);
-
-    //set current position of dot
-    virtual void setPosX(float& x);
-    virtual void setPosY(float& y);
-
-    //set x and y velocity of dot
-    virtual void setVelX(float& dx);
-    virtual void setVelY(float& dy);
     
     //function to load media for sprite
     virtual bool loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer);
@@ -51,16 +36,6 @@ public:
 	
     //Takes key presses and adjusts sprite's velocity
     virtual void handleEvent(Event& thisEvent);
-    
-    //functions to initialize and return sprite clips
-    virtual void setSpriteClips(std::vector <SDL_Rect> *this_clips);
-    virtual std::vector <SDL_Rect> *getSpriteClips();
-
-    //initialize screen dimensions and level dimensions that sprite will move in
-    virtual void setPlace(std::int16_t& screenWidth, std::int16_t& screenHeight);
-
-    //Centers the camera over the sprite and intialize screen dimensions and level dimensions
-    virtual void setCamera( SDL_Rect& camera);
 
     //logic module for player
     void logic(float& timeStep);
@@ -73,69 +48,11 @@ public:
     
     //moves dot based on time since last render and returns tile type of tile dot collides with
     virtual DungeonTile::TileType moveOnTiles_TileType(float& timeStep, std::vector<DungeonTile*> &dungeonTiles);
-
-
-    virtual void moveBack(float& timeStep);
     
-    
-
-    //have sprite face certain directions
-    virtual void faceSouth();
-    virtual void faceNorth();
-    virtual void faceWest();
-    virtual void faceEast();
-
-	//Frame Animation
-    
-    //functions to determine frame count
-    virtual void incrementFrameCount();
-    virtual std::int8_t getFrameCount();
-    virtual void resetFrameCount();
-    
-    //functions to determine frame offset
-    virtual void setFrameOffset(std::int8_t& thisOffset);
-    virtual std::int8_t getFrameOffset();
-    
-    //functions to set and get number of frames of animation
-    virtual void setNumberOfAnimationFrames(std::int8_t& numFrames);
-    virtual std::int8_t getNumberOfFramesOfAnimation();
-    
-    //functions to set and get clip
-    virtual void setClipToShow(SDL_Rect* clip);
-	virtual SDL_Rect* getClipToShow();
-
+ 
     //Shows the sprite on screen
     virtual void render(SDL_Rect& camera, SDL_Renderer* lRenderer, SDL_Rect* clip = NULL);
 
-    //place sprite to a specific place. helpful between state changes
-    virtual void placeChar(int x, int y);
-
-    //Get sprite's's position and dimensions and velocity
-    virtual float getPosX(); virtual float getPosY(); 
-    virtual int getHeight(); virtual int getWidth();
-
-    virtual float getVelX(); virtual float getVelY();
-
-    virtual float getSpeed();
-
-    virtual void setCollisionBox(SDL_Rect& box);
-    //return sprite's collision box
-    virtual SDL_Rect& getCollisionBox();
-
-    //return Sprite's spacing box
-    virtual SDL_Rect& getSpaceBox();
-    
-    //Collision object Functions
-    
-    // set owner type of collision object
-    virtual void setOwnerTypeOfCollisionObject(CollisionBoxOwnerType& oType);
-    //get type of collision that happened
-    virtual CollisionType getCollisionType();
-    //function to reset collision type
-    void resetCollisionType();
-    //get pointer to collision object
-    virtual CollisionObject* getCollisionObjectPtr();
-    
     //function to push back player a certain distance
     //if hit by something or collided with something
     void pushBackPlayer(float& timeStep,std::int16_t& pushBackDist);

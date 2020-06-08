@@ -151,11 +151,7 @@ private:
     void placeEnemiesInLabyrinth(RNGType& rngSeed,
                                 std::vector <LabyrinthNode> &labyrinthNodes, 
                                 std::vector <Enemy*> &thisEnemiesVector);
-    //pointer to vector of enemy pointers
-    std::vector <Enemy*> *enemies_vector_ptr;
     
-    //pointer to array of weapon pointers
-    std::array <Weapon*,1> *weapons_array_ptr;
     
     //main character
     Dot* mainDotPointer;

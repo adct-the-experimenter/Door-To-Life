@@ -167,7 +167,6 @@ void Transition();
 /** Random Set up **/
 typedef boost::mt19937_64 RNGType;
 RNGType rng( std::time(0) );
-boost::random::uniform_int_distribution <int> zero_to_twelve( 0, 12 );
 
 
 //OpenAL Soft sound

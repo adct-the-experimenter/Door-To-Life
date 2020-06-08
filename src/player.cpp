@@ -48,15 +48,6 @@ void Player::setupPlayerCollisionObject()
     Player::setOwnerTypeOfCollisionObject(type);
 }
 
-void Player::setSpeed(float& speed){Sprite::setSpeed(speed);}
-
-void Player::setPosX(float& x){Sprite::setPosX(x);}
-
-void Player::setPosY(float& y){Sprite::setPosY(y);}
-
-void Player::setVelX(float& dx){Sprite::setVelX(dx);}
-
-void Player::setVelY(float& dy){Sprite::setVelY(dy);}
 
 bool Player::loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer)
 {
@@ -85,20 +76,6 @@ void Player::handleEvent(Event& thisEvent)
     
 }
 
-void Player::setPlace(std::int16_t& screenWidth, std::int16_t& screenHeight)
-{
-    Sprite::setPlace(screenWidth,screenHeight);
-}
-
-void Player::setSpriteClips(std::vector <SDL_Rect> *this_clips){Sprite::setSpriteClips(this_clips);}
-
-std::vector <SDL_Rect> *Player::getSpriteClips(){return Sprite::getSpriteClips();}
-
-
-void Player::setCamera( SDL_Rect& camera  ) //set camera relative to dot and intialize screen and level dimensions
-{
-	Sprite::setCamera(camera);
-}
 
 void Player::move(float& timeStep){Sprite::move(timeStep); }
 
@@ -137,34 +114,6 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
     return tileType;
 }
 
-void Player::moveBack(float& timeStep)
-{
-    Sprite::moveBack(timeStep);
-}
-
-void Player::faceNorth(){Sprite::faceNorth();}
-
-void Player::faceSouth(){Sprite::faceSouth();}
-
-void Player::faceWest(){Sprite::faceWest();}
-
-void Player::faceEast(){Sprite::faceEast();}
-
-void Player::setSpriteState(Sprite::State state){Sprite::setSpriteState(state);}
-Sprite::State Player::getSpriteState(){return Sprite::getSpriteState();}
-
-void Player::incrementFrameCount(){Sprite::incrementFrameCount();}
-std::int8_t Player::getFrameCount(){return Sprite::getFrameCount();}
-void Player::resetFrameCount(){Sprite::resetFrameCount();}
-
-void Player::setFrameOffset(std::int8_t& thisOffset){Sprite::setFrameOffset(thisOffset);}
-std::int8_t Player::getFrameOffset(){return Sprite::getFrameOffset();}
-
-void Player::setNumberOfAnimationFrames(std::int8_t& numFrames){Sprite::setNumberOfAnimationFrames(numFrames);}
-std::int8_t Player::getNumberOfFramesOfAnimation(){return Sprite::getNumberOfFramesOfAnimation();}
-
-void Player::setClipToShow(SDL_Rect* clip){ Sprite::setClipToShow(clip);}
-SDL_Rect* Player::getClipToShow(){return Sprite::getClipToShow();}
 
 void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
 {
@@ -194,39 +143,7 @@ void Player::renderPlayerCollisionBox(SDL_Rect& camera,SDL_Renderer* gRenderer)
                         Player::getCollisionBox().h };
     SDL_RenderDrawRect(gRenderer,&pBox);
 }
-    
-float Player::getPosX(){return Sprite::getPosX();}
 
-float Player::getPosY(){return Sprite::getPosY();}
-
-int Player::getHeight(){return Sprite::getHeight();}
-
-int Player::getWidth(){return Sprite::getWidth();}
-
-float Player::getVelX(){return Sprite::getVelX();}
-
-float Player::getVelY(){return Sprite::getVelY();}
-
-float Player::getSpeed(){return Sprite::getSpeed();}
-
-void Player::placeChar(int x, int y){Sprite::placeChar(x,y);}
-
-void Player::setCollisionBox(SDL_Rect& box){Sprite::setCollisionBox(box);}
-
-SDL_Rect& Player::getCollisionBox(){return Sprite::getCollisionBox();}
-
-SDL_Rect& Player::getSpaceBox(){return Sprite::getSpaceBox();}
-
-//Collision object Functions
-
-void Player::setOwnerTypeOfCollisionObject(CollisionBoxOwnerType& oType)
-{
-    Sprite::setOwnerTypeOfCollisionObject(oType);
-}
-void Player::resetCollisionType(){Sprite::resetCollisionType();}
-CollisionType Player::getCollisionType(){return Sprite::getCollisionType();}
-
-CollisionObject* Player::getCollisionObjectPtr(){return Sprite::getCollisionObjectPtr();}
 
 //Health
 

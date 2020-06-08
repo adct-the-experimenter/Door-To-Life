@@ -17,7 +17,6 @@ AudioRenderer::~AudioRenderer()
 static bool InitThisSource(AudioSource* aSource)
 {
 	
-	
 	//initialize source
 	alGenSources(1, &aSource->openal_source);
 	alSourcei(aSource->openal_source, AL_SOURCE_RELATIVE, AL_FALSE);
