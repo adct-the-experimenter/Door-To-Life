@@ -319,6 +319,7 @@ void Player::reactToCollision(float& timeStep)
             break;
         }
         
+       
         default:{break;}
     }
     

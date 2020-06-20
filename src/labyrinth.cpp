@@ -821,8 +821,6 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     //render tiles in map
     labyrinthMap.renderTiles(gRenderer,tileTextureMap);
     
-    
-    
     //render doors
     labyrinthMap.renderDoors(gRenderer);
     

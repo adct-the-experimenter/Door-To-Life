@@ -30,6 +30,9 @@
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
 
+#include "Dungeon.h"
+#include "DungeonXMLReader.h"
+
 /** Constants and Global Variables**/
 
 std::int16_t SCREEN_X_START = 0;
@@ -144,8 +147,8 @@ StateStruct gDungeon1StateStructure; //declare StateStruct for game loop
 //function to setup labyrinth and return a bool to tell if sucess or not 
 bool setupLabyrinth(Labyrinth& thisLabyrinth);
 
-void Dungeon2();
-StateStruct gDungeon2StateStructure; //declare StateStruct for game loop
+void MiniDungeon();
+StateStruct gMiniDungeonStateStructure; //declare StateStruct for game loop
 
             
 //Title
@@ -220,7 +223,7 @@ int main(int argc, char* args[])
 	{
         NodeGenStateStructure.StatePointer = NodeGeneration;
         gDungeon1StateStructure.StatePointer = Dungeon1;
-        //gDungeon2StateStructure.StatePointer = Dungeon2;
+        gMiniDungeonStateStructure.StatePointer = MiniDungeon;
         LoadGameResourcesStateStructure.StatePointer = LoadGameResourcesState;
         
         /**Push first state in stack **/
@@ -556,6 +559,107 @@ void Dungeon1()
     //else do nothing
     else{std::cout << "Failed to setup labyrinth! \n";}
 	
+}
+
+void MiniDungeon()
+{
+	
+	//initialize dungeon
+	
+	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
+	
+	//generate an empty dungeon
+    dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
+    dungeonUPtr->setPointerToTimer(&stepTimer);
+    
+    //dungeonUPtr->setPointerToMainPlayer(mainPlayer);
+    dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
+	//dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
+	
+	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
+	
+	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
+    
+    dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
+    
+    std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
+    
+    std::string dungeon_file = "t2.xml";
+    std::string path = DATADIR_STR + "/dungeons_xml/" + dungeon_file;
+        
+    std::ifstream ifile(path);
+	if((bool)ifile)
+	{
+		std::cout << "Editing " << path << std::endl;
+		
+		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
+	}
+	else
+	{		
+		std::cout << "Error: " + path + " does not exist!\n";
+		quitGame = true;
+	}
+	
+    
+    float x = 320; float y = 240;
+    dungeonUPtr->PlaceDotInThisLocation(x,y);
+	
+	//start game loop
+	
+	
+	/** GameLoop **/
+	//set base game state to dungeon
+	baseGameState = dungeonUPtr.get();
+	baseGameState->setState(GameState::State::RUNNING);
+	//start timers 
+	stepTimer.start();
+	frameRateCap.startFrameCount();
+	
+	
+	bool quit = false;
+	
+	while(!quit)
+	{
+		//call game loop function
+		DungeonGameLoop();
+		
+
+		if(baseGameState->getState() == GameState::State::EXIT 
+			|| baseGameState->getState() == GameState::State::NEXT
+			|| baseGameState->getState() == GameState::State::GAME_OVER)
+		{
+			stepTimer.stop();
+			quit = true;
+		}
+		else if(baseGameState->getState() == GameState::State::PAUSE)
+		{
+			//stop timer
+			
+			stepTimer.stop();
+			runMenuState();
+			//restart timer
+			stepTimer.start();
+		}
+
+	}
+	
+	
+	if(baseGameState->getState() == GameState::State::EXIT )
+	{	
+		baseGameState = nullptr;
+		quitGame = true;
+	}
+	else if(baseGameState->getState() == GameState::State::GAME_OVER )
+	{	
+		baseGameState = nullptr;
+		GameOver();
+	}
+
+	else if(baseGameState->getState() == GameState::State::NEXT)
+	{
+		//go back to labyrinth
+		baseGameState = nullptr;
+	}
 }
 
 bool setupLabyrinth(Labyrinth& thisLabyrinth)

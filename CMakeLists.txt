@@ -27,13 +27,17 @@ set(BOOST_LIBS date_time system random)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 #find_package(Threads REQUIRED)
 
+#Pugi XML parsing
+find_path(pugixml_INCLUDE_DIRS pugixml.hpp)
+find_library(pugixml_LIBRARIES NAMES pugixml)
+
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES})
+set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES} ${pugixml_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} )
+set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} ${pugixml_INCLUDE_DIRS})
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR})
@@ -44,6 +48,8 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
+src/Dungeon.cpp
+src/DungeonXMLReader.cpp
 src/submap.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp

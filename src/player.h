@@ -23,7 +23,8 @@ public:
     //Player State
     enum class PlayerState : std::int8_t { NORMAL = 0, FALLING_IN_HOLE, 
                                             PUSHED_BACKED_BY_ENEMY,  
-                                            COLLIDING_CONTRA_WALL};
+                                            COLLIDING_CONTRA_WALL,
+                                            COLLIDING_CONTRA_DOOR};
     //functions to set and get player state
     void setPlayerState(Player::PlayerState thisState);
     Player::PlayerState getPlayerState();

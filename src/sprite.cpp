@@ -209,7 +209,7 @@ void Sprite::setFrame()
     
     //if frame count is more than 2, reset
     //divide frame count by 3 frames of animation to slow down animation
-    // How integers work: 0/4 == 0 1/4 == 0 2/4 == 0 3/4 = 0 4/4 = 0
+    // How integers work: 0/4 == 0 1/4 == 0 2/4 == 0 3/4 = 0 4/4 = 1
     //after 4th frame, reset frame count
     if(fCount/4 > 3){Sprite::resetFrameCount();}
     
