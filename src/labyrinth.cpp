@@ -9,7 +9,7 @@ Labyrinth::Labyrinth()
     
     m_game_inventory_ptr = nullptr; 
     
-    
+    hitDungeonEntrace = false;
 }
 
 Labyrinth::~Labyrinth()
@@ -796,6 +796,7 @@ void Labyrinth::logic()
         //if main player collides with exit tile
         //win game
         if( checkCollision(exitTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){ Labyrinth::setState(GameState::State::NEXT);}
+        if( checkCollision(dungeonEntranceTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){Labyrinth::setState(GameState::State::NEXT); hitDungeonEntrace = true;}
     }
     
     //move main dot within dungeon map
@@ -1006,7 +1007,108 @@ void Labyrinth::randomlySetExitForMaze(RNGType& rngSeed)
     }
 }
 
+void Labyrinth::randomlySetDungeonEntrancesinMaze(RNGType& rngSeed)
+{
+	//if main dot pointer isn't nullptr
+    if(mainDotPointer != nullptr)
+    {
+        //get dot position in maze
+        std::int16_t dotScreenX = mainDotPointer->getCollisionBox().x;
+        std::int16_t dotScreenY = mainDotPointer->getCollisionBox().y;
+        
+        double xColDot = size_t( dotScreenX / NODE_LEVEL_WIDTH );
+        double yRowDot = size_t( dotScreenY / NODE_LEVEL_HEIGHT );
+        
+        //starts at 5 tiles right and 5 tiles down from beginning tile of maze node 
+        std::int16_t entranceScreenX = (xColDot * NODE_LEVEL_WIDTH) + (1 * TILE_WIDTH);
+        std::int16_t entranceScreenY = (yRowDot * NODE_LEVEL_HEIGHT) + (1 * TILE_HEIGHT);
+        
+        //look through all tiles for one that matches position
+        for(size_t i = 0; i < labyrinthMap.labyrinthTilesVector.size(); ++i)
+        {
+            SDL_Rect tileBox = labyrinthMap.labyrinthTilesVector[i]->getBox();
+            if(tileBox.x == entranceScreenX && tileBox.y == entranceScreenY)
+            {
+				std::cout << "set dungeon entrance tile in " << tileBox.x << "," << tileBox.y << std::endl;
+                dungeonEntranceTile = labyrinthMap.labyrinthTilesVector[i];
+                dungeonEntranceTile->setType(DungeonTile::TileType::DUNGEON_ENTRANCE);
+            }
+        }
+        
+        /*
+        //get number of columns and rows in maze
+        size_t numXCol = mazeGen.numberXNodeColumns;
+        size_t numYRow = mazeGen.numberYNodeRows;
+        
+        //setup distance exit should be from dot
+        std::int16_t distanceBetweenDotAndExit =  (numXCol / 2) + (numYRow / 2) - (numYRow / 4) - (numXCol / 4);
+        
+        //Setup RNG
+        std::array <double,4> probabilitiesDirection;
+         
+        probabilitiesDirection = {0.3, 0.4,0.2,0.4};
+            
+        //setup rng with set probablities    
+        boost::random::discrete_distribution <int> distDirection(probabilitiesDirection);
+        boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > DirectionDie(rngSeed,distDirection);
 
+        
+        
+        double xCol = 1;
+        double yRow = 1;
+        double currentDistance = 0;
+        double xDistance = 0;
+        double yDistance = 0;
+        bool quit = false;
+        
+        while(!quit)
+        {
+            xDistance = abs( xColDot - xCol );
+            yDistance = abs( yRowDot - yRow );
+            currentDistance = sqrt( pow(xDistance,2) + pow(yDistance,2) );
+            
+            if( currentDistance >= distanceBetweenDotAndExit
+                &&
+                mazeGen.maze_node_look_up [size_t(xCol)][size_t(yRow)] != nullptr)
+            {
+                exitCol = xCol;
+                exitRow = yRow;
+                quit = true;
+            }
+            
+            probabilitiesDirection = {0.3, 0.4,0.2,0.4};
+            
+            //randomly choose which way to go
+            switch(DirectionDie())
+            {
+                case 0:{ if(yRow > 0){yRow -= 1;}else{probabilitiesDirection[0] = 0;} break;} //go up
+                case 1:{ if(xCol < numXCol - 1){xCol += 1;}else{probabilitiesDirection[1] = 0;} break;} //go right
+                case 2:{ if(yRow < numYRow - 1){yRow += 1;}else{probabilitiesDirection[2] = 0;} break;} // go down
+                case 3:{ if(xCol > 0){xCol -= 1;}else{probabilitiesDirection[3] = 0;} break;} // go left
+            }
+            
+            //setup rng with set probablities    
+            boost::random::discrete_distribution <int> distDirection(probabilitiesDirection);
+            boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > DirectionDie(rngSeed,distDirection);
+        }
+        
+        //starts at 5 tiles right and 5 tiles down from beginning tile of maze node 
+        std::int16_t exitScreenX = (exitCol * NODE_LEVEL_WIDTH) + (5 * TILE_WIDTH);
+        std::int16_t exitScreenY = exitRow * NODE_LEVEL_HEIGHT + (5 * TILE_HEIGHT);
+        
+        //look through all tiles for one that matches position
+        for(size_t i = 0; i < labyrinthMap.labyrinthTilesVector.size(); ++i)
+        {
+            SDL_Rect tileBox = labyrinthMap.labyrinthTilesVector[i]->getBox();
+            if(tileBox.x == exitScreenX && tileBox.y == exitScreenY)
+            {
+                labyrinthMap.labyrinthTilesVector[i]->setType(DungeonTile::TileType::EXIT);
+                exitTile = labyrinthMap.labyrinthTilesVector[i];
+            }
+        }
+      */
+    }
+}
 
 void Labyrinth::randomlySetLabyrinthDoors(RNGType& rngSeed)
 {
@@ -1065,3 +1167,6 @@ void Labyrinth::SetPointerToGameInventory(GameInventory* thisInventory)
 {
 	m_game_inventory_ptr = thisInventory;
 }
+
+void Labyrinth::setPlayerHitDungeonEntranceBool(bool state){hitDungeonEntrace = state;}
+bool Labyrinth::getPlayerHitDungeonEntraceBool(){return hitDungeonEntrace;}

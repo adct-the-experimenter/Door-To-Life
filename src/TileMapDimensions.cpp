@@ -27,3 +27,6 @@ SDL_Rect exitTile = {320,0,82,83};
   
 //invisible wall tile
 SDL_Rect invisibleWallTile = {321,80,80,80};
+
+//mini dungeon entrace tile
+SDL_Rect dungeonEntranceTileClip = {321,160,80,80};

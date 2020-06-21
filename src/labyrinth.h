@@ -102,6 +102,9 @@ public:
     
     friend class SubMap;
     
+    void setPlayerHitDungeonEntranceBool(bool state);
+    bool getPlayerHitDungeonEntraceBool();
+    void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed);
     
 private:
     
@@ -199,6 +202,9 @@ private:
 	
 	GameInventory* m_game_inventory_ptr;
 	
+	bool hitDungeonEntrace;
+	
+	DungeonTile* dungeonEntranceTile;
 };
 
 #endif

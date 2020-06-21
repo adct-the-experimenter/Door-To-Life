@@ -30,4 +30,6 @@ extern SDL_Rect exitTile;
 //invisible wall tile
 extern SDL_Rect invisibleWallTile;
 
+extern SDL_Rect dungeonEntranceTileClip;
+
 #endif

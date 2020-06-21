@@ -496,15 +496,30 @@ void Dungeon1()
         
         
         bool quit = false;
+        bool toMiniDungeon = false;
         
         while(!quit)
         {
             //call game loop function
             DungeonGameLoop();
             
-
-            if(baseGameState->getState() == GameState::State::EXIT 
-                || baseGameState->getState() == GameState::State::NEXT
+            if(baseGameState->getState() == GameState::State::NEXT )
+            {
+				if(labyrinthUPtr->getPlayerHitDungeonEntraceBool())
+				{
+					stepTimer.stop();
+					toMiniDungeon = true;
+					quit = true;
+					
+				}
+				else
+				{
+					stepTimer.stop();
+					quit = true;
+				}
+			}
+			
+            else if(baseGameState->getState() == GameState::State::EXIT 
                 || baseGameState->getState() == GameState::State::GAME_OVER)
             {
                 stepTimer.stop();
@@ -522,36 +537,45 @@ void Dungeon1()
 
         }
         
-        collisionHandler->EmptyCollisionObjectVector();
-		gameInventory->freeWeapons();
-		
-        //delete doors and keys
-		//delete tiles
-		labyrinthUPtr->freeResources();
-		
-        if(baseGameState->getState() == GameState::State::EXIT )
+        if(toMiniDungeon)
         {
-            
-            
-            baseGameState = nullptr;
+			baseGameState = nullptr;
+			state_stack.push(gMiniDungeonStateStructure);
+		}
+		else
+		{
+			collisionHandler->EmptyCollisionObjectVector();
+			gameInventory->freeWeapons();
+			
+			//delete doors and keys
+			//delete tiles
+			labyrinthUPtr->freeResources();
+			
+			if(baseGameState->getState() == GameState::State::EXIT )
+			{	
+				baseGameState = nullptr;
 
-            quitGame = true;
-        }
-        else if(baseGameState->getState() == GameState::State::GAME_OVER )
-        {	
-            baseGameState = nullptr;
-            GameOver();
-        }
+				quitGame = true;
+			}
+			else if(baseGameState->getState() == GameState::State::GAME_OVER )
+			{	
+				baseGameState = nullptr;
+				GameOver();
+			}
 
-        else if(baseGameState->getState() == GameState::State::NEXT)
-        {
-            //go to next dungeon
-            baseGameState = nullptr;
-            
-            GameWon();
-            
-            quitGame = true;
-        }
+			else if(baseGameState->getState() == GameState::State::NEXT)
+			{
+				//go to next dungeon
+				baseGameState = nullptr;
+				
+				GameWon();
+				
+				quitGame = true;
+			}
+			
+		}
+        
+        
 
         loop += 1;
         std::cout << "Loop: " <<loop << std::endl;
@@ -578,7 +602,10 @@ void MiniDungeon()
 	
 	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
 	
-	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
+	std::int16_t levelWidth = SCREEN_WIDTH * 10;
+	std::int16_t levelHeight = SCREEN_HEIGHT * 10;
+
+	dungeonUPtr->setLevelDimensions(levelWidth,levelHeight);
     
     dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
     
@@ -590,7 +617,7 @@ void MiniDungeon()
     std::ifstream ifile(path);
 	if((bool)ifile)
 	{
-		std::cout << "Editing " << path << std::endl;
+		std::cout << "Reading " << path << std::endl;
 		
 		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
 	}
@@ -659,6 +686,7 @@ void MiniDungeon()
 	{
 		//go back to labyrinth
 		baseGameState = nullptr;
+		state_stack.pop();
 	}
 }
 
@@ -694,10 +722,9 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         
         thisLabyrinth.randomlySetExitForMaze(rng);
         thisLabyrinth.randomlySetLabyrinthDoors(rng);
+        thisLabyrinth.randomlySetDungeonEntrancesinMaze(rng);
         
         thisLabyrinth.setTiles();
-        
-        
         
         //setup weapons in labyrinth
         

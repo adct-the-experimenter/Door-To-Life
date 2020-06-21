@@ -48,7 +48,8 @@ class DungeonTile
                                             //door tile
                                             DOOR,
                                             //occupied, something is already on it like enemy
-                                            OCCUPIED
+                                            OCCUPIED,
+                                            DUNGEON_ENTRANCE
                                             };
 
         //Set tile type

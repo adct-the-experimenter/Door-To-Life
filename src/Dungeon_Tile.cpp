@@ -110,6 +110,7 @@ void DungeonTile::setTileClips()
             case DungeonTile::TileType::DOOR:{ dTileClip = redTile; break;}
             case DungeonTile::TileType::OCCUPIED:{dTileClip = redTile; break;}
             case DungeonTile::TileType::INVISIBLE_WALL:{dTileClip = invisibleWallTile; break;}
+            case DungeonTile::TileType::DUNGEON_ENTRANCE:{dTileClip = dungeonEntranceTileClip; break;}
             default:{std::cout<< "Invalid number for tile type! \n";}
 
         }
@@ -120,80 +121,6 @@ void DungeonTile::setTileEmpty()
 	DungeonTile::setType(DungeonTile::TileType::EMPTY);
 }
 
-bool readLoadTiles(std::string path,int numberBytes, int totalTiles)
-{
-    /*
-      //This piece of code was originally from Lazy Foo' Productions
-//(http://lazyfoo.net/)
-    //std::cout << "readLoadTiles function called! \n";
-
-    bool tilesLoaded = true;
-
-    //Open the map file
-    std::ifstream map(path);
-
-    //If the map couldn't be loaded
-    if( map == NULL )
-    {
-		std::cout << "Unable to load map file!\n";
-		std::cerr<< "File could not be opened! \n";
-		tilesLoaded = false;
-
-    }
-    //Initialize the tile type
-	else
-	{
-            long int location = (numberBytes/totalTiles) * ( DungeonTile::getTileNumber());
-            std::cout << "location:"<<location<<std::endl;
-
-            //set next position of bytes to read file from
-            map.seekg( location ,std::ios::beg);
-
-
-            //Determines what kind of tile will be made
-			int tileType = -1;
-
-			//Read tile from map file
-			map >> tileType;
-
-
-            std::cout <<"Tile Number: " << DungeonTile::getTileNumber() << " TileType: " << tileType << " address: "<< map << tileType << std::endl;
-
-
-			//If there was a problem in reading the map
-			if( map.fail() )
-			{
-				//Stop loading map
-				std::cout << "Error loading map: Unexpected end of file!\n";
-				tilesLoaded= false;
-			}
-
-
-            //If the number is a valid tile number
-            if( ( tileType >= 0 ) && ( tileType < TOTAL_TILE_SPRITES + 1  ) )
-            {
-                //assign tile type read from map file to tile's private member mType
-                DungeonTile::setType((DungeonTile::TileType)tileType);
-
-            }
-
-            //If we don't recognize the tile type
-            else
-            {
-                //Stop loading map
-                std::cout <<"Error loading map: Invalid tile type at !\n";
-                tilesLoaded = false;
-            }
-    }
-
-    //Close the file
-    map.close();
-
-    return tilesLoaded;
-     * 
-*/
-	return false;
-}
 
 /*
 bool DungeonTile::loadMedia(LTexture* ptrToTileMap)
@@ -253,61 +180,6 @@ void DungeonTile::genRuleChangeExitTile()
 
 }
 
-/** Save Function**/
-bool DungeonTile::writeSaveTiles(std::string path,int numberBytes, int totalTiles)
-{
-    /*
-      
-    // This piece of code was originally from Lazy Foo' Productions
-//(http://lazyfoo.net/)
-
-    bool tilesSaved = true;
-
-    //write the map file
-    std::ofstream mapOutput(path);
-
-    //If the map couldn't be written
-    if( mapOutput == NULL )
-    {
-		std::cout << "Unable to load map file!\n";
-		std::cerr<< "File could not be opened! \n";
-		tilesSaved = false;
-    }
-    //Initialize the tile type
-	else
-	{
-
-        long int location = (numberBytes/totalTiles) * ( DungeonTile::getTileNumber());
-
-        //set next position of bytes to write to file
-        mapOutput.seekp( location ,std::ios::beg);
-
-        //Determines what kind of tile will be made
-        int tileType = -1;
-        tileType = (int)DungeonTile::getType();
-
-        //write tile type to map file
-
-        mapOutput << tileType;
-
-
-        std::cout <<"Tile Number: " << DungeonTile::getTileNumber() << " TileType: " << tileType << " address: "<< mapOutput << tileType << std::endl;
-
-    }
-
-    //Close the file
-    mapOutput.close();
-
-    return tilesSaved;
-    */
-
-	return false;
-}
-
-bool writeSaveTiles_SDLRW()
-{
-	return false;
-}
 
 /**Render Tiles **/
 void DungeonTile::render( LTexture* tileTextureMap,SDL_Rect& camera, SDL_Renderer* gRenderer )
@@ -356,6 +228,7 @@ void DungeonTile::setType( DungeonTile::TileType tileType)
         //door
         case DungeonTile::TileType::DOOR:{ floorTileBool = false; exitTileBool = false; wallTileBool = false; emptyTileBool = false; break;}
         case DungeonTile::TileType::OCCUPIED:{ floorTileBool = false; exitTileBool = false; wallTileBool = false; emptyTileBool = false; break;}
+        case DungeonTile::TileType::DUNGEON_ENTRANCE:{ floorTileBool = true; exitTileBool = false; wallTileBool = false; emptyTileBool = false; break;}
     }
     
     //set tile type

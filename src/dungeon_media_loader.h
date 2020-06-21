@@ -2,6 +2,7 @@
 #define DUNGEON_MEDIA_LOADER_H
 
 #include "labyrinth.h"
+#include "Dungeon.h"
 
 bool loadDungeon_Door_Key_Media(SDL_Renderer* gRenderer);
 void freeDungeon_Door_Key_Media();
