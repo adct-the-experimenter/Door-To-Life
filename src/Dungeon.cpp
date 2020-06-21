@@ -74,13 +74,6 @@ Dungeon::~Dungeon()
     mainDotPointer = nullptr;
     
 
-    //Set the pointers' adressses to nullptr
-    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
-    {
-        dungeonTileSet[i] = nullptr;
-    }
-    
-
 }
 
 void Dungeon::GenerateEmptyDungeonForXMLLoad()
@@ -647,7 +640,12 @@ void Dungeon::getXColYRowFromPosition(int x, int y,size_t& xCol, size_t& yRow)
 
 void Dungeon::freeResources()
 {
-	
+	//Set the pointers' adressses to nullptr
+    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
+    {
+		delete dungeonTileSet[i];
+        dungeonTileSet[i] = nullptr;
+    }
 }
 
 

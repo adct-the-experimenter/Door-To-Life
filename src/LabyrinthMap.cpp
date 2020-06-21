@@ -96,6 +96,7 @@ void LabyrinthMap::freeTiles()
     for(size_t i = 0; i < labyrinthTilesVector.size(); i++ )
     {
         delete labyrinthTilesVector[i];
+        labyrinthTilesVector[i] = nullptr;
     }
 }
 

@@ -49,6 +49,7 @@ void CollisonHandler::setCameraForCollisionSystem(SDL_Rect* camera)
 
 void CollisonHandler::run_collision_handler()
 {
+	
     //for every collision object element in vector
     for(size_t i = 0; i < collisionObjectsVector.size(); ++i)
     {

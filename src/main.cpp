@@ -602,10 +602,10 @@ void MiniDungeon()
 	
 	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
 	
-	std::int16_t levelWidth = SCREEN_WIDTH * 10;
-	std::int16_t levelHeight = SCREEN_HEIGHT * 10;
+	std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
+	std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
 
-	dungeonUPtr->setLevelDimensions(levelWidth,levelHeight);
+	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
     
     dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
     
@@ -670,6 +670,7 @@ void MiniDungeon()
 
 	}
 	
+	dungeonUPtr->freeResources();
 	
 	if(baseGameState->getState() == GameState::State::EXIT )
 	{	
@@ -686,8 +687,11 @@ void MiniDungeon()
 	{
 		//go back to labyrinth
 		baseGameState = nullptr;
-		state_stack.pop();
 	}
+	
+
+	
+	
 }
 
 bool setupLabyrinth(Labyrinth& thisLabyrinth)
