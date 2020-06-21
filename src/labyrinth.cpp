@@ -897,7 +897,7 @@ void Labyrinth::freeResources()
 {
     labyrinthMap.freeTiles();
     labyrinthMap.freeDoorsAndKeys();
-    //m_enemy_inventory.freeEnemyVector();
+    m_enemy_inventory.freeEnemyVector();
 }
 
 void Labyrinth::randomlyPlaceDotInMazeNode()
