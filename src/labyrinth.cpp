@@ -796,7 +796,7 @@ void Labyrinth::logic()
         //if main player collides with exit tile
         //win game
         if( checkCollision(exitTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){ Labyrinth::setState(GameState::State::NEXT);}
-        if( checkCollision(dungeonEntranceTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){Labyrinth::setState(GameState::State::NEXT); hitDungeonEntrace = true;}
+        //if( checkCollision(dungeonEntranceTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){Labyrinth::setState(GameState::State::NEXT); hitDungeonEntrace = true;}
     }
     
     //move main dot within dungeon map
