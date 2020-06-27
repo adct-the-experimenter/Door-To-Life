@@ -111,7 +111,7 @@ void freeCockRoachVisualMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
-        //delete cTexture;
+        delete cTexture;
         cTexture = nullptr;
     }
 }
