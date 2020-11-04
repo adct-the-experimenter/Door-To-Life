@@ -829,7 +829,6 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     m_enemy_inventory.run_enemies_render(*labyrinthCamera,gRenderer );
     
     //render weapons
-    //labyrinthMap.renderWeapons(gRenderer);
     m_game_inventory_ptr->run_weapons_render(gRenderer,*labyrinthCamera);
     
     //if debug bool is on
