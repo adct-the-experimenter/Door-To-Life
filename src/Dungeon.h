@@ -18,6 +18,7 @@
 #include "enemy_inventory.h"
 #include "player.h"
 
+#include "game_inventory.h"
 
 class Dungeon : public GameState
 {
@@ -130,7 +131,10 @@ public:
     friend class DungeonCreator;
     friend class DungeonXMLCreator;
     friend class DungeonXMLReader;
-
+    
+    void SetPointerToMainPlayer(Player* thisPlayer);
+	void SetPointerToGameInventory(GameInventory* thisInventory);
+	
 private:
 
 //members not inherited from GameState class
@@ -191,6 +195,8 @@ private:
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );
     
     std::vector <Door> dungeonDoorsVector;
+    
+    GameInventory* mainInventoryPtr;
     
 };
 

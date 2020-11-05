@@ -601,9 +601,9 @@ void MiniDungeon()
     dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
     dungeonUPtr->setPointerToTimer(&stepTimer);
     
-    //dungeonUPtr->setPointerToMainPlayer(mainPlayer);
+    dungeonUPtr->SetPointerToMainPlayer(mainPlayer);
     dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-	//dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
+	dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
 	
 	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
 	
