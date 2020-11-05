@@ -199,7 +199,11 @@ bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 void freeMedia_HealthBar(LTexture* healthTex); 
 LTexture healthBarTexture;
 
-std::unique_ptr <CollisonHandler> collisionHandler;
+std::unique_ptr <CollisonHandler> mainCollisionHandler;
+std::unique_ptr <CollisonHandler> miniCollisionHandler;
+CollisonHandler* currentCollisionHandler;
+
+
 std::unique_ptr <GameInventory> gameInventory;
 
 std::unique_ptr <PlayerInventory> playerInventory;
@@ -269,7 +273,7 @@ void DungeonGameLoop()
     }
     
     baseGameState->handle_events_RNG(rng);
-    collisionHandler->run_collision_handler(); //run collision handler to update collision states
+    currentCollisionHandler->run_collision_handler(); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -443,7 +447,8 @@ void Dungeon1()
     if(!ptrToCollisionHandler){return;}
     else
     {
-        collisionHandler = std::move(ptrToCollisionHandler);
+        mainCollisionHandler = std::move(ptrToCollisionHandler);
+        currentCollisionHandler = mainCollisionHandler.get();
     }
     
     std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
@@ -451,7 +456,7 @@ void Dungeon1()
 	else
 	{
 		gameInventory = std::move(ptrToGameInventory);
-		gameInventory->SetPointerToCollisionHandler(collisionHandler.get());
+		gameInventory->SetPointerToCollisionHandler(mainCollisionHandler.get());
 	}
 	
 
@@ -464,7 +469,7 @@ void Dungeon1()
 	}
 	
 	//add player to collision system
-	collisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
+	mainCollisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
 	//pass pointer to player to player inventory
 	playerInventory->SetPointerToPlayer(mainPlayer);
 	//pass pointer to player inventory to game inventory
@@ -479,7 +484,7 @@ void Dungeon1()
 	mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
 	
 	playerInventory->unequipWeaponFromPlayer();
-	collisionHandler->EmptyPlayerEquippedWeapon();
+	mainCollisionHandler->EmptyPlayerEquippedWeapon();
 	
 	
     //if setup labyrinth was successful
@@ -544,7 +549,7 @@ void Dungeon1()
 		}
 		else
 		{
-			collisionHandler->EmptyCollisionObjectVector();
+			mainCollisionHandler->EmptyCollisionObjectVector();
 			gameInventory->freeWeapons();
 			
 			//delete doors and keys
@@ -630,6 +635,17 @@ void MiniDungeon()
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);
+    
+    std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
+    if(!ptrToCollisionHandler){quitGame = true;}
+    else
+    {
+        miniCollisionHandler = std::move(ptrToCollisionHandler);
+        currentCollisionHandler = miniCollisionHandler.get();
+        
+        //Setup camera for collision system
+        miniCollisionHandler->setCameraForCollisionSystem(&camera);
+    }
 	
 	//start game loop
 	
@@ -744,7 +760,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //thisLabyrinth.setDebugBool(true);
         
         //Setup camera for collision system
-        collisionHandler->setCameraForCollisionSystem(&camera);
+        mainCollisionHandler->setCameraForCollisionSystem(&camera);
         
         //setup camera for audio renderer
         gAudioRenderer.SetPointerToCamera(&camera);
@@ -759,13 +775,13 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //add enemy collision objects to collision handler
         for(size_t i = 0; i < thisLabyrinth.GetEnemiesInLabyrinthVector()->size(); i++)
         {
-			if(collisionHandler->repeatPlay)
+			if(mainCollisionHandler->repeatPlay)
 			{
 				std::cout << " ";
 			}
 			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
-			collisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
-			collisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
+			mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
+			mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
 		}
         
         return true;
@@ -816,7 +832,7 @@ void GameOver()
 	
 	pauseStack = false;
 	
-	collisionHandler->repeatPlay = true;
+	mainCollisionHandler->repeatPlay = true;
 
 }
 
