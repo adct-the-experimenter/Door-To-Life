@@ -49,7 +49,7 @@ endif ()
 
 set(SOURCES src/main.cpp
 src/Dungeon.cpp
-src/DungeonXMLReader.cpp
+src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp

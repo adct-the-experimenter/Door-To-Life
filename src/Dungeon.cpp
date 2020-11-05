@@ -352,15 +352,12 @@ void Dungeon::handle_events(Event& thisEvent)
     //User requests pause by pressing escape
     if( thisEvent == Event::ESCAPE )
     {
-        std::cout<< "Escape key pressed! \n";
-        //Dungeon::setEscapeBool(true);
         //set pause state
         Dungeon::setState(GameState::State::PAUSE);
     }
     //User requests quit by X out window
     else if(thisEvent == Event::QUIT_WINDOW)
     {
-        //Dungeon::setEscapeBool(true);
         Dungeon::setState(GameState::State::EXIT);
     }
 

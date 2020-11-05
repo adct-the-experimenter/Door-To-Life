@@ -33,6 +33,8 @@
 #include "Dungeon.h"
 #include "DungeonXMLReader.h"
 
+#include "DungeonXMLRegistry.h"
+
 /** Constants and Global Variables**/
 
 std::int16_t SCREEN_X_START = 0;
@@ -208,7 +210,7 @@ std::unique_ptr <GameInventory> gameInventory;
 
 std::unique_ptr <PlayerInventory> playerInventory;
 
-
+DungeonXMLRegistry dungeon_xml_reg;
 
 int main(int argc, char* args[])
 {
@@ -229,6 +231,10 @@ int main(int argc, char* args[])
         gDungeon1StateStructure.StatePointer = Dungeon1;
         gMiniDungeonStateStructure.StatePointer = MiniDungeon;
         LoadGameResourcesStateStructure.StatePointer = LoadGameResourcesState;
+        
+        std::string xml_dir_path = DATADIR_STR + "/dungeons_xml/";
+        std::string xml_file_path = xml_dir_path + "xml-dungeon-registry.xml";
+        dungeon_xml_reg.SetDungeonXMLEntriesFromXML(xml_file_path, xml_dir_path);
         
         /**Push first state in stack **/
         //Start off by pushing function GameLoop pointer to the stack
@@ -437,6 +443,8 @@ void NodeGeneration()
     }
 }
 
+size_t num_mini_dungeon_entered;
+
 void Dungeon1()
 {
     
@@ -512,6 +520,7 @@ void Dungeon1()
             {
 				if(labyrinthUPtr->getPlayerHitDungeonEntraceBool())
 				{
+					num_mini_dungeon_entered = labyrinthUPtr->GetIndexMiniDungeonEntered();
 					stepTimer.stop();
 					toMiniDungeon = true;
 					quit = true;
@@ -616,19 +625,20 @@ void MiniDungeon()
     
     std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
     
-    std::string dungeon_file = "t2.xml";
-    std::string path = DATADIR_STR + "/dungeons_xml/" + dungeon_file;
-        
-    std::ifstream ifile(path);
+    //get dungeon file 
+    std::string dungeon_file = dungeon_xml_reg.GetXMLDungeonFilePathFromIndex(num_mini_dungeon_entered);
+    
+    //if dungeon file exists, set the tiles    
+    std::ifstream ifile(dungeon_file);
 	if((bool)ifile)
 	{
-		std::cout << "Reading " << path << std::endl;
+		std::cout << "Reading " << dungeon_file << std::endl;
 		
-		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
+		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(dungeon_file,dungeonUPtr.get());
 	}
 	else
 	{		
-		std::cout << "Error: " + path + " does not exist!\n";
+		std::cout << "Error: " + dungeon_file + " does not exist!\n";
 		quitGame = true;
 	}
 	
@@ -742,7 +752,8 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         
         thisLabyrinth.randomlySetExitForMaze(rng);
         thisLabyrinth.randomlySetLabyrinthDoors(rng);
-        thisLabyrinth.randomlySetDungeonEntrancesinMaze(rng);
+        
+        thisLabyrinth.randomlySetDungeonEntrancesinMaze(rng,&dungeon_xml_reg);
         
         thisLabyrinth.setTiles();
         

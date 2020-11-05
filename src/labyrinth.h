@@ -13,6 +13,14 @@
 
 #include "game_inventory.h"
 
+#include "DungeonXMLRegistry.h"
+
+struct DungeonEntrance
+{
+	DungeonXMLEntry xml_entry;
+	DungeonTile* tile_ptr;
+};
+
 class Labyrinth : public GameState
 {
 public:
@@ -104,7 +112,10 @@ public:
     
     void setPlayerHitDungeonEntranceBool(bool state);
     bool getPlayerHitDungeonEntraceBool();
-    void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed);
+    void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed, DungeonXMLRegistry* dungeon_xml_reg);
+    
+    void SetIndexMiniDungeonEntered(std::int16_t num);
+    std::int16_t GetIndexMiniDungeonEntered();
     
 private:
     
@@ -204,7 +215,10 @@ private:
 	
 	bool hitDungeonEntrace;
 	
-	DungeonTile* dungeonEntranceTile;
+	void DungeonEntranceHitOperations();
+	
+	std::int16_t indexMiniDungeonEntered;
+	std::vector <DungeonEntrance> dungeonEntrances;
 };
 
 #endif
