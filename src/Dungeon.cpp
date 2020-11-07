@@ -62,6 +62,8 @@ Dungeon::Dungeon()
 	
 	mainPlayerPointer = nullptr;
 	mainInventoryPtr = nullptr;
+	
+	exitTilePtr = nullptr;
 
 }
 
@@ -250,6 +252,21 @@ void Dungeon::PlaceDotInThisLocation(float& x, float& y)
     mainDotPointer->setPosY(y);
 }
 
+
+void  Dungeon::PlacePlayerInLocationNearEntrance()
+{
+	if(exitTilePtr)
+	{
+		
+		float x = exitTilePtr->getBox().x + 80;
+		float y = exitTilePtr->getBox().y + 80;
+		
+		mainDotPointer->setPosX(x);
+		mainDotPointer->setPosY(y);
+	}
+	
+    
+}
 /** Item Functions**/
 
 
@@ -384,10 +401,17 @@ void Dungeon::logic()
         mainPlayerPointer->logic(timeStep);
         if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
         
+        //if player hits dungeon entrance/exit
+        if( checkCollision(exitTilePtr->getBox(),mainPlayerPointer->getCollisionBox() ) )
+        { 
+			Dungeon::setState(GameState::State::NEXT);
+		}
+        
     }
     
     //move main dot
     Dungeon::moveMainDot(timeStep);
+	
 	
 }
 
@@ -585,4 +609,16 @@ void Dungeon::freeResources()
 		delete dungeonTileSet[i];
         dungeonTileSet[i] = nullptr;
     }
+}
+
+void Dungeon::SetupDungeonParametersAfterXMLRead()
+{
+	for(size_t i = 0; i < dungeonTileSet.size(); i++)
+	{
+		if(dungeonTileSet[i]->getType() == DungeonTile::TileType::DUNGEON_ENTRANCE)
+		{
+			exitTilePtr = dungeonTileSet[i];
+		}
+		
+	}
 }

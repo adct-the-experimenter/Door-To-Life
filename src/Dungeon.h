@@ -76,6 +76,8 @@ public:
     void moveMainDot(float& timeStep);
     
     void PlaceDotInThisLocation(float& x, float& y);
+    
+    void PlacePlayerInLocationNearEntrance();
 
 
 /** Item Functions **/
@@ -134,6 +136,10 @@ public:
     
     void SetPointerToMainPlayer(Player* thisPlayer);
 	void SetPointerToGameInventory(GameInventory* thisInventory);
+	
+	//function to set up dungeon parameters (i.e exit tile) after having DungeonXML reader
+	//set tiles
+	void SetupDungeonParametersAfterXMLRead();
 	
 private:
 
@@ -197,6 +203,9 @@ private:
     std::vector <Door> dungeonDoorsVector;
     
     GameInventory* mainInventoryPtr;
+    
+    //pointer to exit tile of dungeon
+    DungeonTile* exitTilePtr;
     
 };
 

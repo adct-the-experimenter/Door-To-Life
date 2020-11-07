@@ -55,6 +55,7 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
 		else if(valString ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; }
 		else if(valString ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; }
 		else if(valString ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; }
+		else if(valString ==  "ENTRANCE_EXIT"){ type = DungeonTile::TileType::DUNGEON_ENTRANCE; }
 		else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; }
 			
 		dungeon->dungeonTileSet[iterator]->setType(type);
