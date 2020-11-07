@@ -25,6 +25,24 @@ Wear headphones to hear sound effects in 3D audio or use a 5.1, 6.1, 7.1 surroun
 - WASD or Arrow keys to move
 - Space to activate weapon or open door
 
+## Adding Custom Mini Dungeons to the Game
+
+Custom dungeons can be created by using the program DTL-Dungeon-Editor here.
+https://github.com/adct-the-experimenter/DTL-Dungeon-Editor
+
+To add these custom dungeons, follow the steps below.
+
+1. Create the dungeon in DTL-Dungeon-Editor.
+
+2. Move the .xml file to Door-To-Life/data/dungeons_xml folder.
+
+3. Edit the file Door-To-Life/data/dungeons_xml/xml-dungeon-registry.xml to include the name of the .xml file.
+
+For example, if file is called t1.xml, then name should be added like so <Name>t1</Name> inside <Dungeons> node
+with proper spacing of 4 spaces from the beginning of the line.
+
+4. Play the game since it will automatically be added and given a random location.
+
 ## Special Note on Video Drivers
 
 If the game won't show a menu or any graphics, it is very likely that there is something wrong with the video driver.

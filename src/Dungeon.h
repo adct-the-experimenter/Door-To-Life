@@ -18,6 +18,7 @@
 #include "enemy_inventory.h"
 #include "player.h"
 
+#include "game_inventory.h"
 
 class Dungeon : public GameState
 {
@@ -75,6 +76,8 @@ public:
     void moveMainDot(float& timeStep);
     
     void PlaceDotInThisLocation(float& x, float& y);
+    
+    void PlacePlayerInLocationNearEntrance();
 
 
 /** Item Functions **/
@@ -130,7 +133,14 @@ public:
     friend class DungeonCreator;
     friend class DungeonXMLCreator;
     friend class DungeonXMLReader;
-
+    
+    void SetPointerToMainPlayer(Player* thisPlayer);
+	void SetPointerToGameInventory(GameInventory* thisInventory);
+	
+	//function to set up dungeon parameters (i.e exit tile) after having DungeonXML reader
+	//set tiles
+	void SetupDungeonParametersAfterXMLRead();
+	
 private:
 
 //members not inherited from GameState class
@@ -191,6 +201,11 @@ private:
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );
     
     std::vector <Door> dungeonDoorsVector;
+    
+    GameInventory* mainInventoryPtr;
+    
+    //pointer to exit tile of dungeon
+    DungeonTile* exitTilePtr;
     
 };
 

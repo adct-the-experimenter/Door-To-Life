@@ -59,7 +59,11 @@ Dungeon::Dungeon()
     //std::cout << "Dungeon constructor called! \n";
     //start off with running state
     Dungeon::setState(GameState::State::RUNNING);
-
+	
+	mainPlayerPointer = nullptr;
+	mainInventoryPtr = nullptr;
+	
+	exitTilePtr = nullptr;
 
 }
 
@@ -75,6 +79,10 @@ Dungeon::~Dungeon()
     
 
 }
+
+void Dungeon::SetPointerToMainPlayer(Player* thisPlayer){mainPlayerPointer = thisPlayer;}
+
+void Dungeon::SetPointerToGameInventory(GameInventory* thisInventory){mainInventoryPtr = thisInventory;}
 
 void Dungeon::GenerateEmptyDungeonForXMLLoad()
 {
@@ -244,6 +252,21 @@ void Dungeon::PlaceDotInThisLocation(float& x, float& y)
     mainDotPointer->setPosY(y);
 }
 
+
+void  Dungeon::PlacePlayerInLocationNearEntrance()
+{
+	if(exitTilePtr)
+	{
+		
+		float x = exitTilePtr->getBox().x + 80;
+		float y = exitTilePtr->getBox().y + 80;
+		
+		mainDotPointer->setPosX(x);
+		mainDotPointer->setPosY(y);
+	}
+	
+    
+}
 /** Item Functions**/
 
 
@@ -346,15 +369,12 @@ void Dungeon::handle_events(Event& thisEvent)
     //User requests pause by pressing escape
     if( thisEvent == Event::ESCAPE )
     {
-        std::cout<< "Escape key pressed! \n";
-        //Dungeon::setEscapeBool(true);
         //set pause state
-        //Dungeon::setState(GameState::State::PAUSE);
+        Dungeon::setState(GameState::State::PAUSE);
     }
     //User requests quit by X out window
     else if(thisEvent == Event::QUIT_WINDOW)
     {
-        //Dungeon::setEscapeBool(true);
         Dungeon::setState(GameState::State::EXIT);
     }
 
@@ -374,35 +394,25 @@ void Dungeon::logic()
 {
     //std::cout << "Logic called! \n";
     float timeStep = timer->getTicks() / 1000.f; //frame rate
-
+	
+	//logic for player
+    if(mainPlayerPointer != nullptr)
+    {
+        mainPlayerPointer->logic(timeStep);
+        if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
+        
+        //if player hits dungeon entrance/exit
+        if( checkCollision(exitTilePtr->getBox(),mainPlayerPointer->getCollisionBox() ) )
+        { 
+			Dungeon::setState(GameState::State::NEXT);
+		}
+        
+    }
+    
     //move main dot
     Dungeon::moveMainDot(timeStep);
-
-
-    //move dot back if collides with door
-    //Dungeon::doorCollision(timeStep);
-/*
-     //check if main dot collides with any key while another key hasn't been picked making rest of keys disappear in render
-    if(!keyDisappear)
-    {
-        Dungeon::checkKeyAndDot();
-    }
-
-
-    //check if a key has been picked up
-    for(size_t i=0; i < (*dungeonKeys).size(); ++i )
-    {
-        if( (*dungeonKeys)[i]->getKeyBool() == true )
-        {
-            keyDisappear = true;
-        }
-    // Exit State and Next State Conditions
-
-
-    //exit by door if main dot collides with right key
-    Dungeon::checkWrongDoor();
-    Dungeon::exitByDoor();
-*/
+	
+	
 }
 
 void Dungeon::exitByTile()
@@ -503,35 +513,6 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
     //play sound from dgmSource
     alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
     if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
-/*
-    //play key sounds
-    for(size_t i=0; i < (*dungeonKeys).size(); ++i)
-    {
-        if( (*dungeonKeys)[i]->getKeyBool() == true  )
-        {
-            //play just once
-            while(loopSFX <= 1)
-            {
-
-                std::cout << "count: " << loopSFX <<std::endl;
-                //play dungeon key sounds only once
-                (*dungeonKeys)[i]->playSound();
-
-                loopSFX += 1;
-            }
-
-        }
-    }
-
-
-    //play dungeon door sounds
-    for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
-    {
-        //play dungeon door sounds
-        (*dungeonDoorsVector)[i]->playSounds();
-        //(*dungeonDoorsVector)[i]->setDoorOpenAttemptFail(false);
-    }
-*/
 
 }
 
@@ -549,24 +530,6 @@ void Dungeon::render(SDL_Renderer* gRenderer)
     //render dot
     mainDotPointer->render(lCamera,gRenderer);
 
-/*
-    //render keys
-    if(!keyDisappear)
-    {
-        for(size_t i=0; i < (*dungeonKeys).size(); ++i)
-        {
-            (*dungeonKeys)[i]->render(lCamera,gRenderer);
-        }
-
-    }
-
-
-    //render doors
-    for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
-    {
-        (*dungeonDoorsVector)[i]->render(lCamera,gRenderer);
-    }
-*/
 
 }
 
@@ -648,98 +611,14 @@ void Dungeon::freeResources()
     }
 }
 
-
-/*
-
- *     std::cout << "In dungeon 1 state! \n";
-
-// Setup for Tiles in Dungeon
-
-    
-    std::int16_t numTiles = 0;
-
-    //calculate number of tiles in dungeon
-    numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
-
-    //define Dungeon object
-    Dungeon gDungeon1;
-    gDungeon1.setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
-    gDungeon1.setPointerToTimer(&stepTimer);
-    gDungeon1.setPointerToMainDot(mainDotPointer.get());
-    //set pointers to media
-    gDungeon1.setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-    
-    std::cout << "Creating blank tiles... \n";
-    //create blank tiles
-    std::int16_t startX = 0;
-    std::int16_t startY = 0;
-    gDungeon1.createBlankTiles(startX,startY,
-                            tileWidth,tileHeight,
-                            numTiles);
-
-    //randomly generate tiles
-    std::cout << "Generating tiles... \n";
-    gDungeon1.generateMapDrunkardWalk(rng,numTiles);
-    std::cout << "Setting tile types randomly... \n";
-    gDungeon1.setTileTypesRandom(rng);
-    
-    gDungeon1.genRuleWall(rng,zero_to_twelve);
-    gDungeon1.setWallTopSide();
-    gDungeon1.setWallLeftSide();
-    gDungeon1.setWallRightSide();
-    gDungeon1.setWallBottomSide();
-    //call gen rules
-
-    //limit on number of exits appearing
-    int exitMax = 5; int exitMin = 1;
-
-    gDungeon1.genRuleLimitExits(exitMax,exitMin,rng,zero_to_twelve);
-
-    gDungeon1.genRuleExitPath();
-
-    
-
-    
-
-
-    //gDungeon1.genRuleWall(rng,zero_to_twelve);
-    //gDungeon1.genRuleDotStart();
-    
-    //set tile clips
-    gDungeon1.setTiles();
-
-// Setup for doors in dungeon
-
-    gDungeon1.countNumberOfExits();
-
-    int numExits = gDungeon1.getNumberOfExits();
-
-    std::cout << "Exits:" << numExits << std::endl;
-
-    std::vector <Key *> keys(numExits );
-    std::vector <Door *> doors(numExits );
-
-    //setup doors and keys
-    gDungeon1.setupDoorsAndKeys(keys,doors,
-                            keyTexture,
-                            keySource,
-                            keyBuffer,
-                            doorTexture,
-                            doorSource,
-                            doorBufferOpen,
-                            doorBufferFail );
-    
-    //randomly place keys in dungeon
-
-    gDungeon1.placeKeyRandomVector(rng,zero_to_twelve);
-
-    //place doors
-    gDungeon1.placeDungeonDoors();
-
-    //Setup Dungeon Node camera for dot
-    gDungeon1.setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,
-                                            camera);
-    
-
-
-*/
+void Dungeon::SetupDungeonParametersAfterXMLRead()
+{
+	for(size_t i = 0; i < dungeonTileSet.size(); i++)
+	{
+		if(dungeonTileSet[i]->getType() == DungeonTile::TileType::DUNGEON_ENTRANCE)
+		{
+			exitTilePtr = dungeonTileSet[i];
+		}
+		
+	}
+}
