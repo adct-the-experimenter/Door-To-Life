@@ -109,7 +109,6 @@ void freeGreedyZombieMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
-        //delete cTexture;
         cTexture = nullptr;
     }
 }

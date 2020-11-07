@@ -58,9 +58,11 @@ bool setupLoad_GreedyZombie(SDL_Renderer* gRenderer)
 
 void freeEnemyMedia()
 {
-    freeCockRoachVisualMedia(&cockroach_texture);
+    greed_zombie_texture.free();
+    cockroach_texture.free();
+    //freeCockRoachVisualMedia(&cockroach_texture);
     freeCockRoachAudioMedia(&cockroach_scream_buffer);
-    freeGreedyZombieMedia(&greed_zombie_texture);
+    //freeGreedyZombieMedia(&greed_zombie_texture);
     
 }
 
