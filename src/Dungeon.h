@@ -114,7 +114,8 @@ public:
     virtual void logic();
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
-
+	virtual void render(DrawingManager* gDrawManager);
+	
     //exit by only touching the tile
     void exitByTile();
 

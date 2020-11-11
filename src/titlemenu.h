@@ -25,7 +25,8 @@ public:
     virtual void logic();
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
-
+	virtual void render(DrawingManager* gDrawManager);
+	
     bool loadMedia(SDL_Renderer* gRenderer);
 
     //Key presses

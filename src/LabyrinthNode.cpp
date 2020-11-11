@@ -1198,6 +1198,11 @@ void LabyrinthNode::render(SDL_Renderer* gRenderer)
 
 }
 
+void LabyrinthNode::render(DrawingManager* gDrawManager)
+{
+	
+}
+
 //Set States
 void LabyrinthNode::setState(GameState::State thisState){GameState::setState(thisState);}
 GameState::State LabyrinthNode::getState(){return GameState::getState();}

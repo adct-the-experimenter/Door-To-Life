@@ -520,7 +520,7 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 {
   //  std::cout << "render called! \n";
 
-
+    
     //Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
@@ -531,6 +531,11 @@ void Dungeon::render(SDL_Renderer* gRenderer)
     mainDotPointer->render(lCamera,gRenderer);
 
 
+}
+
+void Dungeon::render(DrawingManager* gDrawManager)
+{
+	
 }
 
 //Set States

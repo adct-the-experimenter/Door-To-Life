@@ -19,6 +19,8 @@
 
 #include "audio_renderer.h"
 
+#include "DrawingManager.h"
+
 //Base class for game state
 class GameState
 {
@@ -41,14 +43,16 @@ class GameState
         virtual void logic() = 0;
         virtual void sound(AudioRenderer* gAudioRenderer) = 0;
         virtual void render(SDL_Renderer* gRenderer) = 0;
+        
+        virtual void render(DrawingManager* gDrawManager) = 0;
 		
-      
 
 		
 
     private:
 
         GameState::State mainState;
+        
 
 };
 

@@ -100,6 +100,10 @@ void TitleMenu::render(SDL_Renderer* gRenderer)
     }
 }
 
+void TitleMenu::render(DrawingManager* gDrawManager)
+{
+	
+}
 
 void TitleMenu::sound(AudioRenderer* gAudioRenderer)
 {

@@ -78,6 +78,7 @@ src/gamestate.cpp
 src/frame_rate_cap.cpp
 src/event_handler.cpp
 src/collisionobject.cpp
+src/DrawingManager.cpp
 src/LTexture.cpp src/LTimer.cpp
 src/damage_values.cpp
 src/globalvariables.cpp

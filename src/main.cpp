@@ -35,6 +35,8 @@
 
 #include "DungeonXMLRegistry.h"
 
+#include "DrawingManager.h"
+
 /** Constants and Global Variables**/
 
 std::int16_t SCREEN_X_START = 0;
@@ -48,6 +50,8 @@ std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
+
+SDL_Window* gWindow2 = nullptr;
 //The window renderer
 SDL_Renderer* gRenderer = nullptr;
 //Globally used font
@@ -81,6 +85,11 @@ bool loadMedia_gamewin();
 void GameWon();
 
 //Main Game
+
+
+//Drawing manager used to manage drawing to 
+DrawingManager gDrawManager;
+
 
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
@@ -1137,7 +1146,10 @@ bool initSDL2()
 		srand( SDL_GetTicks() );
 
 		//Create window
-		gWindow = SDL_CreateWindow( "Door To Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "Door To Life - Player 1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		
+		gWindow2 = SDL_CreateWindow( "Door To Life - Player 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+
 		if( gWindow == nullptr )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -1468,6 +1480,7 @@ void close()
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
+	SDL_DestroyWindow( gWindow2 );
 	gWindow = NULL;
 	gRenderer = NULL;
 

@@ -845,6 +845,11 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     labyrinthMap.renderDotInLabyrinthMap(gRenderer,mainDotPointer);
 }
 
+void Labyrinth::render(DrawingManager* gDrawManager)
+{
+	
+}
+
 void Labyrinth::renderMazeGeneration(SDL_Renderer* gRenderer)
 {
     mazeGen.render(gRenderer);

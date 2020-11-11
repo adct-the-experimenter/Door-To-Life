@@ -15,6 +15,8 @@
 
 #include "DungeonXMLRegistry.h"
 
+#include "DrawingManager.h"
+
 struct DungeonEntrance
 {
 	DungeonXMLEntry xml_entry;
@@ -84,6 +86,8 @@ public:
     void SetPointerToGameInventory(GameInventory* thisInventory);
     
 //Game Loop
+	
+	
     virtual void setState(GameState::State thisState);
     virtual GameState::State getState();
 
@@ -94,7 +98,7 @@ public:
     virtual void logic();
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
-    
+    virtual void render(DrawingManager* gDrawManager);
     
     void renderNodeGeneration(SDL_Renderer* gRenderer);
     void renderMazeGeneration(SDL_Renderer* gRenderer);
@@ -110,12 +114,15 @@ public:
     
     friend class SubMap;
     
+    // mini dungeon 
     void setPlayerHitDungeonEntranceBool(bool state);
     bool getPlayerHitDungeonEntraceBool();
     void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed, DungeonXMLRegistry* dungeon_xml_reg);
     
     void SetIndexMiniDungeonEntered(std::int16_t num);
     std::int16_t GetIndexMiniDungeonEntered();
+    
+    
     
 private:
     
@@ -219,6 +226,7 @@ private:
 	
 	std::int16_t indexMiniDungeonEntered;
 	std::vector <DungeonEntrance> dungeonEntrances;
+	
 };
 
 #endif
