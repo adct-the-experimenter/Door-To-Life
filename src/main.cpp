@@ -240,6 +240,9 @@ int main(int argc, char* args[])
 	}
 	else
 	{
+		gDrawManager.SetPointerToCameraOne(&camera);
+		gDrawManager.SetPointerToRendererOne(gRenderer);
+		
         NodeGenStateStructure.StatePointer = NodeGeneration;
         gDungeon1StateStructure.StatePointer = Dungeon1;
         gMiniDungeonStateStructure.StatePointer = MiniDungeon;
@@ -312,7 +315,7 @@ void DungeonGameLoop()
     SDL_RenderClear(gRenderer);
 
     //Render
-    baseGameState->render(gRenderer);
+    baseGameState->render(&gDrawManager);
     
     //render fps
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);

@@ -70,7 +70,7 @@ src/gun.cpp src/bullet.cpp src/sword.cpp src/weapon.cpp
 src/greedy_zombie.cpp
 src/othercockroach.cpp
 src/enemy.cpp src/lineofsight.cpp
-src/player.cpp src/healthbar.cpp src/player_inventory.cpp
+src/player_manager.cpp src/player.cpp src/healthbar.cpp src/player_inventory.cpp
 src/sprite.cpp src/dot_final.cpp
 src/title.cpp src/titlemenu.cpp
 src/pause_menu.cpp src/menu.cpp src/graphicalbutton.cpp

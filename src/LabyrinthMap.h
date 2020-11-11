@@ -7,6 +7,8 @@
 #include <algorithm>    // std::random_shuffle
 #include <ctime>
 
+#include "DrawingManager.h"
+
 //class to contain graphical part of labyrinth
 
 class LabyrinthMap
@@ -67,10 +69,14 @@ public:
 
     //function to render tiles
     void renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap);
+    
+    void renderTiles(DrawingManager* gDrawManager,LTexture* tileTextureMap);
 
     void renderDotInLabyrinthMap(SDL_Renderer* gRenderer,Dot* mainDotpointer);
     
     void renderDoors(SDL_Renderer* gRenderer);
+    
+    void renderDoors(DrawingManager* gDrawManager);
     
 
     friend class Labyrinth;

@@ -847,7 +847,32 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
 
 void Labyrinth::render(DrawingManager* gDrawManager)
 {
-	
+	//render tiles in map
+    labyrinthMap.renderTiles(gDrawManager,tileTextureMap);
+    
+    //render doors
+    labyrinthMap.renderDoors(gDrawManager);
+    
+    //render enemies
+    m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRendererOne() );
+    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo() );
+    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree() );
+    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour() );
+    
+    //render weapons
+    m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRendererOne(),*gDrawManager->GetPointerToCameraOne());
+    
+    
+    //if debug bool is on
+    if(Labyrinth::getDebugBool())
+    {
+        Labyrinth::renderMazeGeneration(gDrawManager->GetPointerToRendererOne());
+        Labyrinth::renderDotInMazeGeneration(gDrawManager->GetPointerToRendererOne());
+        Labyrinth::renderExitInMazeGeneration(gDrawManager->GetPointerToRendererOne());
+    }
+    
+    //render dot
+    labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererOne(),mainDotPointer);
 }
 
 void Labyrinth::renderMazeGeneration(SDL_Renderer* gRenderer)

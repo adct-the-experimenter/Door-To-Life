@@ -61,7 +61,7 @@ void Title::render(SDL_Renderer* gRenderer)
 
 void Title::render(DrawingManager* gDrawManager)
 {
-	
+	titleMenu.render(gDrawManager->GetPointerToRendererOne());
 }
 
 TitleMenu::TitleOptions Title::getTitleMenuOptionSelect(){return titleMenu.getTitleOption();}
