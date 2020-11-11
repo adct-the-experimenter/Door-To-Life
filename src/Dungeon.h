@@ -20,6 +20,8 @@
 
 #include "game_inventory.h"
 
+#include "player_manager.h"
+
 class Dungeon : public GameState
 {
     
@@ -135,7 +137,7 @@ public:
     friend class DungeonXMLCreator;
     friend class DungeonXMLReader;
     
-    void SetPointerToMainPlayer(Player* thisPlayer);
+    void SetPointerToPlayerManager(PlayerManager* pm);
 	void SetPointerToGameInventory(GameInventory* thisInventory);
 	
 	//function to set up dungeon parameters (i.e exit tile) after having DungeonXML reader
@@ -192,7 +194,7 @@ private:
 /** Beings in Dungeon**/
     //main character
     Dot* mainDotPointer;
-    Player* mainPlayerPointer;
+    PlayerManager* m_player_manager_ptr;
 
 /** Items in Dungeon **/
 

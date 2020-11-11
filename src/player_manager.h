@@ -21,6 +21,12 @@ public:
 	Player* GetPointerToPlayerThree();
 	Player* GetPointerToPlayerFour();
 	
+	
+	//game loop functions
+	
+	void logic(float& timestep);
+	void sound(AudioRenderer* gAudioRenderer);
+	
 private:
 	
 	Player* player_one_ptr;

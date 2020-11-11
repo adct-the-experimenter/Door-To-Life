@@ -745,7 +745,7 @@ void Labyrinth::setupLabyrinthDoors(RNGType& rngSeed,
 
 void Labyrinth::setTimerPointer(LTimer* timer){labyrinthTimer = timer;}
 void Labyrinth::setPointerToMainDot(Dot* mainDot){mainDotPointer = mainDot;}
-void Labyrinth::setPointerToMainPlayer(Player* mainPlayer){mainPlayerPointer = mainPlayer;}
+void Labyrinth::setPointerToPlayerManager(PlayerManager* pm){m_player_manager_ptr = pm;}
 
 void Labyrinth::setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer)
 {
@@ -788,14 +788,17 @@ void Labyrinth::logic()
     float timeStep = labyrinthTimer->getTicks() / 1000.f; //frame rate
     
     //logic for player
-    if(mainPlayerPointer != nullptr)
+    if(m_player_manager_ptr != nullptr)
     {
-        mainPlayerPointer->logic(timeStep);
-        if(mainPlayerPointer->getHealth() <= 0 ){Labyrinth::setState(GameState::State::GAME_OVER);}
+        m_player_manager_ptr->logic(timeStep);
+        //if(mainPlayerPointer->getHealth() <= 0 ){Labyrinth::setState(GameState::State::GAME_OVER);}
         
         //if main player collides with exit tile
         //win game
-        if( checkCollision(exitTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){ Labyrinth::setState(GameState::State::NEXT);}
+        if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+        { 
+			Labyrinth::setState(GameState::State::NEXT);
+		}
         
         Labyrinth::DungeonEntranceHitOperations();
         
@@ -920,7 +923,7 @@ void Labyrinth::sound(AudioRenderer* gAudioRenderer)
     
     m_enemy_inventory.run_enemies_sound(*labyrinthCamera,gAudioRenderer);
     
-    mainPlayerPointer->sound(gAudioRenderer);
+    m_player_manager_ptr->sound(gAudioRenderer);
     
 }
 
@@ -1212,7 +1215,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 	{
 		DungeonTile* dungeonEntranceTile = dungeonEntrances[i].tile_ptr;
 	    
-		if( checkCollision(dungeonEntranceTile->getBox(),mainPlayerPointer->getCollisionBox() ) )
+		if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
 		{
 			Labyrinth::setState(GameState::State::NEXT); 
 			Labyrinth::setPlayerHitDungeonEntranceBool(true);

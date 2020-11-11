@@ -219,6 +219,8 @@ std::unique_ptr <GameInventory> gameInventory;
 
 std::unique_ptr <PlayerInventory> playerInventory;
 
+PlayerManager mainPlayerManager;
+
 DungeonXMLRegistry dungeon_xml_reg;
 
 std::unique_ptr <Labyrinth> gLabyrinth;
@@ -520,6 +522,8 @@ void Dungeon1()
 		{
 			gLabyrinth = std::move(labyrinthUPtr);
 			labyrinthCreated = true;
+			
+			mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
 		}
 		//else do nothing
 		else{std::cout << "Failed to setup labyrinth! \n";}
@@ -645,7 +649,7 @@ void MiniDungeon()
     dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
     dungeonUPtr->setPointerToTimer(&stepTimer);
     
-    dungeonUPtr->SetPointerToMainPlayer(mainPlayer);
+    dungeonUPtr->SetPointerToPlayerManager(&mainPlayerManager);
     dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
 	dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
 	
@@ -765,7 +769,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
 {
     thisLabyrinth.setTimerPointer(&stepTimer);
     thisLabyrinth.setPointerToMainDot(mainDotPointer.get());
-    thisLabyrinth.setPointerToMainPlayer(mainPlayer);
+    thisLabyrinth.setPointerToPlayerManager(&mainPlayerManager);
     thisLabyrinth.setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
 	thisLabyrinth.SetPointerToGameInventory(gameInventory.get());
 	

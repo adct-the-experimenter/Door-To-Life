@@ -17,6 +17,8 @@
 
 #include "DrawingManager.h"
 
+#include "player_manager.h"
+
 struct DungeonEntrance
 {
 	DungeonXMLEntry xml_entry;
@@ -60,7 +62,7 @@ public:
     //function to set pointer to timer
     void setTimerPointer(LTimer* timer);
     void setPointerToMainDot(Dot* mainDot);
-    void setPointerToMainPlayer(Player* mainPlayer);
+    void setPointerToPlayerManager(PlayerManager* pm);
     
     //function to set pointers to media
     void setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer);
@@ -176,7 +178,7 @@ private:
     
     //main character
     Dot* mainDotPointer;
-    Player* mainPlayerPointer;
+    PlayerManager* m_player_manager_ptr;
     
     LTexture* tileTextureMap;
     ALuint* dgmBuffer; //buffer for dungeon music 

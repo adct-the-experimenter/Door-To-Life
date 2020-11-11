@@ -60,7 +60,7 @@ Dungeon::Dungeon()
     //start off with running state
     Dungeon::setState(GameState::State::RUNNING);
 	
-	mainPlayerPointer = nullptr;
+	m_player_manager_ptr = nullptr;
 	mainInventoryPtr = nullptr;
 	
 	exitTilePtr = nullptr;
@@ -80,7 +80,7 @@ Dungeon::~Dungeon()
 
 }
 
-void Dungeon::SetPointerToMainPlayer(Player* thisPlayer){mainPlayerPointer = thisPlayer;}
+void Dungeon::SetPointerToPlayerManager(PlayerManager* pm){m_player_manager_ptr = pm;}
 
 void Dungeon::SetPointerToGameInventory(GameInventory* thisInventory){mainInventoryPtr = thisInventory;}
 
@@ -396,13 +396,13 @@ void Dungeon::logic()
     float timeStep = timer->getTicks() / 1000.f; //frame rate
 	
 	//logic for player
-    if(mainPlayerPointer != nullptr)
+    if(m_player_manager_ptr != nullptr)
     {
-        mainPlayerPointer->logic(timeStep);
-        if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
+        m_player_manager_ptr->logic(timeStep);
+        //if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
         
         //if player hits dungeon entrance/exit
-        if( checkCollision(exitTilePtr->getBox(),mainPlayerPointer->getCollisionBox() ) )
+        if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
         { 
 			Dungeon::setState(GameState::State::NEXT);
 		}
