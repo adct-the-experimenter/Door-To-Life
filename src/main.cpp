@@ -401,8 +401,7 @@ void NodeGeneration()
     {
         labyrinth.generateDungeonsInLabyrinth_Debug_Gen(rng);
 
-        labyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT,
-                                      &camera);
+        labyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT);
                                       
         labyrinth.randomlySetExitForMaze(rng);
         
@@ -526,16 +525,27 @@ void Dungeon1()
 		mainPlayer->setHealth(initialHealth);
 		mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
 		
+		mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
+			
+		if(mainPlayerManager.GetMultiplePlayersBool())
+		{
+			std::int16_t initialHealth = 100;
+			player2->setHealth(initialHealth);
+			player2->setPlayerState(Player::PlayerState::NORMAL);	
+			
+			mainPlayerManager.SetPointerToPlayerTwo(player2);
+		}
+		
 		playerInventory->unequipWeaponFromPlayer();
 		mainCollisionHandler->EmptyPlayerEquippedWeapon();
+		
+		
 		
 		//if setup labyrinth was successful
 		if(setupLabyrinth(*labyrinthUPtr.get()))
 		{
 			gLabyrinth = std::move(labyrinthUPtr);
 			labyrinthCreated = true;
-			
-			mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
 		}
 		//else do nothing
 		else{std::cout << "Failed to setup labyrinth! \n";}
@@ -804,8 +814,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
                                           keyTexture, keySource,keyBuffer,
                                           doorTexture,doorSource,doorBufferOpen,doorBufferFail, &doorClips);
 
-        thisLabyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT,
-                                      &camera);
+        thisLabyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT);
         
         thisLabyrinth.randomlySetExitForMaze(rng);
         thisLabyrinth.randomlySetLabyrinthDoors(rng);
@@ -1217,6 +1226,7 @@ bool initSDL2()
 				
 				gDrawManager.SetPointerToRendererOne(gRenderer);
 				gDrawManager.SetPointerToCameraOne(&camera);
+				mainPlayerManager.SetPointerToCameraOne(&camera);
             }
         }
     }
@@ -1285,6 +1295,7 @@ bool initResourcesForMultiplayer()
 				
 				gDrawManager.SetPointerToRendererTwo(gRenderer2);				
 				gDrawManager.SetPointerToCameraTwo(&camera2);
+				mainPlayerManager.SetPointerToCameraTwo(&camera2);
             }
         }
     }

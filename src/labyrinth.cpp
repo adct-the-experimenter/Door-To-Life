@@ -754,14 +754,33 @@ void Labyrinth::setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buff
     dgmBuffer = buffer;
 }
 
-void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                                    SDL_Rect* camera)
+void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight)
 {
-    labyrinthMap.setLabyrinthCameraForDot(mainDotPointer,
-                                            screenWidth,screenHeight,
-                                            camera);
+    if(m_player_manager_ptr)
+    {
+		labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerOne(),
+                                            screenWidth,screenHeight);
+        
+        Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerOne());
                                             
-    Labyrinth::randomlyPlaceDotInMazeNode();
+		if(m_player_manager_ptr->GetMultiplePlayersBool())
+		{
+			if(m_player_manager_ptr->GetPointerToPlayerTwo())
+			{
+				labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerTwo(),
+                                            screenWidth,screenHeight);
+                                            
+				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerTwo());
+			}
+			else
+			{
+				std::cout << "Player2 ptr null!\n";
+			}
+			
+		}
+	}
+	
+    
 }
 
 void Labyrinth::handle_events(Event& thisEvent)
@@ -771,8 +790,8 @@ void Labyrinth::handle_events(Event& thisEvent)
         Labyrinth::setState(GameState::State::PAUSE);
     }
     
-    labyrinthMap.door_handle_events(thisEvent);
-    mainDotPointer->handleEvent(thisEvent);
+    labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraOne());
+    m_player_manager_ptr->GetPointerToPlayerOne()->handleEvent(thisEvent);
     
 }
 
@@ -805,10 +824,10 @@ void Labyrinth::logic()
     }
     
     //move main dot within dungeon map
-    labyrinthMap.moveMainDot(mainDotPointer,timeStep);
+    labyrinthMap.moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,m_player_manager_ptr->GetPointerToCameraOne());
     
     //push back dot if collide with door
-    labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep);
+    labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep,m_player_manager_ptr->GetPointerToCameraOne());
     
     //move enemies 
     m_enemy_inventory.run_enemies_logic(timeStep,*labyrinthCamera, 
@@ -845,7 +864,7 @@ void Labyrinth::render(SDL_Renderer* gRenderer)
     }
     
     //render dot
-    labyrinthMap.renderDotInLabyrinthMap(gRenderer,mainDotPointer);
+    labyrinthMap.renderDotInLabyrinthMap(gRenderer,mainDotPointer,labyrinthCamera);
 }
 
 void Labyrinth::render(DrawingManager* gDrawManager)
@@ -858,13 +877,24 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     
     //render enemies
     m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRendererOne() );
-    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo() );
-    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree() );
-    //m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour() );
     
+    if(gDrawManager->GetMultiplePlayersBool())
+    {
+		
+		m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo() );
+		//m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree() );
+		//m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour() );
+
+	}
+				
     //render weapons
+    
     m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRendererOne(),*gDrawManager->GetPointerToCameraOne());
     
+    if(gDrawManager->GetMultiplePlayersBool())
+    {
+		m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRendererTwo(),*gDrawManager->GetPointerToCameraTwo());
+	}
     
     //if debug bool is on
     if(Labyrinth::getDebugBool())
@@ -875,7 +905,16 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     }
     
     //render dot
-    labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererOne(),mainDotPointer);
+    labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererOne(),
+										m_player_manager_ptr->GetPointerToPlayerOne(),
+										m_player_manager_ptr->GetPointerToCameraOne());
+    if(gDrawManager->GetMultiplePlayersBool())
+    {
+		labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererTwo(),
+											m_player_manager_ptr->GetPointerToPlayerTwo(),
+											m_player_manager_ptr->GetPointerToCameraTwo());
+	}
+    
 }
 
 void Labyrinth::renderMazeGeneration(SDL_Renderer* gRenderer)
@@ -934,7 +973,7 @@ void Labyrinth::freeResources()
     m_enemy_inventory.freeEnemyVector();
 }
 
-void Labyrinth::randomlyPlaceDotInMazeNode()
+void Labyrinth::randomlyPlaceDotInMazeNode(Dot* thisDot)
 {
     //1st maze node that isn't nullptr
     for(size_t i = labyrinthMap.labyrinthTilesVector.size() / 2; i > 0; i--)
@@ -943,10 +982,10 @@ void Labyrinth::randomlyPlaceDotInMazeNode()
         {
             if(labyrinthMap.labyrinthTilesVector[i]->getTypeFloor())
             {
-                float newX = labyrinthMap.labyrinthTilesVector[i]->getXPosition() + mainDotPointer->getCollisionBox().w;
-                float newY = labyrinthMap.labyrinthTilesVector[i]->getYPosition() + mainDotPointer->getCollisionBox().h;
-                mainDotPointer->setPosX(newX);
-                mainDotPointer->setPosY(newY);
+                float newX = labyrinthMap.labyrinthTilesVector[i]->getXPosition() + thisDot->getCollisionBox().w;
+                float newY = labyrinthMap.labyrinthTilesVector[i]->getYPosition() + thisDot->getCollisionBox().h;
+                thisDot->setPosX(newX);
+                thisDot->setPosY(newY);
                 
                 //assign dot start tile to tile chosen
                 dotStartTile = labyrinthMap.labyrinthTilesVector[i];

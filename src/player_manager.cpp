@@ -25,6 +25,17 @@ Player* PlayerManager::GetPointerToPlayerTwo(){return player_two_ptr;}
 Player* PlayerManager::GetPointerToPlayerThree(){return player_three_ptr;}
 Player* PlayerManager::GetPointerToPlayerFour(){return player_four_ptr;}
 
+
+void PlayerManager::SetPointerToCameraOne(SDL_Rect* camera){camera1_ptr = camera;}
+void PlayerManager::SetPointerToCameraTwo(SDL_Rect* camera){camera2_ptr = camera;}
+void PlayerManager::SetPointerToCameraThree(SDL_Rect* camera){camera3_ptr = camera;}
+void PlayerManager::SetPointerToCameraFour(SDL_Rect* camera){camera4_ptr = camera;}
+
+SDL_Rect* PlayerManager::GetPointerToCameraOne(){return camera1_ptr;}
+SDL_Rect* PlayerManager::GetPointerToCameraTwo(){return camera2_ptr;}
+SDL_Rect* PlayerManager::GetPointerToCameraThree(){return camera3_ptr;}
+SDL_Rect* PlayerManager::GetPointerToCameraFour(){return camera4_ptr;}
+
 void PlayerManager::SetMultiplePlayersBool(bool state){mulitple_players_bool = state;}
 bool PlayerManager::GetMultiplePlayersBool(){return mulitple_players_bool;}
 

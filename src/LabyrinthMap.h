@@ -33,8 +33,7 @@ public:
     void freeTiles();
     
     void setLabyrinthCameraForDot(Dot* mainDotPointer, 
-                                std::int16_t& screenWidth, std::int16_t& screenHeight,
-                                SDL_Rect* camera);
+                                std::int16_t& screenWidth, std::int16_t& screenHeight);
     //Door
     //function to create doors
     void createDoorsInLabyrinthMap(std::int8_t& numberDoors,
@@ -47,10 +46,10 @@ public:
     void randomlyPlaceLabyrinthDoors(RNGType& rngSeed);
     
     //function to push dot back if collide with door
-    void doorToDot_Logic(Dot* mainDotPointer,float& timeStep);
+    void doorToDot_Logic(Dot* mainDotPointer,float& timeStep,SDL_Rect* thisCmaera);
     
     //function to do door handle events 
-    void door_handle_events(Event& thisEvent);
+    void door_handle_events(Event& thisEvent,SDL_Rect* thisCamera);
     
     //function to play sounds 
     void play_door_sounds();
@@ -65,14 +64,14 @@ public:
 //Game loop functions
 
     //function to move main dot on tiles in LabyrinthMap
-    void moveMainDot(Dot* mainDotPointer,float& timeStep);
+    void moveMainDot(Dot* mainDotPointer,float& timeStep,SDL_Rect* thisCamera);
 
     //function to render tiles
     void renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap);
     
     void renderTiles(DrawingManager* gDrawManager,LTexture* tileTextureMap);
 
-    void renderDotInLabyrinthMap(SDL_Renderer* gRenderer,Dot* mainDotpointer);
+    void renderDotInLabyrinthMap(SDL_Renderer* gRenderer,Dot* mainDotpointer,SDL_Rect* thisCamera);
     
     void renderDoors(SDL_Renderer* gRenderer);
     

@@ -68,8 +68,7 @@ public:
     void setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer);
     
     //function to set Dot in labyrinth
-    void setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                                SDL_Rect* camera);
+    void setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight);
                                 
    //function to setup exit in maze based on dot position in maze                             
     void randomlySetExitForMaze(RNGType& rngSeed);                             
@@ -178,7 +177,7 @@ private:
     
     //main character
     Dot* mainDotPointer;
-    PlayerManager* m_player_manager_ptr;
+    PlayerManager* m_player_manager_ptr; 
     
     LTexture* tileTextureMap;
     ALuint* dgmBuffer; //buffer for dungeon music 
@@ -192,7 +191,7 @@ private:
     std::int16_t TILE_HEIGHT;
     
     //function to randomly place dot in maze
-    void randomlyPlaceDotInMazeNode();
+    void randomlyPlaceDotInMazeNode(Dot* thisDot);
     //pointer to dungeon tile dot starts at
     DungeonTile* dotStartTile;
     
