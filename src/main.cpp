@@ -50,10 +50,12 @@ std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
-
 SDL_Window* gWindow2 = nullptr;
+
 //The window renderer
 SDL_Renderer* gRenderer = nullptr;
+SDL_Renderer* gRenderer2 = nullptr;
+
 //Globally used font
 TTF_Font* gFont = nullptr;
 
@@ -64,6 +66,7 @@ int checkForRendererDriverInput(int& argc, char* argv[]);
 
 //Set text color as gray
 SDL_Color textColor = {96,96,96 };
+
 
 
 
@@ -93,14 +96,18 @@ DrawingManager gDrawManager;
 
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
+SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
+
 //Timer for frame rate
 LTimer stepTimer; //keeps track of time between steps
 int loop = 0;
 
 //Pointer to main sprite object pointer
 std::unique_ptr <Dot> mainDotPointer;
-bool initMainChar();
+std::unique_ptr <Dot> dotPointer2;
+bool initPlayers();
 Player* mainPlayer = nullptr;
+Player* player2 = nullptr;
 
 
 /** Functions **/
@@ -111,7 +118,8 @@ bool initSDL2();
 //initializes and loads resources not from SDL, e.g openal,sdl_mixer,
 bool initExtLibs();
 
-
+//initializes windows and renderers for local multiplayer game
+bool initResourcesForMultiplayer();
 
 //loads files and other resources
 bool loadMedia();
@@ -242,8 +250,8 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		gDrawManager.SetPointerToCameraOne(&camera);
-		gDrawManager.SetPointerToRendererOne(gRenderer);
+		mainPlayerManager.SetMultiplePlayersBool(true);
+		gDrawManager.SetMultiplePlayersBool(true);
 		
         NodeGenStateStructure.StatePointer = NodeGeneration;
         gDungeon1StateStructure.StatePointer = Dungeon1;
@@ -314,7 +322,10 @@ void DungeonGameLoop()
 
     //clear screen
     SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
+    SDL_SetRenderDrawColor(gRenderer2,0x00,0x00,0x00,0x00);
+    
     SDL_RenderClear(gRenderer);
+    SDL_RenderClear(gRenderer2);
 
     //Render
     baseGameState->render(&gDrawManager);
@@ -328,6 +339,7 @@ void DungeonGameLoop()
     
     //update screen
     SDL_RenderPresent(gRenderer);
+    SDL_RenderPresent(gRenderer2);
     
     //count this frame
     frameRateCap.countFrame();
@@ -1020,6 +1032,11 @@ void TitleState()
         {
             //go to next dungeon
             baseGameState = nullptr;
+            
+            //for now go with 2 players by default
+            gDrawManager.SetNumberOfPlayers(2);
+            mainPlayerManager.SetNumberOfPlayers(2);
+            
             //push load game resources state into game
             state_stack.push(LoadGameResourcesStateStructure); 
         }
@@ -1029,6 +1046,11 @@ void TitleState()
 
 void LoadGameResourcesState()
 {
+	if(!initResourcesForMultiplayer())
+	{
+		printf("Failed to init resources for multiplayer game!\n");
+		quitGame = true;
+	}
     //load media
     if(!loadMedia())
     {
@@ -1045,14 +1067,15 @@ void LoadGameResourcesState()
 
 
 //function to initialize main character
-bool initMainChar()
+bool initPlayers()
 {
     bool success = true;
     
     //make hero
     std::unique_ptr <Dot> ptrToMC(new Player(10,30,15,20) );
+    std::unique_ptr <Dot> ptrToMC2(new Player(10,30,15,20) );
 
-    if(!ptrToMC)
+    if(!ptrToMC && !ptrToMC2)
     {
         printf("Failed to initialize Hero. \n");
         return false;
@@ -1064,14 +1087,20 @@ bool initMainChar()
          //set speed to 
         float speed = 80 * 3;
         ptrToMC->setSpeed(speed);
+        ptrToMC2->setSpeed(speed);
 
         mainDotPointer = std::move(ptrToMC);
+        dotPointer2 = std::move(ptrToMC2);
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
+        player2 = dynamic_cast<Player*>(dotPointer2.get());
+        
+        
     }
     
     return success;
 }
+
 
 /** Setup **/
 
@@ -1105,7 +1134,7 @@ bool init()
                 success = false;
                 printf("Failed to initialize title state! \n");
             }
-            else if(!initMainChar())
+            else if(!initPlayers())
             {
                 success = false;
                 printf("Failed to initialize main character! \n");
@@ -1155,7 +1184,6 @@ bool initSDL2()
 		//Create window
 		gWindow = SDL_CreateWindow( "Door To Life - Player 1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		
-		gWindow2 = SDL_CreateWindow( "Door To Life - Player 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 
 		if( gWindow == nullptr )
 		{
@@ -1186,6 +1214,77 @@ bool initSDL2()
 			{
 				//Initialize renderer color
 				SDL_SetRenderDrawColor( gRenderer, 0, 0, 0, 0);
+				
+				gDrawManager.SetPointerToRendererOne(gRenderer);
+				gDrawManager.SetPointerToCameraOne(&camera);
+            }
+        }
+    }
+    
+    return success;
+}
+
+bool initResourcesForMultiplayer()
+{
+	bool success = true;
+    
+    //Initialize SDL video for images and audio for music
+	if( SDL_Init( SDL_INIT_VIDEO  | SDL_INIT_AUDIO) < 0 )
+	{
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Enable VSync
+		//if( !SDL_SetHint( SDL_HINT_RENDER_VSYNC, "1" ) )
+		//{
+		//	printf( "Warning: VSync not enabled!" );
+		//}
+
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf( "Warning: Linear texture filtering not enabled!" );
+		}
+
+
+		//Create window
+		
+		gWindow2 = SDL_CreateWindow( "Door To Life - Player 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+
+		if( gWindow2 == nullptr )
+		{
+			printf( "Window 2 could not be created! SDL Error: %s\n", SDL_GetError() );
+			success = false;
+		}
+		else
+		{
+			//Create renderer for window
+			
+			if(use_software_fallback)
+			{
+				gRenderer2 = SDL_CreateRenderer( gWindow2, num_render_driver, SDL_RENDERER_SOFTWARE);
+				std::cout << "\nRenderer created with software fallback! \n";
+			}
+			else
+			{
+				gRenderer2 = SDL_CreateRenderer( gWindow2, num_render_driver, SDL_RENDERER_ACCELERATED);
+				std::cout << "\nRenderer created with hardware acceleration enabled! \n";
+			}
+			
+			if( gRenderer2 == nullptr )
+			{
+				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+				success = false;
+			}
+			else
+			{
+				//Initialize renderer color
+				SDL_SetRenderDrawColor( gRenderer2, 0, 0, 0, 0);
+				
+				gDrawManager.SetPointerToRendererTwo(gRenderer2);				
+				gDrawManager.SetPointerToCameraTwo(&camera2);
             }
         }
     }
@@ -1358,9 +1457,15 @@ bool loadMedia()
         playerHealthBar.setHealthRectClip(healthX,healthY,healthW,healthH);
     }
     //load main player media
-    if(!setup_loadPlayerMedia(mainPlayer,gRenderer) )
+    if(!setup_loadPlayerMedia(mainPlayer,gRenderer,1) )
     {
 		printf("Failed to load player media! \n");
+		success = false;
+	}
+	//load other players media
+	if(!setup_loadPlayerMedia(player2,gRenderer2,2))
+	{
+		printf("Failed to load player 2 media! \n");
 		success = false;
 	}
 	//alGetError();
@@ -1486,6 +1591,7 @@ void close()
 
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
+	SDL_DestroyRenderer( gRenderer2 );
 	SDL_DestroyWindow( gWindow );
 	SDL_DestroyWindow( gWindow2 );
 	gWindow = NULL;

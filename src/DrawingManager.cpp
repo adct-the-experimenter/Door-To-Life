@@ -2,7 +2,8 @@
 
 DrawingManager::DrawingManager()
 {
-	
+	draw_multiple_players_bool = false;
+	m_num_players = 1;
 }
 
 DrawingManager::~DrawingManager()
@@ -36,3 +37,9 @@ SDL_Renderer* DrawingManager::GetPointerToRendererOne(){return gRenderer_one_ptr
 SDL_Renderer* DrawingManager::GetPointerToRendererTwo(){return gRenderer_two_ptr;}
 SDL_Renderer* DrawingManager::GetPointerToRendererThree(){return gRenderer_three_ptr;}
 SDL_Renderer* DrawingManager::GetPointerToRendererFour(){return gRenderer_four_ptr;}
+
+void DrawingManager::SetMultiplePlayersBool(bool state){draw_multiple_players_bool = state;}
+bool DrawingManager::GetMultiplePlayersBool(){return draw_multiple_players_bool;}
+
+void DrawingManager::SetNumberOfPlayers(int num){m_num_players = num;}
+int DrawingManager::GetNumberOfPlayers(){return m_num_players;}

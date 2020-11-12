@@ -39,6 +39,12 @@ public:
 	SDL_Renderer* GetPointerToRendererThree();
 	SDL_Renderer* GetPointerToRendererFour();
 	
+	void SetMultiplePlayersBool(bool state);
+	bool GetMultiplePlayersBool();
+	
+	void SetNumberOfPlayers(int num);
+	int GetNumberOfPlayers();
+	
 private:
 	
 	
@@ -54,6 +60,8 @@ private:
 	SDL_Rect* camera_three_ptr;
 	SDL_Rect* camera_four_ptr;
 	
+	bool draw_multiple_players_bool;
+	int m_num_players;
 };
 
 #endif

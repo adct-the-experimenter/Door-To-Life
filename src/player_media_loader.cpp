@@ -52,10 +52,22 @@ void setupPlayerSpriteClips()
     player_clips[Sprite::UP_RIGHT_4] = {204,450,width,height};
 }
 
-bool setup_loadPlayerMedia(Player* thisPlayer,SDL_Renderer* gRenderer)
+bool setup_loadPlayerMedia(Player* thisPlayer,SDL_Renderer* gRenderer,int num_player)
 {
 	//load main player media
-    std::string mainPlayerTexFilePath = DATADIR_STR + std::string("/Graphics/main_char.png");
+	
+	std::string player_file = "";
+	
+	switch(num_player)
+	{
+		case 1:{ player_file = "/Graphics/main_char.png"; break;}
+		case 2:{ player_file = "/Graphics/main_char2.png"; break;}
+		case 3:{ player_file = "/Graphics/main_char3.png"; break;}
+		case 4:{ player_file = "/Graphics/main_char4.png"; break;}
+		default:{ player_file = "/Graphics/main_char.png"; break;}
+	}
+	
+    std::string mainPlayerTexFilePath = DATADIR_STR + player_file;
     
     if(!thisPlayer->loadMedia(nullptr,mainPlayerTexFilePath.c_str(),gRenderer))
     {

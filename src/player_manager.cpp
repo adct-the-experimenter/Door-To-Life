@@ -6,6 +6,8 @@ PlayerManager::PlayerManager()
 	player_two_ptr = nullptr;
 	player_three_ptr = nullptr;
 	player_four_ptr = nullptr;
+	
+	mulitple_players_bool = false;
 }
 
 PlayerManager::~PlayerManager()
@@ -22,6 +24,12 @@ Player* PlayerManager::GetPointerToPlayerOne(){return player_one_ptr;}
 Player* PlayerManager::GetPointerToPlayerTwo(){return player_two_ptr;}
 Player* PlayerManager::GetPointerToPlayerThree(){return player_three_ptr;}
 Player* PlayerManager::GetPointerToPlayerFour(){return player_four_ptr;}
+
+void PlayerManager::SetMultiplePlayersBool(bool state){mulitple_players_bool = state;}
+bool PlayerManager::GetMultiplePlayersBool(){return mulitple_players_bool;}
+
+void PlayerManager::SetNumberOfPlayers(int num){m_num_players = num;}
+int PlayerManager::GetNumberOfPlayers(){return m_num_players;}
 
 void PlayerManager::logic(float& timestep)
 {

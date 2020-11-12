@@ -138,19 +138,25 @@ void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextur
         labyrinthTilesVector[i]->render(tileTextureMap,
 										*gDrawManager->GetPointerToCameraOne(),
 										gDrawManager->GetPointerToRendererOne());
-		/*
-		labyrinthTilesVector[i]->render(tileTextureMap,
-										*gDrawManager->GetPointerToCameraTwo(),
-										gDrawManager->GetPointerToRendererTwo());
 		
-		labyrinthTilesVector[i]->render(tileTextureMap,
-										*gDrawManager->GetPointerToCameraThree(),
-										gDrawManager->GetPointerToRendererThree());
-		
-		labyrinthTilesVector[i]->render(tileTextureMap,
-										*gDrawManager->GetPointerToCameraFour(),
-										gDrawManager->GetPointerToRendererFour());
-		*/								
+		if(gDrawManager->GetMultiplePlayersBool())
+		{
+			
+			labyrinthTilesVector[i]->render(tileTextureMap,
+											*gDrawManager->GetPointerToCameraTwo(),
+											gDrawManager->GetPointerToRendererTwo());
+			/*
+			labyrinthTilesVector[i]->render(tileTextureMap,
+											*gDrawManager->GetPointerToCameraThree(),
+											gDrawManager->GetPointerToRendererThree());
+			
+			labyrinthTilesVector[i]->render(tileTextureMap,
+											*gDrawManager->GetPointerToCameraFour(),
+											gDrawManager->GetPointerToRendererFour());
+			*/
+			
+		}
+										
     }
 }
 

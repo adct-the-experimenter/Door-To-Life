@@ -21,6 +21,11 @@ public:
 	Player* GetPointerToPlayerThree();
 	Player* GetPointerToPlayerFour();
 	
+	void SetMultiplePlayersBool(bool state);
+	bool GetMultiplePlayersBool();
+	
+	void SetNumberOfPlayers(int num);
+	int GetNumberOfPlayers();
 	
 	//game loop functions
 	
@@ -33,6 +38,9 @@ private:
 	Player* player_two_ptr;
 	Player* player_three_ptr;
 	Player* player_four_ptr;
+	
+	bool mulitple_players_bool;
+	int m_num_players;
 };
 
 #endif
