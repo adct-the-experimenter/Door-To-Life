@@ -133,12 +133,15 @@ void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextur
 {
     for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
     {
+		gDrawManager->SetToRenderViewPortPlayer1();
+		
         labyrinthTilesVector[i]->render(tileTextureMap,
 										*gDrawManager->GetPointerToCameraOne(),
 										gDrawManager->GetPointerToRenderer());
 		
 		if(gDrawManager->GetMultiplePlayersBool())
 		{
+			gDrawManager->SetToRenderViewPortPlayer2();
 			
 			labyrinthTilesVector[i]->render(tileTextureMap,
 											*gDrawManager->GetPointerToCameraTwo(),
@@ -255,6 +258,7 @@ void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
         if( checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
                 || checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
         {
+			gDrawManager->SetToRenderViewPortPlayer1();
             labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
         }
         
@@ -264,6 +268,7 @@ void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
 			if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
 			{
+				gDrawManager->SetToRenderViewPortPlayer2();
 				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
 			}
 			/*

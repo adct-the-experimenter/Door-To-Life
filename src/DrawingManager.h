@@ -31,6 +31,14 @@ public:
 	void SetPointerToRenderer(SDL_Renderer* renderer);
 	SDL_Renderer* GetPointerToRenderer();
 	
+	void InitViewportsForThisNumberOfPlayers(int num, int screen_width, int screen_height);
+	
+	void InitCamerasForThisNumberOfPlayers(int num, int screen_width, int screen_height);
+	
+	//function to set rendering to viewport for players
+	
+	void SetToRenderViewPortPlayer1();
+	void SetToRenderViewPortPlayer2();
 	
 	void SetMultiplePlayersBool(bool state);
 	bool GetMultiplePlayersBool();
@@ -52,6 +60,11 @@ private:
 	
 	bool draw_multiple_players_bool;
 	int m_num_players;
+	
+	//view ports for players
+	//set based on number of players
+	SDL_Rect player1Viewport;
+	SDL_Rect player2Viewport;
 };
 
 #endif

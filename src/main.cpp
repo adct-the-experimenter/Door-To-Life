@@ -93,8 +93,8 @@ DrawingManager gDrawManager;
 
 
 //The camera
-SDL_Rect camera = { 0, 0, SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2  };
-SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2  };
+SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT   };
+SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
 
 //Timer for frame rate
 LTimer stepTimer; //keeps track of time between steps
@@ -1235,6 +1235,9 @@ bool initResourcesForMultiplayer()
     
     gDrawManager.SetPointerToCameraTwo(&camera2);
 	mainPlayerManager.SetPointerToCameraTwo(&camera2);
+	
+	gDrawManager.InitViewportsForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
+	gDrawManager.InitCamerasForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
     
     return success;
 }
