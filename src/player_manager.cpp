@@ -44,8 +44,17 @@ int PlayerManager::GetNumberOfPlayers(){return m_num_players;}
 
 void PlayerManager::logic(float& timestep)
 {
-	if(player_one_ptr){player_one_ptr->logic(timestep);}
-	if(player_two_ptr){player_two_ptr->logic(timestep);}
+	
+	
+	
+	if(player_one_ptr)
+	{
+		player_one_ptr->logic(timestep);
+	}
+	if(player_two_ptr)
+	{
+		player_two_ptr->logic(timestep);
+	}
 	if(player_three_ptr){player_three_ptr->logic(timestep);}
 	if(player_four_ptr){player_four_ptr->logic(timestep);}
 }
