@@ -17,7 +17,7 @@ public:
     void setPosition(std::int16_t x, std::int16_t y);
     
     //function to render dot in sub map
-    void renderSubMapAndDot(Dot* thisDot, SDL_Renderer* gRenderer);
+    void renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot* thisDot4, SDL_Renderer* gRenderer);
 
     std::int8_t mapSquareDivision = 10;
 private:
@@ -41,7 +41,10 @@ private:
     //gray square
     unsigned int gray_r; unsigned int gray_g; unsigned int gray_b;
     
-    SDL_Rect dot_rect;
+    SDL_Rect dot_rect1;
+    SDL_Rect dot_rect2;
+    SDL_Rect dot_rect3;
+    SDL_Rect dot_rect4;
     
 };
 

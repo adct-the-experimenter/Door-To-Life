@@ -27,16 +27,9 @@ SDL_Rect* DrawingManager::GetPointerToCameraFour(){return camera_four_ptr;}
 
 //renderers
 
-void DrawingManager::SetPointerToRendererOne(SDL_Renderer* renderer){gRenderer_one_ptr = renderer;}
-void DrawingManager::SetPointerToRendererTwo(SDL_Renderer* renderer){gRenderer_two_ptr = renderer;}
-void DrawingManager::SetPointerToRendererThree(SDL_Renderer* renderer){gRenderer_three_ptr = renderer;}
-void DrawingManager::SetPointerToRendererFour(SDL_Renderer* renderer){gRenderer_four_ptr = renderer;}
+void DrawingManager::SetPointerToRenderer(SDL_Renderer* renderer){m_renderer_ptr = renderer;}
 
-
-SDL_Renderer* DrawingManager::GetPointerToRendererOne(){return gRenderer_one_ptr;}
-SDL_Renderer* DrawingManager::GetPointerToRendererTwo(){return gRenderer_two_ptr;}
-SDL_Renderer* DrawingManager::GetPointerToRendererThree(){return gRenderer_three_ptr;}
-SDL_Renderer* DrawingManager::GetPointerToRendererFour(){return gRenderer_four_ptr;}
+SDL_Renderer* DrawingManager::GetPointerToRenderer(){return m_renderer_ptr;}
 
 void DrawingManager::SetMultiplePlayersBool(bool state){draw_multiple_players_bool = state;}
 bool DrawingManager::GetMultiplePlayersBool(){return draw_multiple_players_bool;}

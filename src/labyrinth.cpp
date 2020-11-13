@@ -826,6 +826,13 @@ void Labyrinth::logic()
     //move main dot within dungeon map
     labyrinthMap.moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,m_player_manager_ptr->GetPointerToCameraOne());
     
+    if(m_player_manager_ptr->GetMultiplePlayersBool())
+    {
+		labyrinthMap.moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,m_player_manager_ptr->GetPointerToCameraTwo());
+		
+	}
+    
+    
     //push back dot if collide with door
     labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep,m_player_manager_ptr->GetPointerToCameraOne());
     
@@ -876,12 +883,12 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     labyrinthMap.renderDoors(gDrawManager);
     
     //render enemies
-    m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRendererOne() );
+    m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer() );
     
     if(gDrawManager->GetMultiplePlayersBool())
     {
 		
-		m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo() );
+		m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer() );
 		//m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree() );
 		//m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour() );
 
@@ -889,28 +896,28 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 				
     //render weapons
     
-    m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRendererOne(),*gDrawManager->GetPointerToCameraOne());
+    m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRenderer(),*gDrawManager->GetPointerToCameraOne());
     
     if(gDrawManager->GetMultiplePlayersBool())
     {
-		m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRendererTwo(),*gDrawManager->GetPointerToCameraTwo());
+		m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRenderer(),*gDrawManager->GetPointerToCameraTwo());
 	}
     
     //if debug bool is on
     if(Labyrinth::getDebugBool())
     {
-        Labyrinth::renderMazeGeneration(gDrawManager->GetPointerToRendererOne());
-        Labyrinth::renderDotInMazeGeneration(gDrawManager->GetPointerToRendererOne());
-        Labyrinth::renderExitInMazeGeneration(gDrawManager->GetPointerToRendererOne());
+        Labyrinth::renderMazeGeneration(gDrawManager->GetPointerToRenderer());
+        Labyrinth::renderDotInMazeGeneration(gDrawManager->GetPointerToRenderer());
+        Labyrinth::renderExitInMazeGeneration(gDrawManager->GetPointerToRenderer());
     }
     
     //render dot
-    labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererOne(),
+    labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
 										m_player_manager_ptr->GetPointerToPlayerOne(),
 										m_player_manager_ptr->GetPointerToCameraOne());
     if(gDrawManager->GetMultiplePlayersBool())
     {
-		labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRendererTwo(),
+		labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
 											m_player_manager_ptr->GetPointerToPlayerTwo(),
 											m_player_manager_ptr->GetPointerToCameraTwo());
 	}

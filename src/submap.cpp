@@ -4,7 +4,10 @@ SubMap::SubMap()
 {
     mapViewPort = {0,0,100,100};
     
-    dot_rect = {0,0,5,5};
+    dot_rect1 = {0,0,5,5};
+    dot_rect2 = {0,0,5,5};
+    dot_rect3 = {0,0,5,5};
+    dot_rect4 = {0,0,5,5};
     
     gray_r = 128; 
     gray_g = 128; 
@@ -37,7 +40,7 @@ void SubMap::setPosition(std::int16_t x, std::int16_t y)
     mapViewPort.x = x; mapViewPort.y = y;
 }
 
-void SubMap::renderSubMapAndDot(Dot* thisDot, SDL_Renderer* gRenderer)
+void SubMap::renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot* thisDot4, SDL_Renderer* gRenderer)
 {
     SDL_RenderSetViewport( gRenderer, &mapViewPort );
 //    std::int16_t xColDot = thisDot->getCollisionBox().x / NODE_LEVEL_WIDTH;
@@ -61,16 +64,29 @@ void SubMap::renderSubMapAndDot(Dot* thisDot, SDL_Renderer* gRenderer)
     double mini_width_per_map_width = double( mapViewPort.w) / double( (GRID_WIDTH / 20) * NODE_LEVEL_WIDTH ) ;
     double mini_height_per_map_height = double( mapViewPort.h ) / double( (GRID_HEIGHT / 20) * NODE_LEVEL_HEIGHT );
     
-    double dotMapX = thisDot->getCollisionBox().x * mini_width_per_map_width;
+    double dotMapX1 = thisDot1->getCollisionBox().x * mini_width_per_map_width;
                     
-    double dotMapY = thisDot->getCollisionBox().y * mini_height_per_map_height;
-                    
+    double dotMapY1 = thisDot1->getCollisionBox().y * mini_height_per_map_height;
     
     //convert from grid node position to square position 
-    dot_rect.x = dotMapX;
-    dot_rect.y = dotMapY;
+    dot_rect1.x = dotMapX1;
+    dot_rect1.y = dotMapY1;
     
-    SDL_RenderDrawRect(gRenderer,&dot_rect);
+    SDL_RenderDrawRect(gRenderer,&dot_rect1);
+    
+    if(thisDot2)
+    {
+		double dotMapX2 = thisDot2->getCollisionBox().x * mini_width_per_map_width;
+                    
+		double dotMapY2 = thisDot2->getCollisionBox().y * mini_height_per_map_height;
+		
+		dot_rect1.x = dotMapX2;
+		dot_rect1.y = dotMapY2;
+		
+		SDL_RenderDrawRect(gRenderer,&dot_rect2);
+		
+	}
+    
     
     SDL_SetRenderDrawColor(gRenderer,
                            gray_r,gray_g,gray_b,
@@ -78,3 +94,4 @@ void SubMap::renderSubMapAndDot(Dot* thisDot, SDL_Renderer* gRenderer)
     
     SDL_RenderSetViewport( gRenderer, NULL );
 }
+

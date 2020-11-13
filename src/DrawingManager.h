@@ -27,17 +27,10 @@ public:
 	SDL_Rect* GetPointerToCameraThree();
 	SDL_Rect* GetPointerToCameraFour();
 	
-	//pointers to renderers
-	void SetPointerToRendererOne(SDL_Renderer* renderer);
-	void SetPointerToRendererTwo(SDL_Renderer* renderer);
-	void SetPointerToRendererThree(SDL_Renderer* renderer);
-	void SetPointerToRendererFour(SDL_Renderer* renderer);
+	//pointer to renderers
+	void SetPointerToRenderer(SDL_Renderer* renderer);
+	SDL_Renderer* GetPointerToRenderer();
 	
-	
-	SDL_Renderer* GetPointerToRendererOne();
-	SDL_Renderer* GetPointerToRendererTwo();
-	SDL_Renderer* GetPointerToRendererThree();
-	SDL_Renderer* GetPointerToRendererFour();
 	
 	void SetMultiplePlayersBool(bool state);
 	bool GetMultiplePlayersBool();
@@ -49,11 +42,8 @@ private:
 	
 	
 	//support rendering to 4 windows at most for now
+	SDL_Renderer* m_renderer_ptr;
 	
-	SDL_Renderer* gRenderer_one_ptr;
-	SDL_Renderer* gRenderer_two_ptr;
-	SDL_Renderer* gRenderer_three_ptr;
-	SDL_Renderer* gRenderer_four_ptr;
 	
 	SDL_Rect* camera_one_ptr;
 	SDL_Rect* camera_two_ptr;

@@ -41,20 +41,18 @@
 
 std::int16_t SCREEN_X_START = 0;
 std::int16_t SCREEN_Y_START = 0;
-std::int16_t SCREEN_WIDTH = 640;
-std::int16_t SCREEN_HEIGHT = 480;
+std::int16_t SCREEN_WIDTH = 1360;
+std::int16_t SCREEN_HEIGHT = 760;
 
-std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 2;
-std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
+std::int16_t LEVEL_WIDTH = 640 * 2;
+std::int16_t LEVEL_HEIGHT = 480 * 2;
 
 
 //The window we'll be rendering to
 SDL_Window* gWindow = nullptr;
-SDL_Window* gWindow2 = nullptr;
 
 //The window renderer
 SDL_Renderer* gRenderer = nullptr;
-SDL_Renderer* gRenderer2 = nullptr;
 
 //Globally used font
 TTF_Font* gFont = nullptr;
@@ -95,8 +93,8 @@ DrawingManager gDrawManager;
 
 
 //The camera
-SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
-SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
+SDL_Rect camera = { 0, 0, SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2  };
+SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2  };
 
 //Timer for frame rate
 LTimer stepTimer; //keeps track of time between steps
@@ -322,10 +320,8 @@ void DungeonGameLoop()
 
     //clear screen
     SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
-    SDL_SetRenderDrawColor(gRenderer2,0x00,0x00,0x00,0x00);
     
     SDL_RenderClear(gRenderer);
-    SDL_RenderClear(gRenderer2);
 
     //Render
     baseGameState->render(&gDrawManager);
@@ -335,11 +331,10 @@ void DungeonGameLoop()
     //render health bar
     playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
     //render sub map
-    subMap.renderSubMapAndDot(mainDotPointer.get(),gRenderer);
+    subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),nullptr,nullptr, gRenderer);
     
     //update screen
     SDL_RenderPresent(gRenderer);
-    SDL_RenderPresent(gRenderer2);
     
     //count this frame
     frameRateCap.countFrame();
@@ -1224,7 +1219,7 @@ bool initSDL2()
 				//Initialize renderer color
 				SDL_SetRenderDrawColor( gRenderer, 0, 0, 0, 0);
 				
-				gDrawManager.SetPointerToRendererOne(gRenderer);
+				gDrawManager.SetPointerToRenderer(gRenderer);
 				gDrawManager.SetPointerToCameraOne(&camera);
 				mainPlayerManager.SetPointerToCameraOne(&camera);
             }
@@ -1238,67 +1233,8 @@ bool initResourcesForMultiplayer()
 {
 	bool success = true;
     
-    //Initialize SDL video for images and audio for music
-	if( SDL_Init( SDL_INIT_VIDEO  | SDL_INIT_AUDIO) < 0 )
-	{
-		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
-		success = false;
-	}
-	else
-	{
-		//Enable VSync
-		//if( !SDL_SetHint( SDL_HINT_RENDER_VSYNC, "1" ) )
-		//{
-		//	printf( "Warning: VSync not enabled!" );
-		//}
-
-		//Set texture filtering to linear
-		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
-		{
-			printf( "Warning: Linear texture filtering not enabled!" );
-		}
-
-
-		//Create window
-		
-		gWindow2 = SDL_CreateWindow( "Door To Life - Player 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-
-		if( gWindow2 == nullptr )
-		{
-			printf( "Window 2 could not be created! SDL Error: %s\n", SDL_GetError() );
-			success = false;
-		}
-		else
-		{
-			//Create renderer for window
-			
-			if(use_software_fallback)
-			{
-				gRenderer2 = SDL_CreateRenderer( gWindow2, num_render_driver, SDL_RENDERER_SOFTWARE);
-				std::cout << "\nRenderer created with software fallback! \n";
-			}
-			else
-			{
-				gRenderer2 = SDL_CreateRenderer( gWindow2, num_render_driver, SDL_RENDERER_ACCELERATED);
-				std::cout << "\nRenderer created with hardware acceleration enabled! \n";
-			}
-			
-			if( gRenderer2 == nullptr )
-			{
-				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
-				success = false;
-			}
-			else
-			{
-				//Initialize renderer color
-				SDL_SetRenderDrawColor( gRenderer2, 0, 0, 0, 0);
-				
-				gDrawManager.SetPointerToRendererTwo(gRenderer2);				
-				gDrawManager.SetPointerToCameraTwo(&camera2);
-				mainPlayerManager.SetPointerToCameraTwo(&camera2);
-            }
-        }
-    }
+    gDrawManager.SetPointerToCameraTwo(&camera2);
+	mainPlayerManager.SetPointerToCameraTwo(&camera2);
     
     return success;
 }
@@ -1474,7 +1410,7 @@ bool loadMedia()
 		success = false;
 	}
 	//load other players media
-	if(!setup_loadPlayerMedia(player2,gRenderer2,2))
+	if(!setup_loadPlayerMedia(player2,gRenderer,2))
 	{
 		printf("Failed to load player 2 media! \n");
 		success = false;
@@ -1602,9 +1538,7 @@ void close()
 
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
-	SDL_DestroyRenderer( gRenderer2 );
 	SDL_DestroyWindow( gWindow );
-	SDL_DestroyWindow( gWindow2 );
 	gWindow = NULL;
 	gRenderer = NULL;
 

@@ -538,14 +538,14 @@ void Dungeon::render(DrawingManager* gDrawManager)
 	//Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
-        dungeonTileSet[i]->render(tileTextureMap,*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRendererOne());
+        dungeonTileSet[i]->render(tileTextureMap,*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
         //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo());
         //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree());
         //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour());
     }
 
     //render dot
-    mainDotPointer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRendererOne());
+    mainDotPointer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 }
 
 //Set States
