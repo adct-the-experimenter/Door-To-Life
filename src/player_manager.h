@@ -39,6 +39,7 @@ public:
 	
 	//game loop functions
 	
+	void handleEvent(Event& thisEvent);
 	void logic(float& timestep);
 	void sound(AudioRenderer* gAudioRenderer);
 	

@@ -232,6 +232,11 @@ DungeonXMLRegistry dungeon_xml_reg;
 std::unique_ptr <Labyrinth> gLabyrinth;
 bool labyrinthCreated = false;
 
+//joysticks
+
+//Game Controller 1 handler
+SDL_Joystick* gGameController = nullptr;
+
 
 int main(int argc, char* args[])
 {
@@ -1099,7 +1104,8 @@ bool initPlayers()
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
         player2 = dynamic_cast<Player*>(dotPointer2.get());
         
-        
+        mainPlayer->SetPlayerNumber(1);
+        player2->SetPlayerNumber(2);
     }
     
     return success;
@@ -1163,7 +1169,7 @@ bool initSDL2()
     bool success = true;
     
     //Initialize SDL video for images and audio for music
-	if( SDL_Init( SDL_INIT_VIDEO  | SDL_INIT_AUDIO) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO  | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -1229,6 +1235,8 @@ bool initSDL2()
     return success;
 }
 
+
+
 bool initResourcesForMultiplayer()
 {
 	bool success = true;
@@ -1238,7 +1246,22 @@ bool initResourcesForMultiplayer()
 	
 	gDrawManager.InitViewportsForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
 	gDrawManager.InitCamerasForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
-    
+	
+	//Check for joysticks
+	if( SDL_NumJoysticks() < 1 )
+	{
+		printf( "Warning: No joysticks connected!\n" );
+	}
+	else
+	{
+		//Load joystick
+		gGameController = SDL_JoystickOpen( 0 );
+		if( gGameController == NULL )
+		{
+			printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
+		}
+	}
+
     return success;
 }
 
@@ -1538,6 +1561,14 @@ void close()
     
     //close OpenAL Soft
     cleanup_openALSoft();
+    
+    //Close game controller
+    if(gGameController)
+    {
+		SDL_JoystickClose( gGameController );
+		gGameController = NULL;
+	}
+    
 
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );

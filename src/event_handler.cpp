@@ -12,6 +12,9 @@ void run_event_handler()
     }
 }
 
+//Analog joystick dead zone
+const int JOYSTICK_DEAD_ZONE = 7000;
+
 void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 {
     if(sdl_event_ptr->type == SDL_QUIT){pushEventInstance(Event::QUIT_WINDOW);}
@@ -85,6 +88,128 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
             default:{pushEventInstance(Event::NONE); break;}
         }
     }
+    else if( sdl_event_ptr->type == SDL_JOYAXISMOTION )
+	{
+		//Normalized direction
+		int xDir = 0;
+		int yDir = 0;
+		
+		//Motion on controller 0
+		if( sdl_event_ptr->jaxis.which == 0 )
+		{                        
+			//X axis motion
+			if( sdl_event_ptr->jaxis.axis == 0 )
+			{
+				//Left of dead zone
+				if( sdl_event_ptr->jaxis.value < -JOYSTICK_DEAD_ZONE )
+				{
+					xDir = -1;
+				}
+				//Right of dead zone
+				else if( sdl_event_ptr->jaxis.value > JOYSTICK_DEAD_ZONE )
+				{
+					xDir =  1;
+				}
+				else
+				{
+					xDir = 0;
+				}
+			}
+			
+			//Y axis motion
+			if( sdl_event_ptr->jaxis.axis == 1 )
+			{
+				//Below of dead zone
+				if( sdl_event_ptr->jaxis.value < -JOYSTICK_DEAD_ZONE )
+				{
+					yDir = -1;
+				}
+				//Above of dead zone
+				else if( sdl_event_ptr->jaxis.value > JOYSTICK_DEAD_ZONE )
+				{
+					yDir =  1;
+				}
+				else
+				{
+					yDir = 0;
+				}
+			}
+			
+			if(xDir == 0)
+			{
+				if(yDir == 0){pushEventInstance(Event::JOYSTICK_0_NULL);}
+				if(yDir == -1){pushEventInstance(Event::JOYSTICK_0_LEFT);}
+				if(yDir == 1){pushEventInstance(Event::JOYSTICK_0_RIGHT);}
+			}
+			else if(xDir == -1)
+			{
+				if(yDir == 0){pushEventInstance(Event::JOYSTICK_0_LEFT);}
+				if(yDir == -1){pushEventInstance(Event::JOYSTICK_0_DOWN_LEFT);}
+				if(yDir == 1){pushEventInstance(Event::JOYSTICK_0_UP_LEFT);}
+			}
+			else if(xDir == 1)
+			{
+				if(yDir == 0){pushEventInstance(Event::JOYSTICK_0_RIGHT);}
+				if(yDir == -1){pushEventInstance(Event::JOYSTICK_0_DOWN_RIGHT);}
+				if(yDir == 1){pushEventInstance(Event::JOYSTICK_0_UP_RIGHT);}
+			}
+		}
+	}
+	else if(sdl_event_ptr->type == SDL_JOYHATMOTION)
+	{
+		
+		
+		if( sdl_event_ptr->jhat.which == 0 )
+		{
+			//joystick hat
+			if( sdl_event_ptr->jhat.value == SDL_HAT_LEFTUP )
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_UP_LEFT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHTUP)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_UP_RIGHT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_UP)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_UP);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_LEFT)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_LEFT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHT)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_RIGHT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_LEFTDOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_DOWN_LEFT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHTDOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_DOWN_RIGHT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_DOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_DOWN);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_CENTERED)
+			{
+				pushEventInstance(Event::JOYSTICK_0_HAT_NULL);
+			}
+			
+			
+		}
+	}
     else{pushEventInstance(Event::NONE);}
 }
 

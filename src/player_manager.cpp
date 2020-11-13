@@ -42,10 +42,22 @@ bool PlayerManager::GetMultiplePlayersBool(){return mulitple_players_bool;}
 void PlayerManager::SetNumberOfPlayers(int num){m_num_players = num;}
 int PlayerManager::GetNumberOfPlayers(){return m_num_players;}
 
+void PlayerManager::handleEvent(Event& thisEvent)
+{
+	if(player_one_ptr)
+	{
+		player_one_ptr->handleEvent(thisEvent);
+	}
+	if(player_two_ptr)
+	{
+		player_two_ptr->handleEvent(thisEvent);
+	}
+	if(player_three_ptr){player_three_ptr->handleEvent(thisEvent);}
+	if(player_four_ptr){player_four_ptr->handleEvent(thisEvent);}
+}
+
 void PlayerManager::logic(float& timestep)
 {
-	
-	
 	
 	if(player_one_ptr)
 	{

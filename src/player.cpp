@@ -32,6 +32,8 @@ Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
 	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
 	
 	equippedPlayerWeapon = nullptr;
+	
+	m_player_num = 0;
 }
 
 Player::~Player()
@@ -60,20 +62,82 @@ LTexture* Player::getPointerToTexture(){return Sprite::getPointerToTexture();}
 
 void Player::handleEvent(Event& thisEvent)
 {
-    Sprite::handleEvent(thisEvent);
+	    
     
-    //if equipped weapon is not pointing to nullptr
-    if(equippedPlayerWeapon != nullptr)
+    
+    float mVelX = Dot::getVelX();
+    float mVelY = Dot::getVelY();
+    
+    //if first or single player
+    if(m_player_num == 1|| m_player_num == 0)
     {
-        switch(thisEvent)
-        {
-            case Event::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
-            case Event::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
-            case Event::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
-            default:{  break;}
-        }
-    }
+		//if equipped weapon is not pointing to nullptr
+		if(equippedPlayerWeapon != nullptr)
+		{
+			switch(thisEvent)
+			{
+				case Event::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+				case Event::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				case Event::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				default:{  break;}
+			}
+		}
+		
+		switch(thisEvent)
+		{
+			case Event::UP_ARROW:{ mVelY -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::DOWN_ARROW:{ mVelY += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::LEFT_ARROW:{ mVelX -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::RIGHT_ARROW:{ mVelX += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if repeating, keep at same velocity
+			case Event::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if released, stop
+			case Event::UP_ARROW_RELEASE:{ mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event::DOWN_ARROW_RELEASE:{  mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event::LEFT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event::RIGHT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			
+			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+		}
+		
+	}
+	
+	//if second player
+	if(m_player_num == 2)
+	{
+		float speed_factor = 0.8;
+		
+		switch(thisEvent)
+		{
+			case Event::JOYSTICK_0_HAT_UP:{ mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_DOWN:{ mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_LEFT:{ mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_RIGHT:{ mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_UP_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_UP_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_0_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if released, stop
+			case Event::JOYSTICK_0_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+		}
+	}
     
+    
+    Dot::setVelX(mVelX);
+    Dot::setVelY(mVelY);
 }
 
 
@@ -528,3 +592,7 @@ void Player::FaceListenerNorthWest()
 }
 
 int Player::getPlayerHeight(){return Sprite::getHeight();}
+
+void Player::SetPlayerNumber(int num){m_player_num = num;}
+
+int Player::GetPlayerNumber(){return m_player_num;}

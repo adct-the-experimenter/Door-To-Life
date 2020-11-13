@@ -80,6 +80,11 @@ public:
 	void sound(AudioRenderer* gAudioRenderer);
 	
 	int getPlayerHeight();
+	
+//Player Number
+	void SetPlayerNumber(int num);
+	int GetPlayerNumber();
+	
 private:
 
 //members not inherited from sprite class
@@ -150,6 +155,9 @@ private:
     void FaceListenerSouthWest();
     void FaceListenerWest();
     void FaceListenerNorthWest();
+    
+    //variable to indicate which player i.e first player, second player, etc.
+    int m_player_num;
     
 };
 
