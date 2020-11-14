@@ -792,6 +792,11 @@ void Labyrinth::handle_events(Event& thisEvent)
     
     labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraOne());
     
+    if(m_player_manager_ptr)
+    {
+		labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraTwo());
+	}
+    
 }
 
 void Labyrinth::handle_events_RNG(RNGType& rngSeed)
