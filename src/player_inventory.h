@@ -57,8 +57,11 @@ public:
 
 	//function to equip weapon to player
 	void equipThisWeaponToPlayer(Weapon* thisWeapon);
+	
+	void equipThisWeaponToPlayer(Player* thisPlayer, Weapon* thisWeapon);
 	//function to unequip weapon from player
 	void unequipWeaponFromPlayer();
+	void unequipWeaponFromPlayer(Player* thisPlayer);
 
 private:
 	//array of slots in inventory which are used to contain weapon or item

@@ -320,7 +320,8 @@ void DungeonGameLoop()
 	
     
     baseGameState->handle_events_RNG(rng);
-    currentCollisionHandler->run_collision_handler(); //run collision handler to update collision states
+    int num_players = 2;
+    currentCollisionHandler->run_collision_handler(num_players); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -329,7 +330,7 @@ void DungeonGameLoop()
     
     baseGameState->logic(); //run logic module
     
-    gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
+//    gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
@@ -495,63 +496,6 @@ void Dungeon1()
     if(!labyrinthCreated)
     {
 		std::unique_ptr <Labyrinth> labyrinthUPtr(new Labyrinth() );
-	
-    
-		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-		if(!ptrToCollisionHandler){return;}
-		else
-		{
-			mainCollisionHandler = std::move(ptrToCollisionHandler);
-			currentCollisionHandler = mainCollisionHandler.get();
-		}
-		
-		std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
-		if(!ptrToGameInventory){return;}
-		else
-		{
-			gameInventory = std::move(ptrToGameInventory);
-			gameInventory->SetPointerToCollisionHandler(mainCollisionHandler.get());
-		}
-		
-
-		
-		std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
-		if(!ptrToPlayerInventory){return;}
-		else
-		{
-			playerInventory = std::move(ptrToPlayerInventory);
-		}
-		
-		//add player to collision system
-		mainCollisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
-		//pass pointer to player to player inventory
-		playerInventory->SetPointerToPlayer(mainPlayer);
-		//pass pointer to player inventory to game inventory
-		gameInventory->SetPointerToPlayerInventory(playerInventory.get());
-		//add player height to audio renderer
-		int pHeight = mainPlayer->getPlayerHeight();
-		gAudioRenderer.SetPlayerHeight(pHeight);
-		
-		//reset player attributes
-		std::int16_t initialHealth = 100;
-		mainPlayer->setHealth(initialHealth);
-		mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
-		
-		mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
-			
-		if(mainPlayerManager.GetMultiplePlayersBool())
-		{
-			std::int16_t initialHealth = 100;
-			player2->setHealth(initialHealth);
-			player2->setPlayerState(Player::PlayerState::NORMAL);	
-			
-			mainPlayerManager.SetPointerToPlayerTwo(player2);
-		}
-		
-		playerInventory->unequipWeaponFromPlayer();
-		mainCollisionHandler->EmptyPlayerEquippedWeapon();
-		
-		
 		
 		//if setup labyrinth was successful
 		if(setupLabyrinth(*labyrinthUPtr.get()))
@@ -840,7 +784,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //setup default weapon for player
         std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
         std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
-        gameInventory->setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
+        //gameInventory->setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
         
         
         //initialize sub map
@@ -866,7 +810,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         {
 			if(mainCollisionHandler->repeatPlay)
 			{
-				std::cout << " ";
+				std::cout << " repeat!\n";
 			}
 			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
 			mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
@@ -1072,6 +1016,14 @@ void LoadGameResourcesState()
 		printf("Failed to init resources for multiplayer game!\n");
 		quitGame = true;
 	}
+	else
+	{
+		if(!initPlayers())
+		{
+			printf("Failed to initialize main character! \n");
+			quitGame = true;
+		}
+	}
     //load media
     if(!loadMedia())
     {
@@ -1103,6 +1055,31 @@ bool initPlayers()
     }
     else
     {
+		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
+		if(!ptrToCollisionHandler){return false;}
+		else
+		{
+			mainCollisionHandler = std::move(ptrToCollisionHandler);
+			currentCollisionHandler = mainCollisionHandler.get();
+		}
+		
+		std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
+		if(!ptrToGameInventory){return false;}
+		else
+		{
+			gameInventory = std::move(ptrToGameInventory);
+			gameInventory->SetPointerToCollisionHandler(mainCollisionHandler.get());
+		}
+		
+
+		
+		std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
+		if(!ptrToPlayerInventory){return false;}
+		else
+		{
+			playerInventory = std::move(ptrToPlayerInventory);
+		}
+		
         
          //define dot object that will be in the states, allocate memory for it in heap
          //set speed to 
@@ -1112,12 +1089,111 @@ bool initPlayers()
 
         mainDotPointer = std::move(ptrToMC);
         dotPointer2 = std::move(ptrToMC2);
+        
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
         player2 = dynamic_cast<Player*>(dotPointer2.get());
         
+        mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
+        
         mainPlayer->SetPlayerNumber(1);
         player2->SetPlayerNumber(2);
+        
+        //setup bullet resources
+		Bullet* thisBullet1 = new Bullet();
+		thisBullet1->setSpriteTexture(&bullet_sprite_sheet_tex);
+		thisBullet1->setBulletSpriteClips(&bullet_direction_clips);
+		
+		float defGun_BulletSpeed = 480;
+		thisBullet1->setBulletSpeed(defGun_BulletSpeed);
+		
+		
+		//setup gun resources
+		Gun* def_gun1 = new Gun();
+		
+		//make gun point to bullet 
+		def_gun1->setPointerToBullet(thisBullet1);
+		std::int8_t animFrames = 4;
+		def_gun1->setNumberOfAnimationFrames(animFrames);
+		def_gun1->setSpriteSheetTexture(&gun_sprite_sheet_tex); //set sprite sheet of sword
+		def_gun1->setWalkClips(&gun_walk_clips); //set walk clips of sword
+		
+		
+		std::int16_t groundWidth = 10;
+		std::int16_t groundHeight = 20;
+		//set width and height of sword
+		def_gun1->setWeaponGroundBoxWidth(groundWidth);
+		def_gun1->setWeaponGroundBoxHeight(groundHeight);
+		
+		
+		std::int16_t attackWidth = 20;
+		std::int16_t attackHeight = 40;
+		def_gun1->setWeaponAttackBoxWidth(attackWidth);
+		def_gun1->setWeaponAttackBoxHeight(attackHeight);
+		def_gun1->faceWeaponGroundNorth(); //set direction weapon is facing on ground
+		def_gun1->setMoveClip();
+		playerInventory->equipThisWeaponToPlayer(mainPlayer,def_gun1);
+		
+		mainCollisionHandler->addPlayerToCollisionSystem(mainPlayer->getCollisionObjectPtr());
+		mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
+																			nullptr,
+																			nullptr,nullptr);
+		mainCollisionHandler->setCameraForCollisionSystem(&camera);
+		
+		//pass pointer to player to player inventory
+		playerInventory->SetPointerToPlayer(mainPlayer);
+		//pass pointer to player inventory to game inventory
+		gameInventory->SetPointerToPlayerInventory(playerInventory.get());
+		//add player height to audio renderer
+		int pHeight = mainPlayer->getPlayerHeight();
+		gAudioRenderer.SetPlayerHeight(pHeight);
+		
+		//reset player attributes
+		std::int16_t initialHealth = 100;
+		mainPlayer->setHealth(initialHealth);
+		mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
+		
+			
+		if(mainPlayerManager.GetMultiplePlayersBool())
+		{
+			std::int16_t initialHealth = 100;
+			player2->setHealth(initialHealth);
+			player2->setPlayerState(Player::PlayerState::NORMAL);	
+			
+			mainPlayerManager.SetPointerToPlayerTwo(player2);
+			
+			Bullet* thisBullet2 = new Bullet();
+			
+			thisBullet2->setSpriteTexture(&bullet_sprite_sheet_tex);
+			thisBullet2->setBulletSpriteClips(&bullet_direction_clips);
+			thisBullet2->setBulletSpeed(defGun_BulletSpeed);
+			
+			Gun* def_gun2 = new Gun();
+			def_gun2->setPointerToBullet(thisBullet2);
+			def_gun2->setNumberOfAnimationFrames(animFrames);
+			def_gun2->setSpriteSheetTexture(&gun_sprite_sheet_tex); //set sprite sheet of sword
+			def_gun2->setWalkClips(&gun_walk_clips); //set walk clips of sword
+			
+			def_gun2->setWeaponGroundBoxWidth(groundWidth);
+			def_gun2->setWeaponGroundBoxHeight(groundHeight);
+			def_gun2->setWeaponAttackBoxWidth(attackWidth);
+			def_gun2->setWeaponAttackBoxHeight(attackHeight);
+			def_gun2->faceWeaponGroundNorth(); //set direction weapon is facing on ground
+			def_gun2->setMoveClip();
+			
+			playerInventory->equipThisWeaponToPlayer(player2,def_gun2);
+			
+			//add player to collision system
+			mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
+															player2->getCollisionObjectPtr(),
+															nullptr,
+															nullptr);
+			mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
+																			player2->getPointerToEquippedPlayerWeapon(),
+																			nullptr,nullptr);
+			mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,nullptr,nullptr);
+		}
+		
     }
     
     return success;
@@ -1155,11 +1231,6 @@ bool init()
             {
                 success = false;
                 printf("Failed to initialize title state! \n");
-            }
-            else if(!initPlayers())
-            {
-                success = false;
-                printf("Failed to initialize main character! \n");
             }
             //Open the font
 			std::string fontFilePath = DATADIR_STR + std::string("/Fonts/daemones.ttf");

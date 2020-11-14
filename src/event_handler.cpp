@@ -2,6 +2,7 @@
 
 std::queue <Event> event_instances_queue_p1;
 std::queue <Event> event_instances_queue_p2;
+std::queue <Event> event_instances_queue_p3;
 SDL_Event sdl_event;
 
 //function to set event 
@@ -265,7 +266,57 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			}
 		}
 	}
-    else{pushEventInstance(Event::NONE,3);}
+	else if(sdl_event_ptr->type == SDL_JOYBUTTONDOWN)
+	{
+		if(sdl_event_ptr->button.which == 0)
+		{
+			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			{
+				pushEventInstance(Event::JOYSTICK_0_BUTTON_DOWN_PRESSED,2);
+			}
+			else if(sdl_event_ptr->button.state == SDL_RELEASED)
+			{
+				pushEventInstance(Event::JOYSTICK_0_BUTTON_DOWN_RELEASED,2);
+			}
+		}
+		else if(sdl_event_ptr->button.which == 1)
+		{
+			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			{
+				pushEventInstance(Event::JOYSTICK_1_BUTTON_DOWN_PRESSED,3);
+			}
+			else if( sdl_event_ptr->button.state == SDL_RELEASED )
+			{
+				pushEventInstance(Event::JOYSTICK_1_BUTTON_DOWN_RELEASED,3);
+			}
+		}
+	}
+	else if(sdl_event_ptr->type == SDL_JOYBUTTONUP)
+	{
+		if(sdl_event_ptr->button.which == 0)
+		{
+			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			{
+				pushEventInstance(Event::JOYSTICK_0_BUTTON_UP_PRESSED,2);
+			}
+			else if(sdl_event_ptr->button.state == SDL_RELEASED)
+			{
+				pushEventInstance(Event::JOYSTICK_0_BUTTON_UP_RELEASED,2);
+			}
+		}
+		else if(sdl_event_ptr->button.which == 1)
+		{
+			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			{
+				pushEventInstance(Event::JOYSTICK_1_BUTTON_UP_PRESSED,3);
+			}
+			else if( sdl_event_ptr->button.state == SDL_RELEASED )
+			{
+				pushEventInstance(Event::JOYSTICK_1_BUTTON_UP_RELEASED,3);
+			}
+		}
+	}
+    else{pushEventInstance(Event::NONE,3); pushEventInstance(Event::NONE,2); pushEventInstance(Event::NONE,1);}
 }
 
 void pushEventInstance(Event thisEvent, int player_num)
@@ -274,6 +325,7 @@ void pushEventInstance(Event thisEvent, int player_num)
 	{
 		case 1:{ event_instances_queue_p1.push(thisEvent); break;}
 		case 2:{ event_instances_queue_p2.push(thisEvent); break;}
+		case 3:{ event_instances_queue_p3.push(thisEvent); break;}
 		
 	}
 	
@@ -281,14 +333,17 @@ void pushEventInstance(Event thisEvent, int player_num)
 void popEventInstanceFromFront(){event_instances_queue_p1.pop();}
 void popEventInstanceFromFront_Player1(){event_instances_queue_p1.pop();}
 void popEventInstanceFromFront_Player2(){event_instances_queue_p2.pop();}
+void popEventInstanceFromFront_Player3(){event_instances_queue_p3.pop();}
 
 Event& getEventInstanceFront(){return event_instances_queue_p1.front();}
 Event& getEventInstanceFront_Player1(){return event_instances_queue_p1.front();}
 Event& getEventInstanceFront_Player2(){return event_instances_queue_p2.front();}
+Event& getEventInstanceFront_Player3(){return event_instances_queue_p3.front();}
 
 bool isEventQueueEmpty(){return event_instances_queue_p1.empty();}
 bool isEventQueueEmpty_Player1(){return event_instances_queue_p1.empty();}
 bool isEventQueueEmpty_Player2(){return event_instances_queue_p2.empty();}
+bool isEventQueueEmpty_Player3(){return event_instances_queue_p3.empty();}
 
 void clearEventsQueue()
 {

@@ -848,11 +848,22 @@ void Labyrinth::logic()
 	}
     
     //move enemies 
-    m_enemy_inventory.run_enemies_logic(timeStep,*labyrinthCamera, 
+    m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraOne(), 
                         labyrinthMap.labyrinthTilesVector);
+                        
+    if(m_player_manager_ptr->GetMultiplePlayersBool())
+    {
+		m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraTwo(), 
+                        labyrinthMap.labyrinthTilesVector);
+	}
     
     //check for and remove dead enemeies
-    m_enemy_inventory.checkAndRemoveDeadEnemies(*labyrinthCamera);
+    m_enemy_inventory.checkAndRemoveDeadEnemies(*m_player_manager_ptr->GetPointerToCameraOne());
+    
+    if(m_player_manager_ptr->GetMultiplePlayersBool())
+    {
+		m_enemy_inventory.checkAndRemoveDeadEnemies(*m_player_manager_ptr->GetPointerToCameraTwo());
+	}
     
     //Restart timer
     labyrinthTimer->start();

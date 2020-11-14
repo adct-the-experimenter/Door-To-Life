@@ -20,7 +20,7 @@ enum class CollisionBoxOwnerType : std::int8_t { NONE = 0,
 //enum for what kind of collision it is
 enum class CollisionType : std::int8_t { 
 										NONE = 0, 
-                                        //for enemy
+                                        //for enemy and player
                                         HIT_PLAYER, HIT_BY_SWORD, HIT_BY_BULLET,
                                         //for player
                                         HIT_BY_COCKROACH, HIT_BY_ZOMBIE,

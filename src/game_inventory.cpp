@@ -4,6 +4,7 @@
 GameInventory::GameInventory()
 {
 	m_player_inventory_ptr = nullptr;
+	weaponsArray[0] = nullptr;
 }
 
 GameInventory::~GameInventory()
@@ -85,17 +86,21 @@ void GameInventory::run_weapons_render(SDL_Renderer* gRenderer, SDL_Rect& camera
     //for every weapon 
     for(size_t i=0; i < weaponsArray.size(); ++i)
     {
-        //if weapon within camera
-        if(checkCollision(camera,
-                            *( weaponsArray[i]->getCollisionObjectPtr()->ptrToCollisionBox) ) )
-        {
-            //if weapon is on ground
-            if(weaponsArray[i]->getWeaponState() == Weapon::WeaponState::ON_GROUND)
-            {
-                weaponsArray[i]->render(camera,gRenderer,nullptr);
-            }
-            
-        }
+		if(weaponsArray[i])
+		{
+			//if weapon within camera
+			if(checkCollision(camera,
+								*( weaponsArray[i]->getCollisionObjectPtr()->ptrToCollisionBox) ) )
+			{
+				//if weapon is on ground
+				if(weaponsArray[i]->getWeaponState() == Weapon::WeaponState::ON_GROUND)
+				{
+					weaponsArray[i]->render(camera,gRenderer,nullptr);
+				}
+				
+			}
+		}
+        
     }
 }
 

@@ -125,6 +125,12 @@ void Player::handleEvent(Event& thisEvent)
 			case Event::JOYSTICK_0_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			case Event::JOYSTICK_0_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			
+			case Event::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event::JOYSTICK_0_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			
+			case Event::JOYSTICK_0_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event::JOYSTICK_0_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			
 			//if released, stop
 			case Event::JOYSTICK_0_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 			
@@ -410,6 +416,15 @@ void Player::reactToCollision(float& timeStep)
             Player::setPlayerState( PlayerState::FALLING_IN_HOLE);
             break;
         }
+        case CollisionType::HIT_BY_BULLET:
+        {
+			Player::decrementHealth(greedZombieDamage); //decrease health
+            
+            //put in state of push back
+            Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+            std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+            Player::setNumTimesPushBackPlayer(numTimes);
+		}
         
        
         default:{break;}
@@ -625,4 +640,4 @@ void Player::SetPlayerNumber(int num){m_player_num = num;}
 
 int Player::GetPlayerNumber(){return m_player_num;}
 
-
+Weapon* Player::getPointerToEquippedPlayerWeapon(){return equippedPlayerWeapon;}

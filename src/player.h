@@ -88,6 +88,8 @@ public:
 //Joystick controller
 	void handleEvent(SDL_Joystick* joystick_controller);
 	
+	Weapon* getPointerToEquippedPlayerWeapon();
+	
 private:
 
 //members not inherited from sprite class
