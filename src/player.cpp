@@ -125,10 +125,10 @@ void Player::handleEvent(Event& thisEvent)
 			case Event::JOYSTICK_0_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			case Event::JOYSTICK_0_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			
-			case Event::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ std::cout << "button up pressed!\n"; equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
 			case Event::JOYSTICK_0_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
 			
-			case Event::JOYSTICK_0_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event::JOYSTICK_0_BUTTON_UP_PRESSED:{ std::cout << "button up pressed!\n"; equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
 			case Event::JOYSTICK_0_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
 			
 			//if released, stop

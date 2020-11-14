@@ -268,24 +268,24 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 	}
 	else if(sdl_event_ptr->type == SDL_JOYBUTTONDOWN)
 	{
-		if(sdl_event_ptr->button.which == 0)
+		if(sdl_event_ptr->jbutton.which == 0)
 		{
-			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			if( sdl_event_ptr->jbutton.state == SDL_PRESSED )
 			{
 				pushEventInstance(Event::JOYSTICK_0_BUTTON_DOWN_PRESSED,2);
 			}
-			else if(sdl_event_ptr->button.state == SDL_RELEASED)
+			else if(sdl_event_ptr->jbutton.state == SDL_RELEASED)
 			{
 				pushEventInstance(Event::JOYSTICK_0_BUTTON_DOWN_RELEASED,2);
 			}
 		}
-		else if(sdl_event_ptr->button.which == 1)
+		else if(sdl_event_ptr->jbutton.which == 1)
 		{
-			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			if( sdl_event_ptr->jbutton.state == SDL_PRESSED )
 			{
 				pushEventInstance(Event::JOYSTICK_1_BUTTON_DOWN_PRESSED,3);
 			}
-			else if( sdl_event_ptr->button.state == SDL_RELEASED )
+			else if( sdl_event_ptr->jbutton.state == SDL_RELEASED )
 			{
 				pushEventInstance(Event::JOYSTICK_1_BUTTON_DOWN_RELEASED,3);
 			}
@@ -293,24 +293,24 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 	}
 	else if(sdl_event_ptr->type == SDL_JOYBUTTONUP)
 	{
-		if(sdl_event_ptr->button.which == 0)
+		if(sdl_event_ptr->jbutton.which == 0)
 		{
-			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			if( sdl_event_ptr->jbutton.state == SDL_PRESSED )
 			{
 				pushEventInstance(Event::JOYSTICK_0_BUTTON_UP_PRESSED,2);
 			}
-			else if(sdl_event_ptr->button.state == SDL_RELEASED)
+			else if(sdl_event_ptr->jbutton.state == SDL_RELEASED)
 			{
 				pushEventInstance(Event::JOYSTICK_0_BUTTON_UP_RELEASED,2);
 			}
 		}
-		else if(sdl_event_ptr->button.which == 1)
+		else if(sdl_event_ptr->jbutton.which == 1)
 		{
-			if( sdl_event_ptr->button.state == SDL_PRESSED )
+			if( sdl_event_ptr->jbutton.state == SDL_PRESSED )
 			{
 				pushEventInstance(Event::JOYSTICK_1_BUTTON_UP_PRESSED,3);
 			}
-			else if( sdl_event_ptr->button.state == SDL_RELEASED )
+			else if( sdl_event_ptr->jbutton.state == SDL_RELEASED )
 			{
 				pushEventInstance(Event::JOYSTICK_1_BUTTON_UP_RELEASED,3);
 			}
@@ -351,4 +351,5 @@ void clearEventsQueue()
     //swap with empty queue
     event_instances_queue_p1.swap(empty_queue);
     event_instances_queue_p2.swap(empty_queue);
+    event_instances_queue_p3.swap(empty_queue);
 }
