@@ -791,7 +791,6 @@ void Labyrinth::handle_events(Event& thisEvent)
     }
     
     labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraOne());
-    m_player_manager_ptr->handleEvent(thisEvent);
     
 }
 
@@ -818,8 +817,15 @@ void Labyrinth::logic()
         { 
 			Labyrinth::setState(GameState::State::NEXT);
 		}
+		if( m_player_manager_ptr->GetMultiplePlayersBool() )
+		{
+			if(m_player_manager_ptr->GetPointerToPlayerTwo())
+			{
+				checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() );
+			}
+		}
         
-        Labyrinth::DungeonEntranceHitOperations();
+        //Labyrinth::DungeonEntranceHitOperations();
         
     }
     
@@ -834,7 +840,12 @@ void Labyrinth::logic()
     
     
     //push back dot if collide with door
-    labyrinthMap.doorToDot_Logic(mainDotPointer,timeStep,m_player_manager_ptr->GetPointerToCameraOne());
+    labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,m_player_manager_ptr->GetPointerToCameraOne());
+    
+    if(m_player_manager_ptr->GetMultiplePlayersBool())
+    {
+		labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,m_player_manager_ptr->GetPointerToCameraTwo());
+	}
     
     //move enemies 
     m_enemy_inventory.run_enemies_logic(timeStep,*labyrinthCamera, 

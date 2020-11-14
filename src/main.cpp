@@ -236,6 +236,7 @@ bool labyrinthCreated = false;
 
 //Game Controller 1 handler
 SDL_Joystick* gGameController = nullptr;
+SDL_Joystick* gGameController2 = nullptr;
 
 
 int main(int argc, char* args[])
@@ -297,15 +298,20 @@ void DungeonGameLoop()
     frameRateCap.startCapTimer();
     
     //Handle events
-    run_event_handler();
     
+    // poll events
+    
+	
+    run_event_handler();
     //while event queue is not empty
-    while( !isEventQueueEmpty() )
+    while(!isEventQueueEmpty())
     {
-        baseGameState->handle_events(getEventInstanceFront());
-        //pop element in front of event queue
-        popEventInstanceFromFront();
-    }
+		mainPlayerManager.handleEvent_player1(getEventInstanceFront());
+		mainPlayerManager.handleEvent_player2(getEventInstanceFront());
+		baseGameState->handle_events(getEventInstanceFront());
+		popEventInstanceFromFront();
+	}
+	
     
     baseGameState->handle_events_RNG(rng);
     currentCollisionHandler->run_collision_handler(); //run collision handler to update collision states
@@ -1258,8 +1264,16 @@ bool initResourcesForMultiplayer()
 		gGameController = SDL_JoystickOpen( 0 );
 		if( gGameController == NULL )
 		{
-			printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
+			printf( "Warning: Unable to open game controller 1! SDL Error: %s\n", SDL_GetError() );
 		}
+		else{std::cout << "Initialized gamepad 1\n";}
+		
+		gGameController2 = SDL_JoystickOpen( 1 );
+		if( gGameController2 == NULL )
+		{
+			printf( "Warning: Unable to open game controller 2! SDL Error: %s\n", SDL_GetError() );
+		}
+		else{std::cout << "Initialized gamepad 2\n";}
 	}
 
     return success;
@@ -1569,6 +1583,11 @@ void close()
 		gGameController = NULL;
 	}
     
+    if(gGameController2)
+    {
+		SDL_JoystickClose( gGameController2 );
+		gGameController = NULL;
+	}
 
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );

@@ -13,7 +13,7 @@ void run_event_handler()
 }
 
 //Analog joystick dead zone
-const int JOYSTICK_DEAD_ZONE = 7000;
+const int JOYSTICK_DEAD_ZONE = 8000;
 
 void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 {
@@ -206,10 +206,65 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				pushEventInstance(Event::JOYSTICK_0_HAT_NULL);
 			}
+			else
+			{
+				pushEventInstance(Event::NONE);
+			}
+		}
+		else if( sdl_event_ptr->jhat.which == 1 )
+		{
+			//joystick hat
+			if( sdl_event_ptr->jhat.value == SDL_HAT_LEFTUP )
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_UP_LEFT);
+			}
 			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHTUP)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_UP_RIGHT);
+			}
 			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_UP)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_UP);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_LEFT)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_LEFT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHT)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_RIGHT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_LEFTDOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_DOWN_LEFT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_RIGHTDOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_DOWN_RIGHT);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_DOWN)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_DOWN);
+			}
+			
+			else if(sdl_event_ptr->jhat.value == SDL_HAT_CENTERED)
+			{
+				pushEventInstance(Event::JOYSTICK_1_HAT_NULL);
+			}
+			else
+			{
+				pushEventInstance(Event::NONE);
+			}
 		}
 	}
+	
     else{pushEventInstance(Event::NONE);}
 }
 

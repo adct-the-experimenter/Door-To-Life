@@ -62,14 +62,12 @@ LTexture* Player::getPointerToTexture(){return Sprite::getPointerToTexture();}
 
 void Player::handleEvent(Event& thisEvent)
 {
-	    
-    
-    
+	   
     float mVelX = Dot::getVelX();
     float mVelY = Dot::getVelY();
     
     //if first or single player
-    if(m_player_num == 1|| m_player_num == 0)
+    if(m_player_num == 1 || m_player_num == 0)
     {
 		//if equipped weapon is not pointing to nullptr
 		if(equippedPlayerWeapon != nullptr)
@@ -108,10 +106,31 @@ void Player::handleEvent(Event& thisEvent)
 			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 		}
 		
+		float speed_factor = 0.8;
+		
+		switch(thisEvent)
+		{
+			case Event::JOYSTICK_1_HAT_UP:{ mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_DOWN:{ mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_LEFT:{ mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_RIGHT:{ mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_UP_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_UP_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event::JOYSTICK_1_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if released, stop
+			case Event::JOYSTICK_1_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+		}
+		
 	}
 	
 	//if second player
-	if(m_player_num == 2)
+	else if(m_player_num == 2)
 	{
 		float speed_factor = 0.8;
 		
@@ -137,6 +156,35 @@ void Player::handleEvent(Event& thisEvent)
     
     
     Dot::setVelX(mVelX);
+    Dot::setVelY(mVelY);
+}
+
+void Player::handleEvent(SDL_Joystick* joystick_controller)
+{
+	
+	float mVelX = Dot::getVelX();
+    float mVelY = Dot::getVelY();
+    
+    int hat_dir = SDL_HAT_CENTERED;
+    
+    SDL_JoystickGetHat(joystick_controller,hat_dir);
+	std::cout << "hat:" << hat_dir << std::endl;
+	
+	switch(hat_dir)
+	{
+		case SDL_HAT_CENTERED:{ mVelX = 0; mVelY = 0; break;}
+		case SDL_HAT_UP:{ mVelY -= DOT_VEL; break;}
+		case SDL_HAT_RIGHT:{mVelX += DOT_VEL; break;}
+		case SDL_HAT_DOWN:{ mVelY += DOT_VEL; break;}
+		case SDL_HAT_LEFT:{mVelX -= DOT_VEL; break;}
+		case SDL_HAT_RIGHTUP:{mVelY -= DOT_VEL; mVelX += DOT_VEL; break;}
+		case SDL_HAT_RIGHTDOWN:{ mVelX -= DOT_VEL; mVelX += DOT_VEL; break;}
+		case SDL_HAT_LEFTUP:{mVelY -= DOT_VEL; mVelX -= DOT_VEL; break;}
+		case SDL_HAT_LEFTDOWN:{mVelY += DOT_VEL; mVelX -= DOT_VEL; break;}
+	}
+    
+    
+	Dot::setVelX(mVelX);
     Dot::setVelY(mVelY);
 }
 
@@ -596,3 +644,5 @@ int Player::getPlayerHeight(){return Sprite::getHeight();}
 void Player::SetPlayerNumber(int num){m_player_num = num;}
 
 int Player::GetPlayerNumber(){return m_player_num;}
+
+

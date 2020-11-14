@@ -43,6 +43,12 @@ public:
 	void logic(float& timestep);
 	void sound(AudioRenderer* gAudioRenderer);
 	
+	void handleEvent_player1(Event& thisEvent);
+	
+	void handleEvent_player2(Event& thisEvent);
+	void handleEvent_player2(SDL_Joystick* joystick_controller);
+
+	
 private:
 	
 	Player* player_one_ptr;
@@ -57,6 +63,7 @@ private:
 	
 	bool mulitple_players_bool;
 	int m_num_players;
+	
 };
 
 #endif

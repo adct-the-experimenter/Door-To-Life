@@ -8,6 +8,7 @@ PlayerManager::PlayerManager()
 	player_four_ptr = nullptr;
 	
 	mulitple_players_bool = false;
+	
 }
 
 PlayerManager::~PlayerManager()
@@ -52,8 +53,38 @@ void PlayerManager::handleEvent(Event& thisEvent)
 	{
 		player_two_ptr->handleEvent(thisEvent);
 	}
-	if(player_three_ptr){player_three_ptr->handleEvent(thisEvent);}
-	if(player_four_ptr){player_four_ptr->handleEvent(thisEvent);}
+	if(player_three_ptr)
+	{
+		player_three_ptr->handleEvent(thisEvent);
+	}
+	if(player_four_ptr)
+	{
+		player_four_ptr->handleEvent(thisEvent);
+	}
+}
+
+void PlayerManager::handleEvent_player1(Event& thisEvent)
+{
+	if(player_one_ptr)
+	{
+		player_one_ptr->handleEvent(thisEvent);
+	}
+}
+
+void PlayerManager::handleEvent_player2(Event& thisEvent)
+{
+	if(player_two_ptr)
+	{
+		player_two_ptr->handleEvent(thisEvent);
+	}
+}
+
+void PlayerManager::handleEvent_player2(SDL_Joystick* joystick_controller)
+{
+	if(player_two_ptr)
+	{
+		player_two_ptr->handleEvent(joystick_controller);
+	}
 }
 
 void PlayerManager::logic(float& timestep)
@@ -75,3 +106,4 @@ void PlayerManager::sound(AudioRenderer* gAudioRenderer)
 {
 	
 }
+
