@@ -304,12 +304,18 @@ void DungeonGameLoop()
 	
     run_event_handler();
     //while event queue is not empty
-    while(!isEventQueueEmpty())
+    while(!isEventQueueEmpty_Player1())
     {
-		mainPlayerManager.handleEvent_player1(getEventInstanceFront());
-		mainPlayerManager.handleEvent_player2(getEventInstanceFront());
-		baseGameState->handle_events(getEventInstanceFront());
-		popEventInstanceFromFront();
+		mainPlayerManager.handleEvent_player1(getEventInstanceFront_Player1());
+		baseGameState->handle_events(getEventInstanceFront_Player1());
+		popEventInstanceFromFront_Player1();
+	}
+	
+	while(!isEventQueueEmpty_Player2())
+    {
+		mainPlayerManager.handleEvent_player2(getEventInstanceFront_Player2());
+		baseGameState->handle_events(getEventInstanceFront_Player2());
+		popEventInstanceFromFront_Player2();
 	}
 	
     

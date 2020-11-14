@@ -47,19 +47,26 @@ enum class Event : std::int8_t {
 };
 
 //queue of events, first in first out order
-extern std::queue <Event> event_instances_queue;
+extern std::queue <Event> event_instances_queue_p1;
+extern std::queue <Event> event_instances_queue_p2;
 
 //function to push event into queue
-void pushEventInstance(Event thisEvent);
+void pushEventInstance(Event thisEvent, int player_num);
 
 //function to pop event from queue. pops event in front
 void popEventInstanceFromFront();
+void popEventInstanceFromFront_Player1();
+void popEventInstanceFromFront_Player2();
 
 //function to tell whether event queue is empty or not
 bool isEventQueueEmpty();
+bool isEventQueueEmpty_Player1();
+bool isEventQueueEmpty_Player2();
 
 //function to get event in front of queue
 Event& getEventInstanceFront();
+Event& getEventInstanceFront_Player1();
+Event& getEventInstanceFront_Player2();
 
 //function to clear events on queue
 void clearEventsQueue();
