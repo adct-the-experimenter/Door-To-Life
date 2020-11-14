@@ -92,14 +92,20 @@ void PlayerManager::logic(float& timestep)
 	
 	if(player_one_ptr)
 	{
-		player_one_ptr->logic(timestep);
+		if(player_one_ptr->getHealth() > 0){player_one_ptr->logic(timestep);}
 	}
 	if(player_two_ptr)
 	{
-		player_two_ptr->logic(timestep);
+		if(player_two_ptr->getHealth() > 0){player_two_ptr->logic(timestep);}
 	}
-	if(player_three_ptr){player_three_ptr->logic(timestep);}
-	if(player_four_ptr){player_four_ptr->logic(timestep);}
+	if(player_three_ptr)
+	{
+		if(player_three_ptr->getHealth() > 0){player_three_ptr->logic(timestep);}
+	}
+	if(player_four_ptr)
+	{
+		if(player_four_ptr->getHealth() > 0){player_four_ptr->logic(timestep);}
+	}
 }
 
 void PlayerManager::sound(AudioRenderer* gAudioRenderer)
