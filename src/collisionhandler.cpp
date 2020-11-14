@@ -111,6 +111,17 @@ void CollisonHandler::SetCamerasForCollisionSystem(SDL_Rect* camera1,SDL_Rect* c
 void CollisonHandler::run_collision_handler(int& num_players)
 {
 	
+	//check if player 1 collides with player 2
+	if(m_player2CollisionObject_ptr && m_player1CollisionObject_ptr)
+	{
+		CollisonHandler::runPlayer1CollisionOperations(*m_player2CollisionObject_ptr);
+		CollisonHandler::runPlayer2CollisionOperations(*m_player1CollisionObject_ptr);
+		
+		CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player2CollisionObject_ptr);
+		CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player1CollisionObject_ptr);
+	}
+							
+	
     //for every collision object element in vector
     for(size_t i = 0; i < collisionObjectsVector.size(); ++i)
     {
@@ -144,6 +155,7 @@ void CollisonHandler::run_collision_handler(int& num_players)
 							
 							//check if object collided with player's equipped weapon
 							CollisonHandler::runPlayer2WeaponCollisionOperations(*collisionObjectsVector[i]);
+							
 						}
 						
 					}
@@ -375,7 +387,7 @@ void CollisonHandler::runPlayer2WeaponCollisionOperations(CollisionObject& thisO
             thisObject.typeOfCollision = typeCollisionToObject;
             
             //set direction of collision of object to direction of collision of player's weapon
-            thisObject.directionOfCollision = playerEquippedWeapon->getCollisionObjectPtr()->directionOfCollision;
+            thisObject.directionOfCollision = playerEquippedWeapon2->getCollisionObjectPtr()->directionOfCollision;
         }
     }
     

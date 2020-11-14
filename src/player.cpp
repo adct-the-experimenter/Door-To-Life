@@ -424,6 +424,17 @@ void Player::reactToCollision(float& timeStep)
             Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
             std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
             Player::setNumTimesPushBackPlayer(numTimes);
+            break;
+		}
+		case CollisionType::HIT_BY_SWORD:
+        {
+			Player::decrementHealth(greedZombieDamage); //decrease health
+            
+            //put in state of push back
+            Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+            std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+            Player::setNumTimesPushBackPlayer(numTimes);
+            break;
 		}
         
        

@@ -975,26 +975,33 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 											m_player_manager_ptr->GetPointerToPlayerOne(),
 											m_player_manager_ptr->GetPointerToCameraOne());
 		}
-											
-		if(player1_active && player2_active)
+										
+		if(player2_active)
 		{
-			//render player 2 in player 1 viewport
-			gDrawManager->SetToRenderViewPortPlayer1();
-			labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
-											m_player_manager_ptr->GetPointerToPlayerTwo(),
-											m_player_manager_ptr->GetPointerToCameraOne());
-			
 			//render player 2 in player 2 view port										
 			gDrawManager->SetToRenderViewPortPlayer2();
 			labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
 												m_player_manager_ptr->GetPointerToPlayerTwo(),
 												m_player_manager_ptr->GetPointerToCameraTwo());
-												
-			//render player 1 in player 2 viewport
-			gDrawManager->SetToRenderViewPortPlayer2();
-			labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
-												m_player_manager_ptr->GetPointerToPlayerOne(),
-												m_player_manager_ptr->GetPointerToCameraTwo());
+			
+			if(player1_active)
+			{
+				//render player 2 in player 1 viewport
+				gDrawManager->SetToRenderViewPortPlayer1();
+				labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
+												m_player_manager_ptr->GetPointerToPlayerTwo(),
+												m_player_manager_ptr->GetPointerToCameraOne());
+				
+				
+													
+				//render player 1 in player 2 viewport
+				gDrawManager->SetToRenderViewPortPlayer2();
+				labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
+													m_player_manager_ptr->GetPointerToPlayerOne(),
+													m_player_manager_ptr->GetPointerToCameraTwo());
+				
+			}					
+			
 			
 		}
 		
