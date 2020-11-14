@@ -106,26 +106,6 @@ void Player::handleEvent(Event& thisEvent)
 			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 		}
 		
-		float speed_factor = 0.8;
-		
-		switch(thisEvent)
-		{
-			case Event::JOYSTICK_1_HAT_UP:{ mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_DOWN:{ mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_LEFT:{ mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_RIGHT:{ mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_UP_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_UP_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_1_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			
-			//if released, stop
-			case Event::JOYSTICK_1_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
-			
-			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
-			
-			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
-		}
 		
 	}
 	
