@@ -73,29 +73,29 @@ void Dot::setVelY(float& dy){mVelY = dy;}
 
 void Dot::handleEvent(Event& thisEvent)
 {
-    switch(thisEvent)
+    switch(thisEvent.event_id)
     {
-        case Event::UP_ARROW:{ mVelY -= DOT_VEL; break;}
-        case Event::DOWN_ARROW:{ mVelY += DOT_VEL; break;}
-        case Event::LEFT_ARROW:{ mVelX -= DOT_VEL; break;}
-        case Event::RIGHT_ARROW:{ mVelX += DOT_VEL; break;}
+        case Event_ID::UP_ARROW:{ mVelY -= DOT_VEL; break;}
+        case Event_ID::DOWN_ARROW:{ mVelY += DOT_VEL; break;}
+        case Event_ID::LEFT_ARROW:{ mVelX -= DOT_VEL; break;}
+        case Event_ID::RIGHT_ARROW:{ mVelX += DOT_VEL; break;}
         
         //if repeating, keep at same velocity
-        case Event::UP_ARROW_REPEAT:{ break;}
-        case Event::DOWN_ARROW_REPEAT:{ break;}
-        case Event::LEFT_ARROW_REPEAT:{ break;}
-        case Event::RIGHT_ARROW_REPEAT:{ break;}
+        case Event_ID::UP_ARROW_REPEAT:{ break;}
+        case Event_ID::DOWN_ARROW_REPEAT:{ break;}
+        case Event_ID::LEFT_ARROW_REPEAT:{ break;}
+        case Event_ID::RIGHT_ARROW_REPEAT:{ break;}
         
         //if released, stop
-        case Event::UP_ARROW_RELEASE:{ mVelY = 0; break;}
-        case Event::DOWN_ARROW_RELEASE:{  mVelY = 0; break;}
-        case Event::LEFT_ARROW_RELEASE:{ mVelX = 0; break;}
-        case Event::RIGHT_ARROW_RELEASE:{ mVelX = 0; break;}
+        case Event_ID::UP_ARROW_RELEASE:{ mVelY = 0; break;}
+        case Event_ID::DOWN_ARROW_RELEASE:{  mVelY = 0; break;}
+        case Event_ID::LEFT_ARROW_RELEASE:{ mVelX = 0; break;}
+        case Event_ID::RIGHT_ARROW_RELEASE:{ mVelX = 0; break;}
         
         //if space pressed, keep player moving
-        case Event::SPACE:{ break;}
+        case Event_ID::SPACE:{ break;}
         
-        case Event::NONE:{ break;}
+        case Event_ID::NONE:{ break;}
         default:{ mVelX = 0; mVelY = 0; break;}
     }
 }

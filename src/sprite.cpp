@@ -62,19 +62,19 @@ void Sprite::handleEvent(Event& thisEvent)
 
     Dot::handleEvent(thisEvent);
 
-    switch(thisEvent)
+    switch(thisEvent.event_id)
     {
-        case Event::UP_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::DOWN_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::LEFT_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::RIGHT_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::UP_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::DOWN_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::LEFT_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::RIGHT_ARROW:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
         
-        case Event::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-        case Event::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+        case Event_ID::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
         
-        case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+        case Event_ID::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
         default:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
     }
 

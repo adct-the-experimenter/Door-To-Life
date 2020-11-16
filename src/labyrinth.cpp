@@ -785,7 +785,7 @@ void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& scr
 
 void Labyrinth::handle_events(Event& thisEvent)
 {
-    if( thisEvent == Event::QUIT_WINDOW || thisEvent == Event::ESCAPE )
+    if( thisEvent.event_id == Event_ID::QUIT_WINDOW || thisEvent.event_id == Event_ID::ESCAPE )
     {
         Labyrinth::setState(GameState::State::PAUSE);
     }
@@ -794,14 +794,40 @@ void Labyrinth::handle_events(Event& thisEvent)
     
     if(m_player_manager_ptr)
     {
-		labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraTwo());
+		if(m_player_manager_ptr->GetMultiplePlayersBool())
+		{
+			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+			
+			if(num_players > 1)
+			{
+				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraTwo());
+			}
+		}
+		
 	}
     
 }
 
 void Labyrinth::handle_events_RNG(RNGType& rngSeed)
 {
-    m_enemy_inventory.run_enemies_handle_events(rngSeed, *labyrinthCamera);
+    
+    if(m_player_manager_ptr)
+    {
+		m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraOne());
+		
+		if(m_player_manager_ptr->GetMultiplePlayersBool())
+		{
+			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+			
+			if(num_players > 1)
+			{
+				m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraTwo());
+			}
+		}
+		
+	}
+    
+    
 }
 
 
@@ -830,6 +856,7 @@ void Labyrinth::logic()
 			}
 		}
         
+        //uncommented for now until something happens
         //Labyrinth::DungeonEntranceHitOperations();
         
         //move main dot within dungeon map

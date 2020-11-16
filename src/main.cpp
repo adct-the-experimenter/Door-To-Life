@@ -320,6 +320,7 @@ void DungeonGameLoop()
 	
     
     baseGameState->handle_events_RNG(rng);
+    
     int num_players = 2;
     currentCollisionHandler->run_collision_handler(num_players); //run collision handler to update collision states
     
@@ -441,14 +442,14 @@ void NodeGeneration()
             //while event queue is not empty
             while( !isEventQueueEmpty() )
             {
-                switch(getEventInstanceFront())
+                switch(getEventInstanceFront().event_id)
                 {
-                    case Event::ESCAPE:{ quit = true; break;}
-                    case Event::G:{ state = 1; break;}
-                    case Event::V:{ state = 2; break;}
-                    case Event::B:{ state = 3; break;}
-                    case Event::N:{ state = 4; break;}
-                    case Event::R:{ quit = true; generateNewMazeBool = true; break;}
+                    case Event_ID::ESCAPE:{ quit = true; break;}
+                    case Event_ID::G:{ state = 1; break;}
+                    case Event_ID::V:{ state = 2; break;}
+                    case Event_ID::B:{ state = 3; break;}
+                    case Event_ID::N:{ state = 4; break;}
+                    case Event_ID::R:{ quit = true; generateNewMazeBool = true; break;}
                     default:{ break;}
                 }
                 //pop element in front of event queue

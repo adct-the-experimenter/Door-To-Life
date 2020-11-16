@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include <iostream>
+#include <cmath>
 
 //constructor
 Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
@@ -72,36 +73,36 @@ void Player::handleEvent(Event& thisEvent)
 		//if equipped weapon is not pointing to nullptr
 		if(equippedPlayerWeapon != nullptr)
 		{
-			switch(thisEvent)
+			switch(thisEvent.event_id)
 			{
-				case Event::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
-				case Event::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
-				case Event::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				case Event_ID::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+				case Event_ID::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				case Event_ID::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
 				default:{  break;}
 			}
 		}
 		
-		switch(thisEvent)
+		switch(thisEvent.event_id)
 		{
-			case Event::UP_ARROW:{ mVelY -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::DOWN_ARROW:{ mVelY += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::LEFT_ARROW:{ mVelX -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::RIGHT_ARROW:{ mVelX += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::UP_ARROW:{ mVelY -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::DOWN_ARROW:{ mVelY += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::LEFT_ARROW:{ mVelX -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::RIGHT_ARROW:{ mVelX += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			
 			//if repeating, keep at same velocity
-			case Event::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
 			
 			//if released, stop
-			case Event::UP_ARROW_RELEASE:{ mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
-			case Event::DOWN_ARROW_RELEASE:{  mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
-			case Event::LEFT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
-			case Event::RIGHT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::UP_ARROW_RELEASE:{ mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::DOWN_ARROW_RELEASE:{  mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::LEFT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::RIGHT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 			
 			
-			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
 			
 			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 		}
@@ -112,32 +113,48 @@ void Player::handleEvent(Event& thisEvent)
 	//if second player
 	else if(m_player_num == 2)
 	{
-		float speed_factor = 0.8;
+		float speed_factor = 0.2;
 		
-		switch(thisEvent)
+		int xDir = thisEvent.joystick_xDir;
+		int yDir = thisEvent.joystick_yDir;
+		
+		if(xDir == -1){mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK);}
+		else if(xDir == 1){mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK);}
+		
+		if(yDir == -1){mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK);}
+		if(yDir == 1){mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK);}
+		
+		//Correct angle
+		if( xDir == 0 && yDir == 0 )
 		{
-			case Event::JOYSTICK_0_HAT_UP:{ mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_DOWN:{ mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_LEFT:{ mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_RIGHT:{ mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_UP_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_UP_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
-			case Event::JOYSTICK_0_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			mVelX = 0; mVelY = 0;
+			Sprite::setSpriteState(Sprite::State::STAND);
+		}
+		
+		switch(thisEvent.event_id)
+		{
+			case Event_ID::JOYSTICK_0_HAT_UP:{ mVelY -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_DOWN:{ mVelY += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_LEFT:{ mVelX -= speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_RIGHT:{ mVelX += speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_UP_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_UP_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY -= 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_DOWN_RIGHT:{ mVelX += 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::JOYSTICK_0_HAT_DOWN_LEFT:{ mVelX -= 0.5*speed_factor*DOT_VEL; mVelY += 0.5*speed_factor*DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
 			
-			case Event::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ std::cout << "button up pressed!\n"; equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
-			case Event::JOYSTICK_0_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			case Event_ID::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_0_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
 			
-			case Event::JOYSTICK_0_BUTTON_UP_PRESSED:{ std::cout << "button up pressed!\n"; equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
-			case Event::JOYSTICK_0_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			case Event_ID::JOYSTICK_0_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_0_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
 			
 			//if released, stop
-			case Event::JOYSTICK_0_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::JOYSTICK_0_HAT_NULL:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 			
-			case Event::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
 			
-			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
 		}
+		
 	}
     
     

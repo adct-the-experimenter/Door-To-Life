@@ -7,7 +7,9 @@
 
 extern SDL_Event sdl_event;
 
-enum class Event : std::int8_t {
+
+
+enum class Event_ID : std::int8_t {
  
         NONE = 0,
         
@@ -48,6 +50,13 @@ enum class Event : std::int8_t {
     
     //Quit
         QUIT_WINDOW
+};
+
+struct Event
+{
+	Event_ID event_id;
+	int joystick_xDir;
+	int joystick_yDir;
 };
 
 //queue of events, first in first out order

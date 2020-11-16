@@ -367,13 +367,13 @@ void Dungeon::handle_events(Event& thisEvent)
    // std::cout << "Handle events called! \n";
 
     //User requests pause by pressing escape
-    if( thisEvent == Event::ESCAPE )
+    if( thisEvent.event_id == Event_ID::ESCAPE )
     {
         //set pause state
         Dungeon::setState(GameState::State::PAUSE);
     }
     //User requests quit by X out window
-    else if(thisEvent == Event::QUIT_WINDOW)
+    else if(thisEvent.event_id == Event_ID::QUIT_WINDOW)
     {
         Dungeon::setState(GameState::State::EXIT);
     }
