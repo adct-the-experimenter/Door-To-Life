@@ -45,16 +45,43 @@ bool TitleMenu::loadMedia(SDL_Renderer *gRenderer)
             std::cout << "Failed to load exit button media! \n";
             success = false;
         }
-        else{exitButton.setPosition(320 + 75 ,240 + 100);}
+        else{exitButton.setPosition(50 ,400);}
 
-        //load play game button media
-        std::string playGameButtonFilePath = DATADIR_STR + BUTTONSDIR_STR + std::string("play-game-button.png");
-        if(!playGameButton.loadMedia(playGameButtonFilePath,clips,gRenderer))
+        //load play 1 player game button media
+        std::string playGameButtonFilePath = DATADIR_STR + BUTTONSDIR_STR + std::string("play-game-singleplayer-button.png");
+        if(!playGameButton_1.loadMedia(playGameButtonFilePath,clips,gRenderer))
         {
-            std::cout << "Failed to load play game button media! \n";
+            std::cout << "Failed to load play 1 game button media! \n";
             success = false;
         }
-        else{playGameButton.setPosition(320 -150 ,240 + 100);}
+        else{playGameButton_1.setPosition(50 ,0);}
+        
+        //load play 2 player game button media
+        playGameButtonFilePath = DATADIR_STR + BUTTONSDIR_STR + std::string("play-game-2player-button.png");
+        if(!playGameButton_2.loadMedia(playGameButtonFilePath,clips,gRenderer))
+        {
+            std::cout << "Failed to load play 2 game button media! \n";
+            success = false;
+        }
+        else{playGameButton_2.setPosition(50 ,100);}
+        
+        //load play 3 player game button media
+        playGameButtonFilePath = DATADIR_STR + BUTTONSDIR_STR + std::string("play-game-3player-button.png");
+        if(!playGameButton_3.loadMedia(playGameButtonFilePath,clips,gRenderer))
+        {
+            std::cout << "Failed to load play 3 game button media! \n";
+            success = false;
+        }
+        else{playGameButton_3.setPosition(50 ,200);}
+        
+        //load play 4 player game button media
+        playGameButtonFilePath = DATADIR_STR + BUTTONSDIR_STR + std::string("play-game-4player-button.png");
+        if(!playGameButton_4.loadMedia(playGameButtonFilePath,clips,gRenderer))
+        {
+            std::cout << "Failed to load play 4 game button media! \n";
+            success = false;
+        }
+        else{playGameButton_4.setPosition(50 ,300);}
 
         
     }
@@ -143,8 +170,8 @@ void TitleMenu::defaultMenu_logic()
     //if key is pressed
     switch(TitleMenu::getKeyPress() )
     {
-        case Menu::KeyPress::K_LEFT:{ TitleMenu::decrementKeyFocusPosition(); break;}
-        case Menu::KeyPress::K_RIGHT:{ TitleMenu::incrementKeyFocusPosition(); break;}
+        case Menu::KeyPress::K_UP:{ TitleMenu::decrementKeyFocusPosition(); break;}
+        case Menu::KeyPress::K_DOWN:{ TitleMenu::incrementKeyFocusPosition(); break;}
         case Menu::KeyPress::K_ENTER:
         {
             //if key focus is in position zero, push into quit state 
@@ -156,11 +183,32 @@ void TitleMenu::defaultMenu_logic()
             }
             //if key focus is in position one, pop into not running state to resume game
             else if(TitleMenu::getKeyFocusPosition() == 
-            (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME)
+            (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_SINGLE)
             {
-                playGameButton.setButtonState(GraphicalButton::State::BUTTON_DOWN);
+                playGameButton_1.setButtonState(GraphicalButton::State::BUTTON_DOWN);
                 TitleMenu::setState(GameState::State::NEXT);
-                title_options = TitleMenu::TitleOptions::PLAY_GAME;
+                title_options = TitleMenu::TitleOptions::PLAY_GAME_SINGLE;
+            }
+            else if(TitleMenu::getKeyFocusPosition() == 
+            (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_2_PLAYER)
+            {
+                playGameButton_2.setButtonState(GraphicalButton::State::BUTTON_DOWN);
+                TitleMenu::setState(GameState::State::NEXT);
+                title_options = TitleMenu::TitleOptions::PLAY_GAME_2_PLAYER;
+            }
+            else if(TitleMenu::getKeyFocusPosition() == 
+            (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_3_PLAYER)
+            {
+                playGameButton_3.setButtonState(GraphicalButton::State::BUTTON_DOWN);
+                TitleMenu::setState(GameState::State::NEXT);
+                title_options = TitleMenu::TitleOptions::PLAY_GAME_3_PLAYER;
+            }
+            else if(TitleMenu::getKeyFocusPosition() == 
+            (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_4_PLAYER)
+            {
+                playGameButton_4.setButtonState(GraphicalButton::State::BUTTON_DOWN);
+                TitleMenu::setState(GameState::State::NEXT);
+                title_options = TitleMenu::TitleOptions::PLAY_GAME_4_PLAYER;
             }
             else if(TitleMenu::getKeyFocusPosition() == 
             (std::int8_t)TitleMenu::TitleOptions::NODE_GEN_DEBUG)
@@ -180,9 +228,21 @@ void TitleMenu::defaultMenu_logic()
     {exitButton.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
     else{exitButton.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
     
-    if(TitleMenu::getKeyFocusPosition() == (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME)
-    {playGameButton.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
-    else{playGameButton.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
+    if(TitleMenu::getKeyFocusPosition() == (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_SINGLE)
+    {playGameButton_1.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
+    else{playGameButton_1.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
+    
+    if(TitleMenu::getKeyFocusPosition() == (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_2_PLAYER)
+    {playGameButton_2.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
+    else{playGameButton_2.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
+    
+    if(TitleMenu::getKeyFocusPosition() == (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_3_PLAYER)
+    {playGameButton_3.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
+    else{playGameButton_3.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
+    
+    if(TitleMenu::getKeyFocusPosition() == (std::int8_t)TitleMenu::TitleOptions::PLAY_GAME_4_PLAYER)
+    {playGameButton_4.setButtonState(GraphicalButton::State::KEY_FOCUS_ON_BUTTON);}
+    else{playGameButton_4.setButtonState(GraphicalButton::State::KEY_FOCUS_OFF_BUTTON);}
     
     
     //bounds checking for key focus position
@@ -202,7 +262,10 @@ void TitleMenu::defaultMenu_sound()
 void TitleMenu::defaultMenu_render(SDL_Renderer* gRenderer)
 {
     exitButton.render(gRenderer);
-    playGameButton.render(gRenderer);
+    playGameButton_1.render(gRenderer);
+    playGameButton_2.render(gRenderer);
+    playGameButton_3.render(gRenderer);
+    playGameButton_4.render(gRenderer);
 }
 
 //quit prompt

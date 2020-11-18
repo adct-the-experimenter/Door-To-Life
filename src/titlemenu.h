@@ -59,8 +59,10 @@ public:
     virtual void options_render(SDL_Renderer* gRenderer);
     
     
-    std::int8_t TitleMenuOptionsMax = 3;
-    enum class TitleOptions : std::int8_t{ PLAY_GAME = 0,EXIT, NODE_GEN_DEBUG};
+    std::int8_t TitleMenuOptionsMax = 6;
+    enum class TitleOptions : std::int8_t{ PLAY_GAME_SINGLE = 0, 
+										   PLAY_GAME_2_PLAYER,PLAY_GAME_3_PLAYER,PLAY_GAME_4_PLAYER,
+										   EXIT, NODE_GEN_DEBUG};
     
     TitleMenu::TitleOptions getTitleOption();
     
@@ -69,7 +71,11 @@ private:
     
     //default menu members
     GraphicalButton exitButton;
-    GraphicalButton playGameButton;
+    GraphicalButton playGameButton_1; //single player
+    GraphicalButton playGameButton_2; //2 player
+    GraphicalButton playGameButton_3; //3 player
+    GraphicalButton playGameButton_4; //4 player
+    
     
     TitleMenu::TitleOptions title_options; 
 };
