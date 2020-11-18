@@ -91,6 +91,7 @@ void GameWon();
 //Drawing manager used to manage drawing to 
 DrawingManager gDrawManager;
 
+int g_num_players = 1;
 
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT   };
@@ -254,8 +255,6 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		mainPlayerManager.SetMultiplePlayersBool(true);
-		gDrawManager.SetMultiplePlayersBool(true);
 		
         NodeGenStateStructure.StatePointer = NodeGeneration;
         gDungeon1StateStructure.StatePointer = Dungeon1;
@@ -321,8 +320,7 @@ void DungeonGameLoop()
     
     baseGameState->handle_events_RNG(rng);
     
-    int num_players = 2;
-    currentCollisionHandler->run_collision_handler(num_players); //run collision handler to update collision states
+    currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -999,9 +997,34 @@ void TitleState()
             //go to next dungeon
             baseGameState = nullptr;
             
-            //for now go with 2 players by default
-            gDrawManager.SetNumberOfPlayers(2);
-            mainPlayerManager.SetNumberOfPlayers(2);
+            if(gTitle.get()->getTitleMenuOptionSelect() == TitleMenu::TitleOptions::PLAY_GAME_SINGLE)
+            {
+				g_num_players = 1;
+				mainPlayerManager.SetMultiplePlayersBool(false);
+				gDrawManager.SetMultiplePlayersBool(false);
+			}
+			else if(gTitle.get()->getTitleMenuOptionSelect() == TitleMenu::TitleOptions::PLAY_GAME_2_PLAYER)
+            {
+				g_num_players = 2;
+				mainPlayerManager.SetMultiplePlayersBool(true);
+				gDrawManager.SetMultiplePlayersBool(true);
+			}
+			else if(gTitle.get()->getTitleMenuOptionSelect() == TitleMenu::TitleOptions::PLAY_GAME_3_PLAYER)
+            {
+				g_num_players = 3;
+				mainPlayerManager.SetMultiplePlayersBool(true);
+				gDrawManager.SetMultiplePlayersBool(true);
+			}
+			else if(gTitle.get()->getTitleMenuOptionSelect() == TitleMenu::TitleOptions::PLAY_GAME_4_PLAYER)
+            {
+				g_num_players = 2;
+				mainPlayerManager.SetMultiplePlayersBool(true);
+				gDrawManager.SetMultiplePlayersBool(true);
+			}
+            
+            //set number of players
+            gDrawManager.SetNumberOfPlayers(g_num_players);
+            mainPlayerManager.SetNumberOfPlayers(g_num_players);
             
             //push load game resources state into game
             state_stack.push(LoadGameResourcesStateStructure); 
@@ -1325,11 +1348,18 @@ bool initResourcesForMultiplayer()
 {
 	bool success = true;
     
+    if(g_num_players == 1 )
+    {
+		gDrawManager.InitViewportsForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
+		gDrawManager.InitCamerasForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
+		return true;
+	}
+	
     gDrawManager.SetPointerToCameraTwo(&camera2);
 	mainPlayerManager.SetPointerToCameraTwo(&camera2);
 	
-	gDrawManager.InitViewportsForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
-	gDrawManager.InitCamerasForThisNumberOfPlayers(2,SCREEN_WIDTH,SCREEN_HEIGHT);
+	gDrawManager.InitViewportsForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
+	gDrawManager.InitCamerasForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
 	
 	//Check for joysticks
 	if( SDL_NumJoysticks() < 1 )

@@ -30,7 +30,12 @@ void DrawingManager::InitViewportsForThisNumberOfPlayers(int num, int screen_wid
 {
 	switch(num)
 	{
-		case 1:{ break;}
+		case 1:
+		{
+			player1Viewport.x = 0; player1Viewport.y = 0;
+			player1Viewport.w = screen_width; player1Viewport.h = screen_height;  
+			break;
+		}
 		case 2:
 		{
 			player1Viewport.x = 0; player1Viewport.y = 0;
@@ -40,8 +45,33 @@ void DrawingManager::InitViewportsForThisNumberOfPlayers(int num, int screen_wid
 			player2Viewport.w = screen_width / 2; player2Viewport.h = screen_height;
 			break;
 		}
-		case 3:{ break;}
-		case 4:{ break;}
+		case 3:
+		{
+			player1Viewport.x = 0; player1Viewport.y = 0;
+			player1Viewport.w = screen_width / 2; player1Viewport.h = screen_height / 2; 
+			
+			player2Viewport.x = screen_width / 2; player2Viewport.y = 0;
+			player2Viewport.w = screen_width / 2; player2Viewport.h = screen_height / 2;
+			
+			player3Viewport.x = 0; player3Viewport.y = screen_height / 2;
+			player3Viewport.w = screen_width / 2; player3Viewport.h = screen_height / 2; 
+			break;
+		}
+		case 4:
+		{
+			player1Viewport.x = 0; player1Viewport.y = 0;
+			player1Viewport.w = screen_width / 2; player1Viewport.h = screen_height / 2; 
+			
+			player2Viewport.x = screen_width / 2; player2Viewport.y = 0;
+			player2Viewport.w = screen_width / 2; player2Viewport.h = screen_height / 2;
+			
+			player3Viewport.x = 0; player3Viewport.y = screen_height / 2;
+			player3Viewport.w = screen_width / 2; player3Viewport.h = screen_height / 2; 
+			
+			player4Viewport.x = screen_width / 2; player4Viewport.y = screen_height / 2;
+			player4Viewport.w = screen_width / 2; player4Viewport.h = screen_height / 2; 
+			break;
+		}
 		
 	}
 }
@@ -50,16 +80,31 @@ void DrawingManager::InitCamerasForThisNumberOfPlayers(int num, int screen_width
 {
 	switch(num)
 	{
-		case 1:{ break;}
+		case 1:
+		{
+			camera_one_ptr->w = screen_width; camera_one_ptr->h = screen_height;
+			break;
+		}
 		case 2:
 		{
 			camera_one_ptr->w = screen_width / 2; camera_one_ptr->h = screen_height; 
-			
 			camera_two_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height;
 			break;
 		}
-		case 3:{ break;}
-		case 4:{ break;}
+		case 3:
+		{
+			camera_one_ptr->w = screen_width / 2; camera_one_ptr->h = screen_height / 2; 
+			camera_two_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			break;
+		}
+		case 4:
+		{
+			camera_one_ptr->w = screen_width / 2; camera_one_ptr->h = screen_height / 2; 
+			camera_two_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			camera_three_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			camera_four_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			break;
+		}
 		
 	}
 }
@@ -72,6 +117,16 @@ void DrawingManager::SetToRenderViewPortPlayer1()
 void DrawingManager::SetToRenderViewPortPlayer2()
 {
 	SDL_RenderSetViewport( m_renderer_ptr, &player2Viewport );
+}
+
+void DrawingManager::SetToRenderViewPortPlayer3()
+{
+	SDL_RenderSetViewport( m_renderer_ptr, &player3Viewport );
+}
+
+void DrawingManager::SetToRenderViewPortPlayer4()
+{
+	SDL_RenderSetViewport( m_renderer_ptr, &player4Viewport );
 }
 
 //renderers

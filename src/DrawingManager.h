@@ -39,6 +39,8 @@ public:
 	
 	void SetToRenderViewPortPlayer1();
 	void SetToRenderViewPortPlayer2();
+	void SetToRenderViewPortPlayer3();
+	void SetToRenderViewPortPlayer4();
 	
 	void SetMultiplePlayersBool(bool state);
 	bool GetMultiplePlayersBool();
@@ -65,6 +67,8 @@ private:
 	//set based on number of players
 	SDL_Rect player1Viewport;
 	SDL_Rect player2Viewport;
+	SDL_Rect player3Viewport;
+	SDL_Rect player4Viewport;
 };
 
 #endif
