@@ -96,6 +96,8 @@ int g_num_players = 1;
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT   };
 SDL_Rect camera2 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
+SDL_Rect camera3 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
+SDL_Rect camera4 = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
 
 //Timer for frame rate
 LTimer stepTimer; //keeps track of time between steps
@@ -104,9 +106,13 @@ int loop = 0;
 //Pointer to main sprite object pointer
 std::unique_ptr <Dot> mainDotPointer;
 std::unique_ptr <Dot> dotPointer2;
+std::unique_ptr <Dot> dotPointer3;
+std::unique_ptr <Dot> dotPointer4;
 bool initPlayers();
 Player* mainPlayer = nullptr;
 Player* player2 = nullptr;
+Player* player3 = nullptr;
+Player* player4 = nullptr;
 
 
 /** Functions **/
@@ -238,6 +244,7 @@ bool labyrinthCreated = false;
 //Game Controller 1 handler
 SDL_Joystick* gGameController = nullptr;
 SDL_Joystick* gGameController2 = nullptr;
+SDL_Joystick* gGameController3 = nullptr;
 
 
 int main(int argc, char* args[])
@@ -781,8 +788,8 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         //setup weapons in labyrinth
         
         //setup default weapon for player
-        std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
-        std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
+        //std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
+        //std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
         //gameInventory->setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
         
         
@@ -1017,7 +1024,7 @@ void TitleState()
 			}
 			else if(gTitle.get()->getTitleMenuOptionSelect() == TitleMenu::TitleOptions::PLAY_GAME_4_PLAYER)
             {
-				g_num_players = 2;
+				g_num_players = 4;
 				mainPlayerManager.SetMultiplePlayersBool(true);
 				gDrawManager.SetMultiplePlayersBool(true);
 			}
@@ -1070,9 +1077,9 @@ bool initPlayers()
     
     //make hero
     std::unique_ptr <Dot> ptrToMC(new Player(10,30,15,20) );
-    std::unique_ptr <Dot> ptrToMC2(new Player(10,30,15,20) );
+    
 
-    if(!ptrToMC && !ptrToMC2)
+    if(!ptrToMC)
     {
         printf("Failed to initialize Hero. \n");
         return false;
@@ -1109,54 +1116,21 @@ bool initPlayers()
          //set speed to 
         float speed = 80 * 3;
         ptrToMC->setSpeed(speed);
-        ptrToMC2->setSpeed(speed);
+        
 
         mainDotPointer = std::move(ptrToMC);
-        dotPointer2 = std::move(ptrToMC2);
+        
         
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
-        player2 = dynamic_cast<Player*>(dotPointer2.get());
+        
         
         mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
         
         mainPlayer->SetPlayerNumber(1);
-        player2->SetPlayerNumber(2);
         
-        //setup bullet resources
-		Bullet* thisBullet1 = new Bullet();
-		thisBullet1->setSpriteTexture(&bullet_sprite_sheet_tex);
-		thisBullet1->setBulletSpriteClips(&bullet_direction_clips);
-		
-		float defGun_BulletSpeed = 480;
-		thisBullet1->setBulletSpeed(defGun_BulletSpeed);
-		
-		
-		//setup gun resources
-		Gun* def_gun1 = new Gun();
-		
-		//make gun point to bullet 
-		def_gun1->setPointerToBullet(thisBullet1);
-		std::int8_t animFrames = 4;
-		def_gun1->setNumberOfAnimationFrames(animFrames);
-		def_gun1->setSpriteSheetTexture(&gun_sprite_sheet_tex); //set sprite sheet of sword
-		def_gun1->setWalkClips(&gun_walk_clips); //set walk clips of sword
-		
-		
-		std::int16_t groundWidth = 10;
-		std::int16_t groundHeight = 20;
-		//set width and height of sword
-		def_gun1->setWeaponGroundBoxWidth(groundWidth);
-		def_gun1->setWeaponGroundBoxHeight(groundHeight);
-		
-		
-		std::int16_t attackWidth = 20;
-		std::int16_t attackHeight = 40;
-		def_gun1->setWeaponAttackBoxWidth(attackWidth);
-		def_gun1->setWeaponAttackBoxHeight(attackHeight);
-		def_gun1->faceWeaponGroundNorth(); //set direction weapon is facing on ground
-		def_gun1->setMoveClip();
-		playerInventory->equipThisWeaponToPlayer(mainPlayer,def_gun1);
+        
+        gameInventory->setupDefaultGunForPlayer_equippedweapon(mainPlayer);
 		
 		mainCollisionHandler->addPlayerToCollisionSystem(mainPlayer->getCollisionObjectPtr());
 		mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
@@ -1180,42 +1154,90 @@ bool initPlayers()
 			
 		if(mainPlayerManager.GetMultiplePlayersBool())
 		{
-			std::int16_t initialHealth = 100;
-			player2->setHealth(initialHealth);
-			player2->setPlayerState(Player::PlayerState::NORMAL);	
+			//if there is a 2nd player
+			if(mainPlayerManager.GetNumberOfPlayers() > 1)
+			{
+				
+				std::unique_ptr <Dot> ptrToMC2(new Player(10,30,15,20) );
+				ptrToMC2->setSpeed(speed);
+				dotPointer2 = std::move(ptrToMC2);
+				
+				player2 = dynamic_cast<Player*>(dotPointer2.get());
+				player2->SetPlayerNumber(2);
+				player2->setHealth(initialHealth);
+				player2->setPlayerState(Player::PlayerState::NORMAL);	
+				
+				mainPlayerManager.SetPointerToPlayerTwo(player2);
+				
+				gameInventory->setupDefaultGunForPlayer_equippedweapon(player2);
+				
+				//add player to collision system
+				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
+																player2->getCollisionObjectPtr(),
+																nullptr,
+																nullptr);
+				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
+																				player2->getPointerToEquippedPlayerWeapon(),
+																				nullptr,nullptr);
+				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,nullptr,nullptr);
+			}
+			//if there is a 3rd player
+			if(mainPlayerManager.GetNumberOfPlayers() > 2)
+			{
+				std::unique_ptr <Dot> ptrToMC3(new Player(10,30,15,20) );
+				ptrToMC3->setSpeed(speed);
+				dotPointer3 = std::move(ptrToMC3);
+				
+				player3 = dynamic_cast<Player*>(dotPointer3.get());
+				player3->SetPlayerNumber(3);
+				player3->setHealth(initialHealth);
+				player3->setPlayerState(Player::PlayerState::NORMAL);	
+				
+				mainPlayerManager.SetPointerToPlayerThree(player3);
+				
+				gameInventory->setupDefaultGunForPlayer_equippedweapon(player3);
+				
+				//add player to collision system
+				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
+																player2->getCollisionObjectPtr(),
+																player3->getCollisionObjectPtr(),
+																nullptr);
+				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
+																				player2->getPointerToEquippedPlayerWeapon(),
+																				player3->getPointerToEquippedPlayerWeapon(),
+																				nullptr);
+				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,nullptr);
+			}
+			//if there is a 4th player
+			if(mainPlayerManager.GetNumberOfPlayers() > 3)
+			{
+				std::unique_ptr <Dot> ptrToMC4(new Player(10,30,15,20) );
+				ptrToMC4->setSpeed(speed);
+				dotPointer4 = std::move(ptrToMC4);
+				
+				player4 = dynamic_cast<Player*>(dotPointer4.get());
+				player4->SetPlayerNumber(4);
+				player4->setHealth(initialHealth);
+				player4->setPlayerState(Player::PlayerState::NORMAL);	
+				
+				mainPlayerManager.SetPointerToPlayerFour(player4);
+				
+				gameInventory->setupDefaultGunForPlayer_equippedweapon(player4);
+				
+				//add player to collision system
+				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
+																player2->getCollisionObjectPtr(),
+																player3->getCollisionObjectPtr(),
+																player4->getCollisionObjectPtr());
+																
+				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
+																				player2->getPointerToEquippedPlayerWeapon(),
+																				player3->getPointerToEquippedPlayerWeapon(),
+																				player4->getPointerToEquippedPlayerWeapon());
+				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,&camera4);
+				
+			}
 			
-			mainPlayerManager.SetPointerToPlayerTwo(player2);
-			
-			Bullet* thisBullet2 = new Bullet();
-			
-			thisBullet2->setSpriteTexture(&bullet_sprite_sheet_tex);
-			thisBullet2->setBulletSpriteClips(&bullet_direction_clips);
-			thisBullet2->setBulletSpeed(defGun_BulletSpeed);
-			
-			Gun* def_gun2 = new Gun();
-			def_gun2->setPointerToBullet(thisBullet2);
-			def_gun2->setNumberOfAnimationFrames(animFrames);
-			def_gun2->setSpriteSheetTexture(&gun_sprite_sheet_tex); //set sprite sheet of sword
-			def_gun2->setWalkClips(&gun_walk_clips); //set walk clips of sword
-			
-			def_gun2->setWeaponGroundBoxWidth(groundWidth);
-			def_gun2->setWeaponGroundBoxHeight(groundHeight);
-			def_gun2->setWeaponAttackBoxWidth(attackWidth);
-			def_gun2->setWeaponAttackBoxHeight(attackHeight);
-			def_gun2->faceWeaponGroundNorth(); //set direction weapon is facing on ground
-			def_gun2->setMoveClip();
-			
-			playerInventory->equipThisWeaponToPlayer(player2,def_gun2);
-			
-			//add player to collision system
-			mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-															player2->getCollisionObjectPtr(),
-															nullptr,
-															nullptr);
-			mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																			player2->getPointerToEquippedPlayerWeapon(),
-																			nullptr,nullptr);
-			mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,nullptr,nullptr);
 		}
 		
     }
@@ -1355,8 +1377,26 @@ bool initResourcesForMultiplayer()
 		return true;
 	}
 	
-    gDrawManager.SetPointerToCameraTwo(&camera2);
-	mainPlayerManager.SetPointerToCameraTwo(&camera2);
+	//if there is a 2nd player
+	if(g_num_players > 1)
+	{
+		gDrawManager.SetPointerToCameraTwo(&camera2);
+		mainPlayerManager.SetPointerToCameraTwo(&camera2);
+	}
+    
+    //if there is a 3rd player
+    if(g_num_players > 2)
+    {
+		gDrawManager.SetPointerToCameraThree(&camera3);
+		mainPlayerManager.SetPointerToCameraThree(&camera3);
+	}
+	
+	//if there is a 4th player
+	if(g_num_players > 3)
+	{
+		gDrawManager.SetPointerToCameraFour(&camera4);
+		mainPlayerManager.SetPointerToCameraFour(&camera4);
+	}
 	
 	gDrawManager.InitViewportsForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
 	gDrawManager.InitCamerasForThisNumberOfPlayers(g_num_players,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -1369,19 +1409,41 @@ bool initResourcesForMultiplayer()
 	else
 	{
 		//Load joystick
-		gGameController = SDL_JoystickOpen( 0 );
-		if( gGameController == NULL )
-		{
-			printf( "Warning: Unable to open game controller 1! SDL Error: %s\n", SDL_GetError() );
-		}
-		else{std::cout << "Initialized gamepad 1\n";}
 		
-		gGameController2 = SDL_JoystickOpen( 1 );
-		if( gGameController2 == NULL )
+		//if there is a second player 
+		if(g_num_players > 1)
 		{
-			printf( "Warning: Unable to open game controller 2! SDL Error: %s\n", SDL_GetError() );
+			gGameController = SDL_JoystickOpen( 0 );
+			if( gGameController == NULL )
+			{
+				printf( "Warning: Unable to open game controller 1! SDL Error: %s\n", SDL_GetError() );
+			}
+			else{std::cout << "Initialized gamepad 1\n";}
+			
 		}
-		else{std::cout << "Initialized gamepad 2\n";}
+		
+		//if there is a third player
+		if(g_num_players > 2)
+		{
+			gGameController2 = SDL_JoystickOpen( 1 );
+			if( gGameController2 == NULL )
+			{
+				printf( "Warning: Unable to open game controller 2! SDL Error: %s\n", SDL_GetError() );
+			}
+			else{std::cout << "Initialized gamepad 2\n";}
+		}
+		
+		//if there is a fourth player
+		if(g_num_players > 3)
+		{
+			gGameController3 = SDL_JoystickOpen( 2 );
+			if( gGameController2 == NULL )
+			{
+				printf( "Warning: Unable to open game controller 3! SDL Error: %s\n", SDL_GetError() );
+			}
+			else{std::cout << "Initialized gamepad 3\n";}
+		}
+		
 	}
 
     return success;
@@ -1558,9 +1620,21 @@ bool loadMedia()
 		success = false;
 	}
 	//load other players media
-	if(!setup_loadPlayerMedia(player2,gRenderer,2))
+	if(g_num_players > 1 && !setup_loadPlayerMedia(player2,gRenderer,2))
 	{
 		printf("Failed to load player 2 media! \n");
+		success = false;
+	}
+	//load other players media
+	if(g_num_players > 2 && !setup_loadPlayerMedia(player3,gRenderer,3))
+	{
+		printf("Failed to load player 3 media! \n");
+		success = false;
+	}
+	//load other players media
+	if(g_num_players > 3 && !setup_loadPlayerMedia(player4,gRenderer,4))
+	{
+		printf("Failed to load player 4 media! \n");
 		success = false;
 	}
 	//alGetError();
@@ -1694,7 +1768,13 @@ void close()
     if(gGameController2)
     {
 		SDL_JoystickClose( gGameController2 );
-		gGameController = NULL;
+		gGameController2 = NULL;
+	}
+	
+	if(gGameController3)
+    {
+		SDL_JoystickClose( gGameController3 );
+		gGameController3 = NULL;
 	}
 
 	//Destroy window

@@ -145,6 +145,8 @@ void LabyrinthMap::renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap)
 
 void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextureMap)
 {
+	int num_players = gDrawManager->GetNumberOfPlayers();
+	
     for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
     {
 		gDrawManager->SetToRenderViewPortPlayer1();
@@ -155,20 +157,32 @@ void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextur
 		
 		if(gDrawManager->GetMultiplePlayersBool())
 		{
-			gDrawManager->SetToRenderViewPortPlayer2();
+			if(num_players > 1)
+			{
+				gDrawManager->SetToRenderViewPortPlayer2();
 			
-			labyrinthTilesVector[i]->render(tileTextureMap,
-											*gDrawManager->GetPointerToCameraTwo(),
-											gDrawManager->GetPointerToRenderer());
-			/*
-			labyrinthTilesVector[i]->render(tileTextureMap,
-											*gDrawManager->GetPointerToCameraThree(),
-											gDrawManager->GetPointerToRendererThree());
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraTwo(),
+												gDrawManager->GetPointerToRenderer());
+			}
 			
-			labyrinthTilesVector[i]->render(tileTextureMap,
-											*gDrawManager->GetPointerToCameraFour(),
-											gDrawManager->GetPointerToRendererFour());
-			*/
+			if(num_players > 2)
+			{
+				gDrawManager->SetToRenderViewPortPlayer3();
+			
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraThree(),
+												gDrawManager->GetPointerToRenderer());
+			}
+			
+			if(num_players > 3)
+			{
+				gDrawManager->SetToRenderViewPortPlayer4();
+			
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraFour(),
+												gDrawManager->GetPointerToRenderer());
+			}
 			
 		}
 										
@@ -267,6 +281,8 @@ void LabyrinthMap::renderDoors(SDL_Renderer* gRenderer)
 
 void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
 {
+	int num_players = gDrawManager->GetNumberOfPlayers();
+	
     for(size_t i = 0; i < labyrinthDoorsVector.size(); ++i)
     {
         if( checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
@@ -279,25 +295,36 @@ void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
         if(gDrawManager->GetMultiplePlayersBool())
         {
 			
-			if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+			
+			if(num_players > 1)
+			{
+				if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
-			{
-				gDrawManager->SetToRenderViewPortPlayer2();
-				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
-			}
-			/*
-			if( checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
-					|| checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
-			{
-				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree());
+				{
+					gDrawManager->SetToRenderViewPortPlayer2();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+				}
 			}
 			
-			if( checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
-					|| checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+			if(num_players > 2)
 			{
-				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour());
+				if( checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+					|| checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+				{
+					gDrawManager->SetToRenderViewPortPlayer3();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+				}
 			}
-			* */
+			
+			if(num_players > 3)
+			{
+				if( checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+					|| checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+				{
+					gDrawManager->SetToRenderViewPortPlayer4();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
+				}
+			}
 			
 		}
         

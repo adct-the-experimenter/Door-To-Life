@@ -53,7 +53,7 @@ void DrawingManager::InitViewportsForThisNumberOfPlayers(int num, int screen_wid
 			player2Viewport.x = screen_width / 2; player2Viewport.y = 0;
 			player2Viewport.w = screen_width / 2; player2Viewport.h = screen_height / 2;
 			
-			player3Viewport.x = 0; player3Viewport.y = screen_height / 2;
+			player3Viewport.x = screen_width / 3; player3Viewport.y = screen_height / 2;
 			player3Viewport.w = screen_width / 2; player3Viewport.h = screen_height / 2; 
 			break;
 		}
@@ -95,14 +95,15 @@ void DrawingManager::InitCamerasForThisNumberOfPlayers(int num, int screen_width
 		{
 			camera_one_ptr->w = screen_width / 2; camera_one_ptr->h = screen_height / 2; 
 			camera_two_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			camera_three_ptr->w = screen_width / 2; camera_three_ptr->h = screen_height / 2; 
 			break;
 		}
 		case 4:
 		{
 			camera_one_ptr->w = screen_width / 2; camera_one_ptr->h = screen_height / 2; 
 			camera_two_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
-			camera_three_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
-			camera_four_ptr->w = screen_width / 2; camera_two_ptr->h = screen_height / 2; 
+			camera_three_ptr->w = screen_width / 2; camera_three_ptr->h = screen_height / 2; 
+			camera_four_ptr->w = screen_width / 2; camera_four_ptr->h = screen_height / 2; 
 			break;
 		}
 		
@@ -141,5 +142,3 @@ bool DrawingManager::GetMultiplePlayersBool(){return draw_multiple_players_bool;
 void DrawingManager::SetNumberOfPlayers(int num){m_num_players = num;}
 int DrawingManager::GetNumberOfPlayers(){return m_num_players;}
 
-void SetToRenderViewPortPlayer1(){}
-void SetToRenderViewPortPlayer2(){}

@@ -167,7 +167,7 @@ void CollisonHandler::run_collision_handler(int& num_players)
 							CollisonHandler::runPlayer3CollisionOperations(*collisionObjectsVector[i]);
 							
 							//check if object collided with player's equipped weapon
-							//CollisonHandler::runPlayer2WeaponCollisionOperations(*collisionObjectsVector[i]);
+							CollisonHandler::runPlayer3WeaponCollisionOperations(*collisionObjectsVector[i]);
 						}
 						
 					}
@@ -179,7 +179,7 @@ void CollisonHandler::run_collision_handler(int& num_players)
 							CollisonHandler::runPlayer4CollisionOperations(*collisionObjectsVector[i]);
 							
 							//check if object collided with player's equipped weapon
-							//CollisonHandler::runPlayer2WeaponCollisionOperations(*collisionObjectsVector[i]);
+							CollisonHandler::runPlayer4WeaponCollisionOperations(*collisionObjectsVector[i]);
 						}
 						
 					}
@@ -388,6 +388,68 @@ void CollisonHandler::runPlayer2WeaponCollisionOperations(CollisionObject& thisO
             
             //set direction of collision of object to direction of collision of player's weapon
             thisObject.directionOfCollision = playerEquippedWeapon2->getCollisionObjectPtr()->directionOfCollision;
+        }
+    }
+    
+}
+
+void CollisonHandler::runPlayer3WeaponCollisionOperations(CollisionObject& thisObject)
+{
+	
+    if(playerEquippedWeapon3 != nullptr)
+    {
+		
+        if(playerEquippedWeapon3->checkCollisionWithWeapon(*thisObject.ptrToCollisionBox))
+        {
+            
+            //type of collision to object
+            //initialize to previous collision type
+            CollisionType typeCollisionToObject = thisObject.typeOfCollision;
+            
+            //set collision type of enemy collision object 
+            //based on owner type of equipped weapon
+            switch(playerEquippedWeapon3->getCollisionObjectPtr()->ownerType)
+            {
+                case CollisionBoxOwnerType::SWORD:{typeCollisionToObject = CollisionType::HIT_BY_SWORD; break;}
+                case CollisionBoxOwnerType::BULLET:{typeCollisionToObject = CollisionType::HIT_BY_BULLET; break;}
+                default:{ break;}
+            }
+            
+            thisObject.typeOfCollision = typeCollisionToObject;
+            
+            //set direction of collision of object to direction of collision of player's weapon
+            thisObject.directionOfCollision = playerEquippedWeapon3->getCollisionObjectPtr()->directionOfCollision;
+        }
+    }
+    
+}
+
+void CollisonHandler::runPlayer4WeaponCollisionOperations(CollisionObject& thisObject)
+{
+	
+    if(playerEquippedWeapon4 != nullptr)
+    {
+		
+        if(playerEquippedWeapon4->checkCollisionWithWeapon(*thisObject.ptrToCollisionBox))
+        {
+            
+            //type of collision to object
+            //initialize to previous collision type
+            CollisionType typeCollisionToObject = thisObject.typeOfCollision;
+            
+            //set collision type of enemy collision object 
+            //based on owner type of equipped weapon
+            switch(playerEquippedWeapon4->getCollisionObjectPtr()->ownerType)
+            {
+                case CollisionBoxOwnerType::SWORD:{typeCollisionToObject = CollisionType::HIT_BY_SWORD; break;}
+                case CollisionBoxOwnerType::BULLET:{typeCollisionToObject = CollisionType::HIT_BY_BULLET; break;}
+                default:{ break;}
+            }
+            
+            thisObject.typeOfCollision = typeCollisionToObject;
+            
+            //set direction of collision of object to direction of collision of player's weapon
+            thisObject.directionOfCollision = playerEquippedWeapon4->getCollisionObjectPtr()->directionOfCollision;
         }
     }
     
