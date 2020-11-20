@@ -1685,6 +1685,53 @@ void Labyrinth::DungeonEntranceHitOperations()
 			Labyrinth::setPlayerHitDungeonEntranceBool(true);
 			
 			Labyrinth::SetIndexMiniDungeonEntered(dungeonEntrances[i].xml_entry.id_number);
+			
+			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(true,1);
+			m_player_manager_ptr->SetDungeonEnteredForPlayer(dungeonEntrances[i].xml_entry.id_number,1);
+		}
+		
+		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+		
+		if(num_players > 1)
+		{
+			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			{
+				Labyrinth::setState(GameState::State::NEXT); 
+				Labyrinth::setPlayerHitDungeonEntranceBool(true);
+				
+				Labyrinth::SetIndexMiniDungeonEntered(dungeonEntrances[i].xml_entry.id_number);
+				
+				m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(true,2);
+				m_player_manager_ptr->SetDungeonEnteredForPlayer(dungeonEntrances[i].xml_entry.id_number,2);
+			}
+		}
+		
+		if(num_players > 2)
+		{
+			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			{
+				Labyrinth::setState(GameState::State::NEXT); 
+				Labyrinth::setPlayerHitDungeonEntranceBool(true);
+				
+				Labyrinth::SetIndexMiniDungeonEntered(dungeonEntrances[i].xml_entry.id_number);
+				
+				m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(true,3);
+				m_player_manager_ptr->SetDungeonEnteredForPlayer(dungeonEntrances[i].xml_entry.id_number,3);
+			}
+		}
+		
+		if(num_players > 3)
+		{
+			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			{
+				Labyrinth::setState(GameState::State::NEXT); 
+				Labyrinth::setPlayerHitDungeonEntranceBool(true);
+				
+				Labyrinth::SetIndexMiniDungeonEntered(dungeonEntrances[i].xml_entry.id_number);
+				
+				m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(true,4);
+				m_player_manager_ptr->SetDungeonEnteredForPlayer(dungeonEntrances[i].xml_entry.id_number,4);
+			}
 		}
 		
 	}

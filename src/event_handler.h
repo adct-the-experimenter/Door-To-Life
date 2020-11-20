@@ -63,6 +63,7 @@ struct Event
 extern std::queue <Event> event_instances_queue_p1;
 extern std::queue <Event> event_instances_queue_p2;
 extern std::queue <Event> event_instances_queue_p3;
+extern std::queue <Event> event_instances_queue_p4;
 
 //function to push event into queue
 void pushEventInstance(Event thisEvent, int player_num);
@@ -72,18 +73,21 @@ void popEventInstanceFromFront();
 void popEventInstanceFromFront_Player1();
 void popEventInstanceFromFront_Player2();
 void popEventInstanceFromFront_Player3();
+void popEventInstanceFromFront_Player4();
 
 //function to tell whether event queue is empty or not
 bool isEventQueueEmpty();
 bool isEventQueueEmpty_Player1();
 bool isEventQueueEmpty_Player2();
 bool isEventQueueEmpty_Player3();
+bool isEventQueueEmpty_Player4();
 
 //function to get event in front of queue
 Event& getEventInstanceFront();
 Event& getEventInstanceFront_Player1();
 Event& getEventInstanceFront_Player2();
 Event& getEventInstanceFront_Player3();
+Event& getEventInstanceFront_Player4();
 
 //function to clear events on queue
 void clearEventsQueue();

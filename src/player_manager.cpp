@@ -9,6 +9,15 @@ PlayerManager::PlayerManager()
 	
 	mulitple_players_bool = false;
 	
+	num_dungeon_index_p1 = 0;
+	num_dungeon_index_p2 = 0;
+	num_dungeon_index_p3 = 0;
+	num_dungeon_index_p4 = 0;
+	
+	player1_in_dungeon = false;
+	player2_in_dungeon = false;
+	player3_in_dungeon = false;
+	player4_in_dungeon = false;
 }
 
 PlayerManager::~PlayerManager()
@@ -79,11 +88,19 @@ void PlayerManager::handleEvent_player2(Event& thisEvent)
 	}
 }
 
-void PlayerManager::handleEvent_player2(SDL_Joystick* joystick_controller)
+void PlayerManager::handleEvent_player3(Event& thisEvent)
 {
-	if(player_two_ptr)
+	if(player_three_ptr)
 	{
-		player_two_ptr->handleEvent(joystick_controller);
+		player_three_ptr->handleEvent(thisEvent);
+	}
+}
+
+void PlayerManager::handleEvent_player4(Event& thisEvent)
+{
+	if(player_four_ptr)
+	{
+		player_four_ptr->handleEvent(thisEvent);
 	}
 }
 
@@ -113,3 +130,42 @@ void PlayerManager::sound(AudioRenderer* gAudioRenderer)
 	
 }
 
+void PlayerManager::SetDungeonEnteredForPlayer(std::int16_t dungeon_index, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ num_dungeon_index_p1 = dungeon_index; break;}
+		case 2:{ num_dungeon_index_p2 = dungeon_index; break;}
+		case 3:{ num_dungeon_index_p3 = dungeon_index; break;}
+		case 4:{ num_dungeon_index_p4 = dungeon_index; break;}
+		default:{ std::cout << "Invalid dungeon index entered for player!\n"; break;}
+	}
+}
+
+void PlayerManager::SetDungeonEnteredBoolForPlayer(bool state, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ player1_in_dungeon = state; break;}
+		case 2:{ player2_in_dungeon = state; break;}
+		case 3:{ player3_in_dungeon = state; break;}
+		case 4:{ player4_in_dungeon = state; break;}
+		default:{ std::cout << "Invalid dungeon index entered for player!\n"; break;}
+	}
+}
+
+void PlayerManager::GetBoolsForPlayersInDungeon(bool* p1,bool* p2,bool* p3,bool* p4 )
+{
+	*p1 = player1_in_dungeon;
+	*p2 = player2_in_dungeon;
+	*p3 = player3_in_dungeon;
+	*p4 = player4_in_dungeon;
+}
+
+void PlayerManager::GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::int16_t* p2,std::int16_t* p3,std::int16_t* p4 )
+{
+	*p1 = num_dungeon_index_p1;
+	*p2 = num_dungeon_index_p2;
+	*p3 = num_dungeon_index_p3;
+	*p4 = num_dungeon_index_p4;
+}

@@ -1,5 +1,5 @@
-#ifndef LABYRINTH
-#define LABYRINTH
+#ifndef LABYRINTH_H
+#define LABYRINTH_H
 
 #include <array>
 #include "MazeGenerator.h"

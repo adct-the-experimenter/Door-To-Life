@@ -3,6 +3,7 @@
 std::queue <Event> event_instances_queue_p1;
 std::queue <Event> event_instances_queue_p2;
 std::queue <Event> event_instances_queue_p3;
+std::queue <Event> event_instances_queue_p4;
 SDL_Event sdl_event;
 
 //function to set event 
@@ -364,16 +365,19 @@ void popEventInstanceFromFront(){event_instances_queue_p1.pop();}
 void popEventInstanceFromFront_Player1(){event_instances_queue_p1.pop();}
 void popEventInstanceFromFront_Player2(){event_instances_queue_p2.pop();}
 void popEventInstanceFromFront_Player3(){event_instances_queue_p3.pop();}
+void popEventInstanceFromFront_Player4(){event_instances_queue_p4.pop();}
 
 Event& getEventInstanceFront(){return event_instances_queue_p1.front();}
 Event& getEventInstanceFront_Player1(){return event_instances_queue_p1.front();}
 Event& getEventInstanceFront_Player2(){return event_instances_queue_p2.front();}
 Event& getEventInstanceFront_Player3(){return event_instances_queue_p3.front();}
+Event& getEventInstanceFront_Player4(){return event_instances_queue_p4.front();}
 
 bool isEventQueueEmpty(){return event_instances_queue_p1.empty();}
 bool isEventQueueEmpty_Player1(){return event_instances_queue_p1.empty();}
 bool isEventQueueEmpty_Player2(){return event_instances_queue_p2.empty();}
 bool isEventQueueEmpty_Player3(){return event_instances_queue_p3.empty();}
+bool isEventQueueEmpty_Player4(){return event_instances_queue_p4.empty();}
 
 void clearEventsQueue()
 {
@@ -382,4 +386,5 @@ void clearEventsQueue()
     event_instances_queue_p1.swap(empty_queue);
     event_instances_queue_p2.swap(empty_queue);
     event_instances_queue_p3.swap(empty_queue);
+    event_instances_queue_p4.swap(empty_queue);
 }

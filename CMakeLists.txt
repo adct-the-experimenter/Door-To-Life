@@ -48,8 +48,7 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
-src/labyrinth_dungeon_manager.cpp
-src/Dungeon.cpp
+src/labyrinth.cpp src/Dungeon.cpp src/labyrinth_dungeon_manager.cpp
 src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp
 src/collisionhandler.cpp
@@ -60,7 +59,7 @@ src/enemy_media_loader.cpp
 src/player_media_loader.cpp
 src/game_inventory.cpp
 src/weapons_loader.cpp
-src/labyrinth.cpp
+
 src/MazeGenerator.cpp src/NodeGenerator.cpp src/LabyrinthMap.cpp
 src/hashtable.cpp src/linkedlist.cpp src/item.cpp
 src/MazeNode.cpp src/Node.cpp
