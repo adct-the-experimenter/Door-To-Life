@@ -48,6 +48,7 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
+src/labyrinth_dungeon_manager.cpp
 src/Dungeon.cpp
 src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp

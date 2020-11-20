@@ -146,7 +146,7 @@ struct StateStruct
 GameState* baseGameState = NULL;
 
 // stack of structure stateStruct
-std::stack<StateStruct> state_stack;
+std::stack <StateStruct> state_stack;
 
 bool pauseStack = false;
 
@@ -309,6 +309,7 @@ void DungeonGameLoop()
     
 	
     run_event_handler();
+    
     //while event queue is not empty
     while(!isEventQueueEmpty_Player1())
     {
@@ -498,6 +499,7 @@ float playerPosY_beforedungeon = 0;
 
 void Dungeon1()
 {
+	
     //if labyrinth has not been created
     if(!labyrinthCreated)
     {
@@ -512,13 +514,12 @@ void Dungeon1()
 		//else do nothing
 		else{std::cout << "Failed to setup labyrinth! \n";}
 		
-		
-		
 	}
 	//else if labyrinth has been created
 	else
 	{
 		/** GameLoop **/
+		
         //set base game state to gDungeon1
         baseGameState = gLabyrinth.get();
         baseGameState->setState(GameState::State::RUNNING);
