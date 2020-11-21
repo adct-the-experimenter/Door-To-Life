@@ -17,7 +17,7 @@ ALuint* source,ALuint* buffer)
     {
         //if tileTextureMap loaded successfully
         
-        std::string path = std::string("/Sound/Threshing-Floor-VG-Ambient-Beautiful-Haunting-Remix.ogg");
+        std::string path = std::string("/Sound/door-to-life-theme-mb22.mp3");
         if(!LoadBuffer(buffer,path))
         {
 			printf("Failed to load dungeon music! \n");
