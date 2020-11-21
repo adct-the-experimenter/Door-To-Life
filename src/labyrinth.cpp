@@ -1055,10 +1055,6 @@ void Labyrinth::logic()
         
     }
     
-    
-    
-    
-    
     //Restart timer
     labyrinthTimer->start();
 }

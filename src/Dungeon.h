@@ -50,7 +50,6 @@ public:
     
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
     
-    void setPointerToMainDot(Dot* thisDot);
     void setPointerToTimer(LTimer* thisTimer);
     
     //function to set pointers to media
@@ -75,7 +74,11 @@ public:
     void setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
                             SDL_Rect& camera);
                             
+    void SetPointerToMainPlayer(Player* player);
+                            
     void moveMainDot(float& timeStep);
+    
+    void moveMainDot(Player* thisPlayer,float &timeStep,SDL_Rect* thisCamera);
     
     void PlaceDotInThisLocation(float& x, float& y);
     
@@ -144,13 +147,26 @@ public:
 	//set tiles
 	void SetupDungeonParametersAfterXMLRead();
 	
+	//functions to set and get dungeon id
+	void SetDungeonIndex(std::int16_t index);
+	std::int16_t GetDungeonIndex();
+	
+	void SetMainPlayerNumber(int num);
+	int GetMainPlayerNumber();
+	
 private:
 
 //members not inherited from GameState class
 
 
 /** Dungeon Setup**/
-
+	
+	//index of dungeon used to identify itself among other dungeons
+	std::int16_t m_dungeon_index;
+	
+	//variable to indicate which player (1st,2nd,3rd,4th) is the main player of the dungeon
+	int main_player_num;
+	
     //start coordinates of node
     std::int16_t NODE_X;
     std::int16_t NODE_Y;
@@ -192,8 +208,10 @@ private:
    
 
 /** Beings in Dungeon**/
-    //main character
-    Dot* mainDotPointer;
+    
+    //main player that dungeon revolves around. Each player has a dungeon 
+    Player* mainPlayer;
+    
     PlayerManager* m_player_manager_ptr;
 
 /** Items in Dungeon **/

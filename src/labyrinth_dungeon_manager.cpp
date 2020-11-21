@@ -188,13 +188,14 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 	
 	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
 	
-	//generate an empty dungeon
+	
+	
 	switch(num_player)
 	{
-		case 1:{dungeonUPtr->setPointerToMainDot(m_player_manager_ptr->GetPointerToPlayerOne()); break;}
-		case 2:{dungeonUPtr->setPointerToMainDot(m_player_manager_ptr->GetPointerToPlayerTwo()); break;}
-		case 3:{dungeonUPtr->setPointerToMainDot(m_player_manager_ptr->GetPointerToPlayerThree()); break;}
-		case 4:{dungeonUPtr->setPointerToMainDot(m_player_manager_ptr->GetPointerToPlayerFour()); break;}
+		case 1:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerOne()); break;}
+		case 2:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerTwo()); break;}
+		case 3:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerThree()); break;}
+		case 4:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerFour()); break;}
 	}
     
     dungeonUPtr->setPointerToTimer(stepTimer);
@@ -202,6 +203,8 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
     dungeonUPtr->SetPointerToPlayerManager(m_player_manager_ptr);
     dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
 	dungeonUPtr->SetPointerToGameInventory(m_game_inventory_ptr);
+	
+	dungeonUPtr->SetMainPlayerNumber(num_player);
 	
 	SDL_Rect* camera = nullptr;
 	switch(num_player)
@@ -219,6 +222,7 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 
 	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
     
+    //generate an empty dungeon
     dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
     
     std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
