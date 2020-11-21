@@ -64,6 +64,73 @@ bool LabyrinthDungeonManager::setupLabyrinth(PlayerManager* mainPlayerManager, G
 		else
 		{
 			mainLabCollisionHandler = std::move(ptrToCollisionHandler);
+			
+			//add player to collision system
+			mainLabCollisionHandler->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),nullptr,nullptr,nullptr);
+			mainLabCollisionHandler->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																 nullptr,nullptr,nullptr);
+																 
+			mainLabCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																			nullptr,nullptr,nullptr);
+			
+			//if there is a 2nd player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 1)
+			{
+				//add player to collision system
+				mainLabCollisionHandler->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  nullptr,nullptr);
+																	  
+				mainLabCollisionHandler->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 nullptr,nullptr);
+																	 
+				mainLabCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				nullptr,nullptr);
+			}
+			
+			//if there is a 3rd player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 2)
+			{
+				//add player to collision system
+				mainLabCollisionHandler->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  m_player_manager_ptr->GetPointerToCameraThree(),
+																	  nullptr);
+																	  
+				mainLabCollisionHandler->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionObjectPtr(),
+																	 nullptr);
+																	 
+				mainLabCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerThree()->getPointerToEquippedPlayerWeapon(),
+																				nullptr);
+			}
+			
+			//if there is a 4th player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 3)
+			{
+				//add player to collision system
+				mainLabCollisionHandler->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  m_player_manager_ptr->GetPointerToCameraThree(),
+																	  m_player_manager_ptr->GetPointerToCameraFour());
+																	  
+				mainLabCollisionHandler->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionObjectPtr());
+																	 
+				mainLabCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerThree()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerFour()->getPointerToEquippedPlayerWeapon());
+			}
+			
+			
 		}
        
         //Setup world of labyrinth
@@ -308,9 +375,54 @@ void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 {
+	if(m_mini_dungeon_p1)
+	{
+		if(m_mini_dungeon_p1->getState() == GameState::State::NEXT)
+		{
+			m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
+			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
+			
+			//reset to running
+			m_mini_dungeon_p1->setState(GameState::State::RUNNING);
+		}
+	}
 	
-	//mainPlayer->setPosX(playerPosX_beforedungeon);
-	//mainPlayer->setPosY(playerPosY_beforedungeon);
+	if(m_mini_dungeon_p2)
+	{
+		if(m_mini_dungeon_p2->getState() == GameState::State::NEXT)
+		{
+			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
+			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
+			
+			//reset to running
+			m_mini_dungeon_p2->setState(GameState::State::RUNNING);
+		}
+	}
+	
+	if(m_mini_dungeon_p3)
+	{
+		if(m_mini_dungeon_p3->getState() == GameState::State::NEXT)
+		{
+			m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
+			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
+			
+			//reset to running
+			m_mini_dungeon_p3->setState(GameState::State::RUNNING);
+		}
+	}
+	
+	if(m_mini_dungeon_p4)
+	{
+		if(m_mini_dungeon_p4->getState() == GameState::State::NEXT)
+		{
+			m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
+			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
+			
+			//reset to running
+			m_mini_dungeon_p4->setState(GameState::State::RUNNING);
+		}
+	}
+	
 }
 
 //Game loop

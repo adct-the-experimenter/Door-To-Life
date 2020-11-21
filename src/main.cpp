@@ -229,7 +229,6 @@ void freeMedia_HealthBar(LTexture* healthTex);
 LTexture healthBarTexture;
 
 std::unique_ptr <CollisonHandler> mainCollisionHandler;
-std::unique_ptr <CollisonHandler> miniCollisionHandler;
 CollisonHandler* currentCollisionHandler;
 
 
@@ -350,7 +349,10 @@ void DungeonGameLoop()
     baseGameState->handle_events_RNG(rng);
     
     //currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
-    
+    if(gLabyrinthDungeonManager)
+    {
+		gLabyrinthDungeonManager->RunCollisionHandlersOps();
+	}
     //calculate FPS 
     frameRateCap.calculateFPS();
     
