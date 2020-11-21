@@ -228,9 +228,6 @@ bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 void freeMedia_HealthBar(LTexture* healthTex); 
 LTexture healthBarTexture;
 
-std::unique_ptr <CollisonHandler> mainCollisionHandler;
-CollisonHandler* currentCollisionHandler;
-
 
 std::unique_ptr <GameInventory> gameInventory;
 
@@ -544,10 +541,6 @@ void Dungeon1()
 				subMap.initParametersFromLabyrinth(*thisLabyrinth);
 				subMap.setPosition(0,0);
 				
-				
-				//Setup camera for collision system
-				mainCollisionHandler->setCameraForCollisionSystem(&camera);
-				
 				//setup camera for audio renderer
 				gAudioRenderer.SetPointerToCamera(&camera);
 				
@@ -625,7 +618,6 @@ void Dungeon1()
 			}
 			else
 			{
-				mainCollisionHandler->EmptyCollisionObjectVector();
 				gameInventory->freeWeapons();
 				
 				//delete doors and keys
@@ -922,6 +914,7 @@ void MiniDungeon()
 }
 */
 
+/*
 bool setupLabyrinth(Labyrinth& thisLabyrinth)
 {
     thisLabyrinth.setTimerPointer(&stepTimer);
@@ -971,8 +964,6 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         subMap.setPosition(0,0);
         //thisLabyrinth.setDebugBool(true);
         
-        //Setup camera for collision system
-        mainCollisionHandler->setCameraForCollisionSystem(&camera);
         
         //setup camera for audio renderer
         gAudioRenderer.SetPointerToCamera(&camera);
@@ -1001,7 +992,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
     
     return false;
 }
-
+*/
 
 
 
@@ -1044,8 +1035,6 @@ void GameOver()
 	
 	pauseStack = false;
 	
-	mainCollisionHandler->repeatPlay = true;
-
 }
 
 void GameWon()
@@ -1263,20 +1252,12 @@ bool initPlayers()
     }
     else
     {
-		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-		if(!ptrToCollisionHandler){return false;}
-		else
-		{
-			mainCollisionHandler = std::move(ptrToCollisionHandler);
-			currentCollisionHandler = mainCollisionHandler.get();
-		}
 		
 		std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
 		if(!ptrToGameInventory){return false;}
 		else
 		{
 			gameInventory = std::move(ptrToGameInventory);
-			gameInventory->SetPointerToCollisionHandler(mainCollisionHandler.get());
 		}
 		
 
@@ -1308,12 +1289,6 @@ bool initPlayers()
         
         
         gameInventory->setupDefaultGunForPlayer_equippedweapon(mainPlayer);
-		
-		mainCollisionHandler->addPlayerToCollisionSystem(mainPlayer->getCollisionObjectPtr());
-		mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																			nullptr,
-																			nullptr,nullptr);
-		mainCollisionHandler->setCameraForCollisionSystem(&camera);
 		
 		//pass pointer to player to player inventory
 		playerInventory->SetPointerToPlayer(mainPlayer);
@@ -1348,15 +1323,6 @@ bool initPlayers()
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player2);
 				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																nullptr,
-																nullptr);
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				nullptr,nullptr);
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,nullptr,nullptr);
 			}
 			//if there is a 3rd player
 			if(mainPlayerManager.GetNumberOfPlayers() > 2)
@@ -1374,16 +1340,6 @@ bool initPlayers()
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player3);
 				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																player3->getCollisionObjectPtr(),
-																nullptr);
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				player3->getPointerToEquippedPlayerWeapon(),
-																				nullptr);
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,nullptr);
 			}
 			//if there is a 4th player
 			if(mainPlayerManager.GetNumberOfPlayers() > 3)
@@ -1400,18 +1356,6 @@ bool initPlayers()
 				mainPlayerManager.SetPointerToPlayerFour(player4);
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player4);
-				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																player3->getCollisionObjectPtr(),
-																player4->getCollisionObjectPtr());
-																
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				player3->getPointerToEquippedPlayerWeapon(),
-																				player4->getPointerToEquippedPlayerWeapon());
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,&camera4);
 				
 			}
 			
