@@ -349,7 +349,7 @@ void DungeonGameLoop()
     
     baseGameState->handle_events_RNG(rng);
     
-    currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
+    //currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
     
     //calculate FPS 
     frameRateCap.calculateFPS();
@@ -513,15 +513,11 @@ void NodeGeneration()
     }
 }
 
-size_t num_mini_dungeon_entered;
-float playerPosX_beforedungeon = 0;
-float playerPosY_beforedungeon = 0;
-
 void Dungeon1()
 {
 	if(gLabyrinthDungeonManager.get())
 	{
-		
+		gLabyrinthDungeonManager->SetPointerToDungeonXMLRegistry(&dungeon_xml_reg);
 		//if labyrinth has not been created yet
 		if(!gLabyrinthDungeonManager->GetLabyrinthCreatedBool())
 		{
@@ -560,17 +556,6 @@ void Dungeon1()
 				 //set camera for labyrinth 
 				thisLabyrinth->setCamera(&camera);
 						
-				 //add enemy collision objects to collision handler
-				for(size_t i = 0; i < thisLabyrinth->GetEnemiesInLabyrinthVector()->size(); i++)
-				{
-					if(mainCollisionHandler->repeatPlay)
-					{
-						std::cout << " repeat!\n";
-					}
-					Enemy* thisEnemy = thisLabyrinth->GetEnemiesInLabyrinthVector()->at(i);
-					mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
-					mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
-				}
 			}
 			
 		}
@@ -578,6 +563,10 @@ void Dungeon1()
 		else
 		{
 			//run game loop
+			
+			gLabyrinthDungeonManager->SetPointerToTimer(&stepTimer);
+			gLabyrinthDungeonManager->SetPointerToGameInventory(gameInventory.get());
+			gLabyrinthDungeonManager->setupScreenDimensions(SCREEN_WIDTH,SCREEN_HEIGHT);
 			
 			// GameLoop
 		
@@ -597,21 +586,14 @@ void Dungeon1()
 				//call game loop function
 				DungeonGameLoop();
 				
+				gLabyrinthDungeonManager->LabyrinthToMiniDungeonTransitionOperations();
+				
+				gLabyrinthDungeonManager->MiniDungeonToLabyrinthTransitionOperations();
+				
 				if(baseGameState->getState() == GameState::State::NEXT )
 				{
-					if(gLabyrinth->getPlayerHitDungeonEntraceBool())
-					{
-						num_mini_dungeon_entered = gLabyrinth->GetIndexMiniDungeonEntered();
-						stepTimer.stop();
-						toMiniDungeon = true;
-						quit = true;
-						
-					}
-					else
-					{
-						stepTimer.stop();
-						quit = true;
-					}
+					stepTimer.stop();
+					quit = true;
 				}
 				
 				else if(baseGameState->getState() == GameState::State::EXIT 
@@ -634,8 +616,7 @@ void Dungeon1()
 			
 			if(toMiniDungeon)
 			{
-				playerPosX_beforedungeon = mainPlayer->getPosX() + 80;
-				playerPosY_beforedungeon = mainPlayer->getPosY() + 80;
+				
 				
 				baseGameState = nullptr;
 				state_stack.push(gMiniDungeonStateStructure);
@@ -811,6 +792,9 @@ void Dungeon1()
 }
 */
 
+void MiniDungeon(){}
+
+/*
 void MiniDungeon()
 {
 	
@@ -873,7 +857,7 @@ void MiniDungeon()
 	//start game loop
 	
 	
-	/** GameLoop **/
+	// GameLoop 
 	//set base game state to dungeon
 	baseGameState = dungeonUPtr.get();
 	baseGameState->setState(GameState::State::RUNNING);
@@ -927,16 +911,14 @@ void MiniDungeon()
 	else if(baseGameState->getState() == GameState::State::NEXT)
 	{
 		//go back to labyrinth
-		mainPlayer->setPosX(playerPosX_beforedungeon);
-		mainPlayer->setPosY(playerPosY_beforedungeon);
+		//mainPlayer->setPosX(playerPosX_beforedungeon);
+		//mainPlayer->setPosY(playerPosY_beforedungeon);
 		baseGameState = nullptr;
 		state_stack.pop();
 	}
 	
-
-	
-	
 }
+*/
 
 bool setupLabyrinth(Labyrinth& thisLabyrinth)
 {

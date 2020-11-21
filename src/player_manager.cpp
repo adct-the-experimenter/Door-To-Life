@@ -169,3 +169,18 @@ void PlayerManager::GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::i
 	*p3 = num_dungeon_index_p3;
 	*p4 = num_dungeon_index_p4;
 }
+
+std::int16_t PlayerManager::GetDungeonIndexForThisPlayerInDungeon(int num_player)
+{
+	std::int16_t indexToReturn = 0;
+	
+	switch(num_player)
+	{
+		case 1:{ return indexToReturn = num_dungeon_index_p1; break;}
+		case 2:{ return indexToReturn = num_dungeon_index_p2; break;}
+		case 3:{ return indexToReturn = num_dungeon_index_p3; break;}
+		case 4:{ return indexToReturn = num_dungeon_index_p4; break;}
+	}
+	
+	return indexToReturn;
+}

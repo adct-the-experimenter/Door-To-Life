@@ -55,6 +55,8 @@ public:
 	void GetBoolsForPlayersInDungeon(bool* p1,bool* p2,bool* p3,bool* p4 );
 	void GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::int16_t* p2,std::int16_t* p3,std::int16_t* p4 );
 	
+	std::int16_t GetDungeonIndexForThisPlayerInDungeon(int num_player);
+	
 private:
 	
 	//pointers to players

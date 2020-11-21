@@ -116,8 +116,8 @@ public:
     friend class SubMap;
     
     // mini dungeon 
-    void setPlayerHitDungeonEntranceBool(bool state);
-    bool getPlayerHitDungeonEntraceBool();
+    void setPlayerHitDungeonEntranceBool(bool state, int num_player);
+    bool getPlayerHitDungeonEntraceBool(int num_player);
     void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed, DungeonXMLRegistry* dungeon_xml_reg);
     
     void SetIndexMiniDungeonEntered(std::int16_t num);
@@ -221,7 +221,10 @@ private:
 	
 	GameInventory* m_game_inventory_ptr;
 	
-	bool hitDungeonEntrace;
+	bool hitDungeonEntrace_p1;
+	bool hitDungeonEntrace_p2;
+	bool hitDungeonEntrace_p3;
+	bool hitDungeonEntrace_p4;
 	
 	void DungeonEntranceHitOperations();
 	
