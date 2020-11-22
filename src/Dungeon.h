@@ -27,14 +27,11 @@ class Dungeon : public GameState
     
 public:
 
-
     //constructor to load resources
     Dungeon();
 
     //destructor to free resources
     ~Dungeon();
-    
-   
     
     //function to load dungeon media outside of Dungeon object
     friend bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
@@ -46,7 +43,6 @@ public:
     
     //function to generate plain base dungeon with tile clip set.
     void GenerateBaseDungeon();
-    
     
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
     
@@ -82,7 +78,7 @@ public:
     
     void PlaceDotInThisLocation(float& x, float& y);
     
-    void PlacePlayerInLocationNearEntrance();
+    void PlacePlayerInLocationNearEntrance(Player* thisPlayer);
 
 
 /** Item Functions **/
@@ -151,9 +147,6 @@ public:
 	void SetDungeonIndex(std::int16_t index);
 	std::int16_t GetDungeonIndex();
 	
-	void SetMainPlayerNumber(int num);
-	int GetMainPlayerNumber();
-	
 private:
 
 //members not inherited from GameState class
@@ -163,10 +156,7 @@ private:
 	
 	//index of dungeon used to identify itself among other dungeons
 	std::int16_t m_dungeon_index;
-	
-	//variable to indicate which player (1st,2nd,3rd,4th) is the main player of the dungeon
-	int main_player_num;
-	
+		
     //start coordinates of node
     std::int16_t NODE_X;
     std::int16_t NODE_Y;
@@ -216,7 +206,6 @@ private:
 
 /** Items in Dungeon **/
 
-    
     EnemyInventory m_enemy_inventory;
     
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );

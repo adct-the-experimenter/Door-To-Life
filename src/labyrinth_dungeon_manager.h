@@ -1,6 +1,7 @@
 #ifndef LABYRINTH_DUNGEON_MANAGER_H
 #define LABYRINTH_DUNGEON_MANAGER_H
 
+
 #include <memory> //for unique_ptr
 #include "globalvariables.h"
 #include "Dungeon.h"
@@ -83,11 +84,13 @@ private:
 	
 	DungeonXMLRegistry* m_dungeon_xml_reg_ptr;
 	
-	//container for a mini dungeon for each player to enter
-	std::unique_ptr <Dungeon> m_mini_dungeon_p1;
-	std::unique_ptr <Dungeon> m_mini_dungeon_p2;
-	std::unique_ptr <Dungeon> m_mini_dungeon_p3;
-	std::unique_ptr <Dungeon> m_mini_dungeon_p4;
+	
+	
+	//container for a mini dungeons, one for each player
+	std::unique_ptr <Dungeon> m_mini_dungeon_1;
+	std::unique_ptr <Dungeon> m_mini_dungeon_2;
+	std::unique_ptr <Dungeon> m_mini_dungeon_3;
+	std::unique_ptr <Dungeon> m_mini_dungeon_4;
 	
 	//collision handlers for each mini dungeon
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d1;

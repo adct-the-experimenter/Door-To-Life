@@ -178,73 +178,143 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 	bool p3_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(3);
 	bool p4_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(4);
 	
+	bool loadNewDungeon = true;
+	int num_player_entered = 0;
+	std::int16_t num_mini_dungeon_entered = 0;
+	int mini_dungeon_to_enter = 0; //used to indicate if should enter mini dungeon mini_dungeon_1 member, 2, 3 or 4
 	
 	//if player 1 entered mini dungeon
 	if(p1_entered)
 	{
-		//get index of mini dungeon entered
-		std::int16_t num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(1);
 		
 		//get position in labyrinth near mini dungeon entrance
 		player1PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosX() + 80;
 		player1PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosY() + 80;
 		
-		//load mini dungeon
-		LabyrinthDungeonManager::SetupMiniDungeon(1,num_mini_dungeon_entered);
+		//get index of mini dungeon entered
+		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(1);
 		
-		//reset player hit entrance bool
-		m_labyrinth->setPlayerHitDungeonEntranceBool(false,1);
+		num_player_entered = 1;
+				
 	}
 	
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 	
 	if(p2_entered && num_players > 1)
 	{
-		//get index of mini dungeon entered
-		std::int16_t num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(2);
 		
 		//get position in labyrinth near mini dungeon entrance
 		player2PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerTwo()->getPosX() + 80;
 		player2PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerTwo()->getPosY() + 80;
 		
-		//load mini dungeon
-		LabyrinthDungeonManager::SetupMiniDungeon(2,num_mini_dungeon_entered);
+		//get index of mini dungeon entered
+		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(2);
 		
-		//reset player hit entrance bool
-		m_labyrinth->setPlayerHitDungeonEntranceBool(false,2);
+		num_player_entered = 2;
+		
 	}
 	
 	if(p3_entered && num_players > 2)
 	{
 		//get index of mini dungeon entered
-		std::int16_t num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(3);
+		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(3);
 		
 		//get position in labyrinth near mini dungeon entrance
 		player3PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerThree()->getPosX() + 80;
 		player3PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerThree()->getPosY() + 80;
 		
-		//load mini dungeon
-		LabyrinthDungeonManager::SetupMiniDungeon(3,num_mini_dungeon_entered);
-		
-		//reset player hit entrance bool
-		m_labyrinth->setPlayerHitDungeonEntranceBool(false,3);
+		num_player_entered = 3;
 	}
 	
 	if(p4_entered && num_players > 3)
 	{
 		//get index of mini dungeon entered
-		std::int16_t num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(4);
+		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(4);
 		
 		//get position in labyrinth near mini dungeon entrance
 		player4PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerFour()->getPosX() + 80;
 		player4PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerFour()->getPosY() + 80;
 		
+		num_player_entered = 4;
+	}
+	
+	
+	if(m_mini_dungeon_1)
+	{
+		if(m_mini_dungeon_1->GetDungeonIndex() == num_mini_dungeon_entered)
+		{
+			loadNewDungeon = false;
+			mini_dungeon_to_enter = 1;
+		}
+	}
+	
+	if(m_mini_dungeon_2)
+	{
+		if(m_mini_dungeon_2->GetDungeonIndex() == num_mini_dungeon_entered)
+		{
+			loadNewDungeon = false;
+			mini_dungeon_to_enter = 2;
+		}
+	}
+	
+	if(m_mini_dungeon_3)
+	{
+		if(m_mini_dungeon_3->GetDungeonIndex() == num_mini_dungeon_entered)
+		{
+			loadNewDungeon = false;
+			mini_dungeon_to_enter = 3;
+		}
+	}
+	
+	if(m_mini_dungeon_4)
+	{
+		if(m_mini_dungeon_4->GetDungeonIndex() == num_mini_dungeon_entered)
+		{
+			loadNewDungeon = false;
+			mini_dungeon_to_enter = 4;
+		}
+	}
+	
+	//if need to load new dungeon for player entered to mini dungeon entered
+	if(loadNewDungeon && num_player_entered != 0 && num_mini_dungeon_entered != 0)
+	{
+		std::cout << "loading dungeon index" << num_mini_dungeon_entered << std::endl;
 		//load mini dungeon
-		//player automatically placed near entrance
-		LabyrinthDungeonManager::SetupMiniDungeon(4,num_mini_dungeon_entered);
+		LabyrinthDungeonManager::SetupMiniDungeon(num_player_entered,num_mini_dungeon_entered);
 		
 		//reset player hit entrance bool
-		m_labyrinth->setPlayerHitDungeonEntranceBool(false,4);
+		m_labyrinth->setPlayerHitDungeonEntranceBool(false,num_player_entered);
+	}
+	//else if need to put a player in already initialized and running dungeon
+	else if(!loadNewDungeon && num_player_entered != 0 && num_mini_dungeon_entered != 0
+			&& mini_dungeon_to_enter != 0)
+	{
+		std::cout << "Placing player in dungeon index" << num_mini_dungeon_entered << std::endl;
+		
+		Player* thisPlayer = nullptr;
+		switch(num_player_entered)
+		{
+			case 1:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerOne(); break;}
+			case 2:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerTwo(); break;}
+			case 3:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerThree(); break;}
+			case 4:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerFour(); break;}
+		}
+		
+		Dungeon* thisDungeon = nullptr;
+		
+		//put player in this dungeon
+		switch(mini_dungeon_to_enter)
+		{
+			case 1:{ thisDungeon = m_mini_dungeon_1.get(); break;}
+			case 2:{ thisDungeon = m_mini_dungeon_2.get(); break;}
+			case 3:{ thisDungeon = m_mini_dungeon_3.get(); break;}
+			case 4:{ thisDungeon = m_mini_dungeon_4.get(); break;}
+		}
+		
+		if(thisPlayer && thisDungeon)
+		{
+			thisDungeon->PlacePlayerInLocationNearEntrance(thisPlayer);
+		}
 	}
 }
 
@@ -258,10 +328,10 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 	
 	switch(num_player)
 	{
-		case 1:{ m_mini_dungeon_p1 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p1.get(); break;}
-		case 2:{ m_mini_dungeon_p2 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p2.get(); break;}
-		case 3:{ m_mini_dungeon_p3 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p3.get(); break;}
-		case 4:{ m_mini_dungeon_p4 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p4.get(); break;}
+		case 1:{ m_mini_dungeon_1 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_1.get(); break;}
+		case 2:{ m_mini_dungeon_2 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_2.get(); break;}
+		case 3:{ m_mini_dungeon_3 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_3.get(); break;}
+		case 4:{ m_mini_dungeon_4 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_4.get(); break;}
 	}
 	
 	if(dungeonPtr)
@@ -279,9 +349,7 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 		dungeonPtr->SetPointerToPlayerManager(m_player_manager_ptr);
 		dungeonPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
 		dungeonPtr->SetPointerToGameInventory(m_game_inventory_ptr);
-		
-		dungeonPtr->SetMainPlayerNumber(num_player);
-		
+				
 		SDL_Rect* camera = nullptr;
 		switch(num_player)
 		{
@@ -315,7 +383,21 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 			dungeonPtr->SetDungeonIndex(num_mini_dungeon_entered);
 			dungeonXMLReaderUPtr->SetDungeonTilesFromXML(dungeon_file,dungeonPtr);
 			dungeonPtr->SetupDungeonParametersAfterXMLRead();
-			dungeonPtr->PlacePlayerInLocationNearEntrance();
+			
+			Player* thisPlayer = nullptr;
+			switch(num_player)
+			{
+				case 1:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerOne(); break;}
+				case 2:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerTwo(); break;}
+				case 3:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerThree(); break;}
+				case 4:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerFour(); break;}
+			}
+			
+			if(thisPlayer)
+			{
+				dungeonPtr->PlacePlayerInLocationNearEntrance(thisPlayer);
+			}
+			
 		}
 		else
 		{		
@@ -370,63 +452,57 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 
 void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 {
-	switch(num_player)
-	{
-		case 1:{ m_mini_dungeon_p1->freeResources(); break;}
-		case 2:{ m_mini_dungeon_p2->freeResources(); break;}
-		case 3:{ m_mini_dungeon_p3->freeResources(); break;}
-		case 4:{ m_mini_dungeon_p4->freeResources();; break;}
-	}
+	
 	
 }
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 {
-	if(m_mini_dungeon_p1)
+	if(m_mini_dungeon_1)
 	{
-		if(m_mini_dungeon_p1->getState() == GameState::State::NEXT)
+		if(m_mini_dungeon_1->getState() == GameState::State::NEXT)
 		{
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
 			
 			//reset to running
-			m_mini_dungeon_p1->setState(GameState::State::RUNNING);
+			m_mini_dungeon_1->setState(GameState::State::RUNNING);
 		}
 	}
 	
-	if(m_mini_dungeon_p2)
+	if(m_mini_dungeon_2)
 	{
-		if(m_mini_dungeon_p2->getState() == GameState::State::NEXT)
+		if(m_mini_dungeon_2->getState() == GameState::State::NEXT)
 		{
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
 			
 			//reset to running
-			m_mini_dungeon_p2->setState(GameState::State::RUNNING);
+			m_mini_dungeon_2->setState(GameState::State::RUNNING);
 		}
 	}
 	
-	if(m_mini_dungeon_p3)
+	if(m_mini_dungeon_3)
 	{
-		if(m_mini_dungeon_p3->getState() == GameState::State::NEXT)
+		if(m_mini_dungeon_3->getState() == GameState::State::NEXT)
 		{
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
 			
 			//reset to running
-			m_mini_dungeon_p3->setState(GameState::State::RUNNING);
+			m_mini_dungeon_3->setState(GameState::State::RUNNING);
 		}
 	}
 	
-	if(m_mini_dungeon_p4)
+	if(m_mini_dungeon_4)
 	{
-		if(m_mini_dungeon_p4->getState() == GameState::State::NEXT)
+		if(m_mini_dungeon_4->getState() == GameState::State::NEXT)
 		{
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
 			
 			//reset to running
-			m_mini_dungeon_p4->setState(GameState::State::RUNNING);
+			m_mini_dungeon_4->setState(GameState::State::RUNNING);
 		}
 	}
 	
@@ -479,25 +555,57 @@ void LabyrinthDungeonManager::handle_events(Event& thisEvent)
 		}
 		
 		
-		//handle events for mini dungeon for player 1 if player 1 is in mini dungeon
-		if(m_mini_dungeon_p1 && p1_in_dungeon)
+		//handle events for each mini dungeon
+		if(m_mini_dungeon_1)
 		{
-			m_mini_dungeon_p1->handle_events(thisEvent);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_1->handle_events(thisEvent);
+			}
 		}
-		//handle events for mini dungeon for player 2 if player 2 is in mini dungeon
-		if(m_mini_dungeon_p2 && p2_in_dungeon)
+		
+		if(m_mini_dungeon_2)
 		{
-			m_mini_dungeon_p2->handle_events(thisEvent);
+			std::int16_t d_index = m_mini_dungeon_2->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_2->handle_events(thisEvent);
+			}
 		}
-		//handle events for mini dungeon for player 3 if player 3 is in mini dungeon
-		if(m_mini_dungeon_p3 && p3_in_dungeon)
+		
+		if(m_mini_dungeon_3)
 		{
-			m_mini_dungeon_p3->handle_events(thisEvent);
+			std::int16_t d_index = m_mini_dungeon_3->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_3->handle_events(thisEvent);
+			}
 		}
-		//handle events for mini dungeon for player 4 if player 4 is in mini dungeon
-		if(m_mini_dungeon_p4 && p4_in_dungeon)
+		
+		if(m_mini_dungeon_4)
 		{
-			m_mini_dungeon_p4->handle_events(thisEvent);
+			std::int16_t d_index = m_mini_dungeon_4->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_4->handle_events(thisEvent);
+			}
 		}
 	}
 	
@@ -539,25 +647,57 @@ void LabyrinthDungeonManager::handle_events_RNG(RNGType& rngSeed)
 			m_labyrinth->handle_events_RNG(rngSeed);
 		}
 		
-		//handle events for mini dungeon for player 1 if player 1 is in mini dungeon
-		if(m_mini_dungeon_p1 && p1_in_dungeon)
+		//handle events random for each mini dungeon
+		if(m_mini_dungeon_1)
 		{
-			m_mini_dungeon_p1->handle_events_RNG(rngSeed);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_1->handle_events_RNG(rngSeed);
+			}
 		}
-		//handle events for mini dungeon for player 2 if player 2 is in mini dungeon
-		if(m_mini_dungeon_p2 && p2_in_dungeon)
+		
+		if(m_mini_dungeon_2)
 		{
-			m_mini_dungeon_p2->handle_events_RNG(rngSeed);
+			std::int16_t d_index = m_mini_dungeon_2->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_2->handle_events_RNG(rngSeed);
+			}
 		}
-		//handle events for mini dungeon for player 3 if player 3 is in mini dungeon
-		if(m_mini_dungeon_p3 && p3_in_dungeon)
+		
+		if(m_mini_dungeon_3)
 		{
-			m_mini_dungeon_p3->handle_events_RNG(rngSeed);
+			std::int16_t d_index = m_mini_dungeon_3->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_3->handle_events_RNG(rngSeed);
+			}
 		}
-		//handle events for mini dungeon for player 4 if player 4 is in mini dungeon
-		if(m_mini_dungeon_p4 && p4_in_dungeon)
+		
+		if(m_mini_dungeon_4)
 		{
-			m_mini_dungeon_p4->handle_events_RNG(rngSeed);
+			std::int16_t d_index = m_mini_dungeon_4->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_4->handle_events_RNG(rngSeed);
+			}
 		}
 		
 	}
@@ -601,25 +741,58 @@ void LabyrinthDungeonManager::logic()
 			m_labyrinth->logic();
 		}
 		
-		//do logic for mini dungeon for player 1 if player 1 is in mini dungeon
-		if(m_mini_dungeon_p1 && p1_in_dungeon)
+		//do logic for each player
+		
+		if(m_mini_dungeon_1)
 		{
-			m_mini_dungeon_p1->logic();
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_1->logic();
+			}
 		}
-		//do logic for mini dungeon for player 2 if player 2 is in mini dungeon
-		if(m_mini_dungeon_p2 && p2_in_dungeon)
+		
+		if(m_mini_dungeon_2)
 		{
-			m_mini_dungeon_p2->logic();
+			std::int16_t d_index = m_mini_dungeon_2->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_2->logic();
+			}
 		}
-		//do logic for mini dungeon for player 3 if player 3 is in mini dungeon
-		if(m_mini_dungeon_p3 && p3_in_dungeon)
+		
+		if(m_mini_dungeon_3)
 		{
-			m_mini_dungeon_p3->logic();
+			std::int16_t d_index = m_mini_dungeon_3->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_3->logic();
+			}
 		}
-		//do logic for mini dungeon for player 4 if player 4 is in mini dungeon
-		if(m_mini_dungeon_p4 && p4_in_dungeon)
+		
+		if(m_mini_dungeon_4)
 		{
-			m_mini_dungeon_p4->logic();
+			std::int16_t d_index = m_mini_dungeon_4->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_4->logic();
+			}
 		}
 		
 	}
@@ -709,29 +882,58 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 			m_labyrinth->render(gDrawManager);
 		}
 		
-		//render mini dungeon for player 1 if player 1 is in mini dungeon
-		if(m_mini_dungeon_p1 && p1_in_dungeon)
+		//render for each mini dungeon
+		
+		if(m_mini_dungeon_1)
 		{
-			gDrawManager->SetToRenderViewPortPlayer1();
-			m_mini_dungeon_p1->render(gDrawManager);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_1->render(gDrawManager);
+			}
 		}
-		//render mini dungeon for player 2 if player 2 is in mini dungeon
-		if(m_mini_dungeon_p2 && p2_in_dungeon)
+		
+		if(m_mini_dungeon_2)
 		{
-			gDrawManager->SetToRenderViewPortPlayer2();
-			m_mini_dungeon_p2->render(gDrawManager);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_2->render(gDrawManager);
+			}
 		}
-		//render mini dungeon for player 3 if player 3 is in mini dungeon
-		if(m_mini_dungeon_p3 && p3_in_dungeon)
+		
+		if(m_mini_dungeon_3)
 		{
-			gDrawManager->SetToRenderViewPortPlayer3();
-			m_mini_dungeon_p3->render(gDrawManager);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_3->render(gDrawManager);
+			}
 		}
-		//render mini dungeon for player 4 if player 4 is in mini dungeon
-		if(m_mini_dungeon_p4 && p4_in_dungeon)
+		
+		if(m_mini_dungeon_4)
 		{
-			gDrawManager->SetToRenderViewPortPlayer4();
-			m_mini_dungeon_p4->render(gDrawManager);
+			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			
+			if(p1_index_dungeon == d_index || 
+				p2_index_dungeon == d_index ||
+				p3_index_dungeon == d_index ||
+				p4_index_dungeon == d_index)
+			{
+				m_mini_dungeon_4->render(gDrawManager);
+			}
 		}
 	}
 	

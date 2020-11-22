@@ -1091,18 +1091,21 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 	int num_players = gDrawManager->GetNumberOfPlayers();
 	
 	//render tiles in map
-    labyrinthMap.renderTiles(gDrawManager,tileTextureMap);
+    labyrinthMap.renderTiles(m_player_manager_ptr,gDrawManager,tileTextureMap);
     
     //render doors
-    labyrinthMap.renderDoors(gDrawManager);
+    labyrinthMap.renderDoors(m_player_manager_ptr,gDrawManager);
     
-    //render enemies
-    gDrawManager->SetToRenderViewPortPlayer1();
-    m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer() );
     
     bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
     m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
     
+    if(!p1_in_dungeon)
+    {
+		 //render enemies
+		gDrawManager->SetToRenderViewPortPlayer1();
+		m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer() );
+	}
     
     if(gDrawManager->GetMultiplePlayersBool())
     {

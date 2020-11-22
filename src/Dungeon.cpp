@@ -268,7 +268,9 @@ void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
 
     //move dot independent of frames, but rather dependent on time. includes collision detection
     thisDot->moveOnTiles_TileType(timeStep, dungeonTileSet );
-
+	
+	std::cout << "Dot Position: " << thisDot->getPosX() << " , " << thisDot->getPosY() << std::endl;
+	
 }
 
 void Dungeon::PlaceDotInThisLocation(float& x, float& y)
@@ -278,20 +280,18 @@ void Dungeon::PlaceDotInThisLocation(float& x, float& y)
 }
 
 
-void Dungeon::PlacePlayerInLocationNearEntrance()
+void Dungeon::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 {
 	if(exitTilePtr)
 	{
-		
 		float x = exitTilePtr->getBox().x + 80;
 		float y = exitTilePtr->getBox().y + 80;
 		
-		std::cout << "Placed player at" << x << " , " << y << std::endl;
+		std::cout << "Placed player at " << x << " , " << y << std::endl;
 		
-		mainPlayer->setPosX(x);
-		mainPlayer->setPosY(y);
+		thisPlayer->setPosX(x);
+		thisPlayer->setPosY(y);
 	}
-	
     
 }
 /** Item Functions**/
@@ -433,12 +433,44 @@ void Dungeon::logic()
         m_player_manager_ptr->logic(timeStep);
         //if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
         
+        bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
+        
+		std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
+		
+		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
+		
+		
+		//render sprites of other players if they are in the same dungeon
+		
+		if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraOne());
+		}
+		if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraTwo());
+		}
+		if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraThree());
+		}
+		if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraFour());
+		}
+        
         //if main player hits dungeon entrance/exit
         if( checkCollision(exitTilePtr->getBox(),mainPlayer->getCollisionBox() ) )
         { 
 			Dungeon::setState(GameState::State::NEXT);
 		}
 		
+		/*
 		SDL_Rect* camera = nullptr;
 		switch(main_player_num)
 		{
@@ -449,7 +481,7 @@ void Dungeon::logic()
 		}
 		
 		Dungeon::moveMainDot(mainPlayer,timeStep,camera);
-        
+        */
     }
     
     //move main dot
@@ -587,35 +619,53 @@ void Dungeon::render(DrawingManager* gDrawManager)
 	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 	m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
 	
-	//render main player
-    mainPlayer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 	
 	//render sprites of other players if they are in the same dungeon
 	
 	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
 	{
-		m_player_manager_ptr->GetPointerToPlayerOne()->render(*lCamera,gDrawManager->GetPointerToRenderer());
+		gDrawManager->SetToRenderViewPortPlayer1();
+		
+		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());		
+		}
 	}
 	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
 	{
-		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*lCamera,gDrawManager->GetPointerToRenderer());
+		gDrawManager->SetToRenderViewPortPlayer2();
+		
+		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());		
+		}
 	}
 	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
 	{
-		m_player_manager_ptr->GetPointerToPlayerThree()->render(*lCamera,gDrawManager->GetPointerToRenderer());
+		gDrawManager->SetToRenderViewPortPlayer3();
+		
+		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());		
+		}
 	}
 	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
 	{
-		m_player_manager_ptr->GetPointerToPlayerFour()->render(*lCamera,gDrawManager->GetPointerToRenderer());
+		gDrawManager->SetToRenderViewPortPlayer4();
+		
+		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());		
+		}
 	}
-	
-	//Render level for only main player
-	//other dungeon containers will do the same for each player
-    for( size_t i = 0; i < dungeonTileSet.size(); ++i )
-    {
-		dungeonTileSet[i]->render(tileTextureMap,*lCamera,gDrawManager->GetPointerToRenderer());		
-    }
-
     
 }
 
@@ -713,6 +763,3 @@ void Dungeon::SetDungeonIndex(std::int16_t index){m_dungeon_index = index;}
 
 std::int16_t Dungeon::GetDungeonIndex(){return m_dungeon_index;}
 
-void Dungeon::SetMainPlayerNumber(int num){main_player_num = num;}
-
-int Dungeon::GetMainPlayerNumber(){return main_player_num;}

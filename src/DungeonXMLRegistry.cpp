@@ -33,7 +33,7 @@ void DungeonXMLRegistry::SetDungeonXMLEntriesFromXML(std::string filepath, std::
     
     pugi::xml_node dungeonsRoot = doc.child("DungeonXMLRoot").child("Dungeons");
     
-    std::int16_t iterator = 0;
+    std::int16_t iterator = 1;
 	
 	//go through each tile type in tiles node
 	for (pugi::xml_node name = dungeonsRoot.first_child(); name; name = name.next_sibling())
