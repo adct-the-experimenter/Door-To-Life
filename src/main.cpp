@@ -525,7 +525,6 @@ void Dungeon1()
 														&dungeon_xml_reg,rng,
 														&stepTimer,mainDotPointer.get(),
 														SCREEN_WIDTH , SCREEN_HEIGHT,
-														dungeonTilesTexture, dungeonMusicSource, dungeonMusicBuffer,
 														keyTexture, keySource,keyBuffer,
 														doorTexture, doorSource, doorBufferOpen, doorBufferFail,
 														doorClips) )
@@ -905,8 +904,8 @@ void MiniDungeon()
 	else if(baseGameState->getState() == GameState::State::NEXT)
 	{
 		//go back to labyrinth
-		//mainPlayer->setPosX(playerPosX_beforedungeon);
-		//mainPlayer->setPosY(playerPosY_beforedungeon);
+		mainPlayer->setPosX(playerPosX_beforedungeon);
+		mainPlayer->setPosY(playerPosY_beforedungeon);
 		baseGameState = nullptr;
 		state_stack.pop();
 	}
@@ -1275,13 +1274,10 @@ bool initPlayers()
         float speed = 80 * 3;
         ptrToMC->setSpeed(speed);
         
-
         mainDotPointer = std::move(ptrToMC);
-        
         
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
-        
         
         mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
         

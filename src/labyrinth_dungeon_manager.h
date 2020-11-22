@@ -29,7 +29,6 @@ public:
 											DungeonXMLRegistry* dungeon_xml_reg, RNGType& rngSeed,
 											LTimer* stepTimer, Dot* mainDotPointer,
 											std::int16_t SCREEN_WIDTH , std::int16_t SCREEN_HEIGHT,
-											LTexture& dungeonTilesTexture, ALuint& dungeonMusicSource, ALuint& dungeonMusicBuffer,
 											LTexture& keyTexture, ALuint& keySource,ALuint& keyBuffer,
 											LTexture& doorTexture, ALuint& doorSource, ALuint& doorBufferOpen, ALuint& doorBufferFail,
 											std::vector <SDL_Rect> &doorClips);

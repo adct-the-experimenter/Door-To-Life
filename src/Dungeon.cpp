@@ -73,7 +73,7 @@ Dungeon::~Dungeon()
     //std::cout << "Dungeon destructor called! \n";
 
      //Set lCamera values to zero
-    lCamera.x =0; lCamera.y=0; lCamera.w=0; lCamera.h=0;
+    lCamera = nullptr;
 
     //set main sprite pointer to NULL
     mainPlayer = nullptr;
@@ -224,7 +224,7 @@ void Dungeon::deleteTiles()
 void Dungeon::SetPointerToMainPlayer(Player* player){mainPlayer = player;}
 
 void Dungeon::setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                            SDL_Rect& camera)
+                            SDL_Rect* camera)
 {
     //set place for dot to move in
     mainPlayer->setPlace(screenWidth,screenHeight);
@@ -238,7 +238,7 @@ void Dungeon::moveMainDot(float& timeStep)
   //  std::cout << "timestep: " << timeStep <<std::endl;
 
     //set camera over dot
-    mainPlayer->setCamera(lCamera);
+    //mainPlayer->setCamera(*lCamera);
 
     //move dot independent of frames, but rather dependent on time. includes collision detection
     mainPlayer->moveOnTiles(timeStep, dungeonTileSet );
@@ -285,6 +285,8 @@ void Dungeon::PlacePlayerInLocationNearEntrance()
 		
 		float x = exitTilePtr->getBox().x + 80;
 		float y = exitTilePtr->getBox().y + 80;
+		
+		std::cout << "Placed player at" << x << " , " << y << std::endl;
 		
 		mainPlayer->setPosX(x);
 		mainPlayer->setPosY(y);
@@ -561,17 +563,17 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
 
 void Dungeon::render(SDL_Renderer* gRenderer)
 {
-  //  std::cout << "render called! \n";
+    std::cout << "render called in dungeon! \n";
 
     
     //Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
-        dungeonTileSet[i]->render(tileTextureMap,lCamera,gRenderer);
+        dungeonTileSet[i]->render(tileTextureMap,*lCamera,gRenderer);
     }
 
     //render dot
-    mainPlayer->render(lCamera,gRenderer);
+    mainPlayer->render(*lCamera,gRenderer);
 
 
 }
@@ -579,57 +581,42 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 void Dungeon::render(DrawingManager* gDrawManager)
 {
 	
-    
 	bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
 	std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
 	
 	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 	m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
 	
-	//render sprites of other player  if they are in the same dungeon
+	//render main player
+    mainPlayer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+	
+	//render sprites of other players if they are in the same dungeon
+	
 	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
 	{
-		gDrawManager->SetToRenderViewPortPlayer1();
-		m_player_manager_ptr->GetPointerToPlayerOne()->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+		m_player_manager_ptr->GetPointerToPlayerOne()->render(*lCamera,gDrawManager->GetPointerToRenderer());
 	}
 	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
 	{
-		gDrawManager->SetToRenderViewPortPlayer2();
-		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*lCamera,gDrawManager->GetPointerToRenderer());
 	}
 	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
 	{
-		gDrawManager->SetToRenderViewPortPlayer3();
-		m_player_manager_ptr->GetPointerToPlayerThree()->render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+		m_player_manager_ptr->GetPointerToPlayerThree()->render(*lCamera,gDrawManager->GetPointerToRenderer());
 	}
 	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
 	{
-		gDrawManager->SetToRenderViewPortPlayer4();
-		m_player_manager_ptr->GetPointerToPlayerFour()->render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
-	}
-	
-	//set camera based on main player number
-	SDL_Rect* camera = nullptr;
-	
-	//get camera based on which player is the main player i.e.e 1st,2nd etc.
-	switch(main_player_num)
-	{
-		case 1:{ camera = m_player_manager_ptr->GetPointerToCameraOne(); break;}
-		case 2:{ camera = m_player_manager_ptr->GetPointerToCameraTwo(); break;}
-		case 3:{ camera = m_player_manager_ptr->GetPointerToCameraThree(); break;}
-		case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
+		m_player_manager_ptr->GetPointerToPlayerFour()->render(*lCamera,gDrawManager->GetPointerToRenderer());
 	}
 	
 	//Render level for only main player
 	//other dungeon containers will do the same for each player
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
-		
-		dungeonTileSet[i]->render(tileTextureMap,*camera,gDrawManager->GetPointerToRenderer());		
+		dungeonTileSet[i]->render(tileTextureMap,*lCamera,gDrawManager->GetPointerToRenderer());		
     }
 
-    //render main player
-    mainPlayer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+    
 }
 
 //Set States

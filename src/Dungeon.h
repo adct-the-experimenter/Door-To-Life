@@ -72,7 +72,7 @@ public:
 /** Dot Functions **/
 
     void setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                            SDL_Rect& camera);
+                            SDL_Rect* camera);
                             
     void SetPointerToMainPlayer(Player* player);
                             
@@ -184,7 +184,7 @@ private:
     LTexture* tileTextureMap;
 
     //pointer to camera
-    SDL_Rect lCamera;
+    SDL_Rect* lCamera;
 
     //pointer to timer in main
     LTimer* timer;

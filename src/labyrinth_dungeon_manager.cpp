@@ -31,7 +31,6 @@ bool LabyrinthDungeonManager::setupLabyrinth(PlayerManager* mainPlayerManager, G
 											DungeonXMLRegistry* dungeon_xml_reg, RNGType& rngSeed,
 											LTimer* stepTimer, Dot* mainDotPointer,
 											std::int16_t SCREEN_WIDTH , std::int16_t SCREEN_HEIGHT,
-											LTexture& dungeonTilesTexture, ALuint& dungeonMusicSource, ALuint& dungeonMusicBuffer,
 											LTexture& keyTexture, ALuint& keySource,ALuint& keyBuffer,
 											LTexture& doorTexture, ALuint& doorSource, ALuint& doorBufferOpen, ALuint& doorBufferFail,
 											std::vector <SDL_Rect> &doorClips)
@@ -255,108 +254,116 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 	
 	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
 	
-	
+	Dungeon* dungeonPtr = nullptr;
 	
 	switch(num_player)
 	{
-		case 1:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerOne()); break;}
-		case 2:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerTwo()); break;}
-		case 3:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerThree()); break;}
-		case 4:{dungeonUPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerFour()); break;}
+		case 1:{ m_mini_dungeon_p1 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p1.get(); break;}
+		case 2:{ m_mini_dungeon_p2 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p2.get(); break;}
+		case 3:{ m_mini_dungeon_p3 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p3.get(); break;}
+		case 4:{ m_mini_dungeon_p4 = std::move(dungeonUPtr); dungeonPtr = m_mini_dungeon_p4.get(); break;}
 	}
-    
-    dungeonUPtr->setPointerToTimer(stepTimer);
-    
-    dungeonUPtr->SetPointerToPlayerManager(m_player_manager_ptr);
-    dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-	dungeonUPtr->SetPointerToGameInventory(m_game_inventory_ptr);
 	
-	dungeonUPtr->SetMainPlayerNumber(num_player);
-	
-	SDL_Rect* camera = nullptr;
-	switch(num_player)
+	if(dungeonPtr)
 	{
-		case 1:{ camera = m_player_manager_ptr->GetPointerToCameraOne(); break;}
-		case 2:{ camera = m_player_manager_ptr->GetPointerToCameraTwo(); break;}
-		case 3:{ camera = m_player_manager_ptr->GetPointerToCameraThree(); break;}
-		case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
-	}
-	
-	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,*camera);
-	
-	std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
-	std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
-
-	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
-    
-    //generate an empty dungeon
-    dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
-    
-    std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
-    
-    //get dungeon file 
-    std::string dungeon_file = m_dungeon_xml_reg_ptr->GetXMLDungeonFilePathFromIndex(num_mini_dungeon_entered);
-    
-    //if dungeon file exists, set the tiles    
-    std::ifstream ifile(dungeon_file);
-	if((bool)ifile)
-	{
-		std::cout << "Reading " << dungeon_file << std::endl;
-		
-		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(dungeon_file,dungeonUPtr.get());
-		dungeonUPtr->SetupDungeonParametersAfterXMLRead();
-		dungeonUPtr->PlacePlayerInLocationNearEntrance();
-	}
-	else
-	{		
-		std::cout << "Error: " + dungeon_file + " does not exist!\n";
-	}
-	
-    
-    std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-    if(!ptrToCollisionHandler){std::cout << "Failed to initialize collision handler for mini dungeon!\n";}
-    else
-    {
-		//Setup camera for collision system
-        
-        
 		switch(num_player)
 		{
-			case 1:
-			{
-				ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne());
-				miniCollisionHandler_d1 = std::move(ptrToCollisionHandler);
-				break;
-			}
-			case 2:
-			{
-				ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraTwo()); 
-				miniCollisionHandler_d2 = std::move(ptrToCollisionHandler);
-				break;
-			}
-			case 3:
-			{
-				ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraThree()); 
-				miniCollisionHandler_d3 = std::move(ptrToCollisionHandler); 
-				break;
-			}
-			case 4:
-			{
-				ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraFour()); 
-				miniCollisionHandler_d4 = std::move(ptrToCollisionHandler); 
-				break;
-			}
+			case 1:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerOne()); break;}
+			case 2:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerTwo()); break;}
+			case 3:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerThree()); break;}
+			case 4:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerFour()); break;}
 		}
-        
-        
-    }
-	
-	switch(num_player)
+		
+		dungeonPtr->setPointerToTimer(stepTimer);
+		
+		dungeonPtr->SetPointerToPlayerManager(m_player_manager_ptr);
+		dungeonPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
+		dungeonPtr->SetPointerToGameInventory(m_game_inventory_ptr);
+		
+		dungeonPtr->SetMainPlayerNumber(num_player);
+		
+		SDL_Rect* camera = nullptr;
+		switch(num_player)
+		{
+			case 1:{ camera = m_player_manager_ptr->GetPointerToCameraOne(); break;}
+			case 2:{ camera = m_player_manager_ptr->GetPointerToCameraTwo(); break;}
+			case 3:{ camera = m_player_manager_ptr->GetPointerToCameraThree(); break;}
+			case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
+		}
+		
+		dungeonPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
+		
+		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
+		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
+
+		dungeonPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
+		
+		//generate an empty dungeon
+		dungeonPtr->GenerateEmptyDungeonForXMLLoad();
+		
+		std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
+		
+		//get dungeon file 
+		std::string dungeon_file = m_dungeon_xml_reg_ptr->GetXMLDungeonFilePathFromIndex(num_mini_dungeon_entered);
+		
+		//if dungeon file exists, set the tiles    
+		std::ifstream ifile(dungeon_file);
+		if((bool)ifile)
+		{
+			std::cout << "Reading " << dungeon_file << std::endl;
+			
+			dungeonPtr->SetDungeonIndex(num_mini_dungeon_entered);
+			dungeonXMLReaderUPtr->SetDungeonTilesFromXML(dungeon_file,dungeonPtr);
+			dungeonPtr->SetupDungeonParametersAfterXMLRead();
+			dungeonPtr->PlacePlayerInLocationNearEntrance();
+		}
+		else
+		{		
+			std::cout << "Error: " + dungeon_file + " does not exist!\n";
+		}
+		
+		
+		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
+		if(!ptrToCollisionHandler){std::cout << "Failed to initialize collision handler for mini dungeon!\n";}
+		else
+		{
+			//Setup camera for collision system
+			
+			
+			switch(num_player)
+			{
+				case 1:
+				{
+					ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne());
+					miniCollisionHandler_d1 = std::move(ptrToCollisionHandler);
+					break;
+				}
+				case 2:
+				{
+					ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraTwo()); 
+					miniCollisionHandler_d2 = std::move(ptrToCollisionHandler);
+					break;
+				}
+				case 3:
+				{
+					ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraThree()); 
+					miniCollisionHandler_d3 = std::move(ptrToCollisionHandler); 
+					break;
+				}
+				case 4:
+				{
+					ptrToCollisionHandler->setCameraForCollisionSystem(m_player_manager_ptr->GetPointerToCameraFour()); 
+					miniCollisionHandler_d4 = std::move(ptrToCollisionHandler); 
+					break;
+				}
+			}
+			
+			
+		}
+	}
+	else
 	{
-		case 1:{ m_mini_dungeon_p1 = std::move(dungeonUPtr); break;}
-		case 2:{ m_mini_dungeon_p2 = std::move(dungeonUPtr); break;}
-		case 3:{ m_mini_dungeon_p3 = std::move(dungeonUPtr); break;}
-		case 4:{ m_mini_dungeon_p4 = std::move(dungeonUPtr); break;}
+		std::cout << "Failed to initialize mini dungeon!\n";
 	}
 	
 }
