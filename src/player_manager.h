@@ -57,6 +57,9 @@ public:
 	
 	std::int16_t GetDungeonIndexForThisPlayerInDungeon(int num_player);
 	
+	void SetDungeonExitBoolForPlayer(bool state, int num_player);
+	void GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4);
+	
 private:
 	
 	//pointers to players
@@ -81,6 +84,11 @@ private:
 	bool player2_in_dungeon;
 	bool player3_in_dungeon;
 	bool player4_in_dungeon;
+	
+	bool player1_exit_dungeon;
+	bool player2_exit_dungeon;
+	bool player3_exit_dungeon;
+	bool player4_exit_dungeon;
 	
 	//index of dungeon that players are in
 	std::int16_t num_dungeon_index_p1;

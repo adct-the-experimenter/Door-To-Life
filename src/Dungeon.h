@@ -203,6 +203,7 @@ private:
     Player* mainPlayer;
     
     PlayerManager* m_player_manager_ptr;
+    
 
 /** Items in Dungeon **/
 

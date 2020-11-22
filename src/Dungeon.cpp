@@ -447,28 +447,48 @@ void Dungeon::logic()
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
+			
+			//if player 1 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
+			}
 		}
 		if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraTwo());
+			
+			//if player 2 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
+			}
 		}
 		if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraThree());
+			
+			//if player 3 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
+			}
 		}
 		if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraFour());
+			
+			//if player 4 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
+			}
 		}
         
-        //if main player hits dungeon entrance/exit
-        if( checkCollision(exitTilePtr->getBox(),mainPlayer->getCollisionBox() ) )
-        { 
-			Dungeon::setState(GameState::State::NEXT);
-		}
+        
 		
 		/*
 		SDL_Rect* camera = nullptr;

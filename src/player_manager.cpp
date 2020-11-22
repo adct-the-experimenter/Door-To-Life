@@ -18,6 +18,11 @@ PlayerManager::PlayerManager()
 	player2_in_dungeon = false;
 	player3_in_dungeon = false;
 	player4_in_dungeon = false;
+	
+	player1_exit_dungeon = false;
+	player2_exit_dungeon = false;
+	player3_exit_dungeon = false;
+	player4_exit_dungeon = false;
 }
 
 PlayerManager::~PlayerManager()
@@ -183,4 +188,23 @@ std::int16_t PlayerManager::GetDungeonIndexForThisPlayerInDungeon(int num_player
 	}
 	
 	return indexToReturn;
+}
+
+void PlayerManager::SetDungeonExitBoolForPlayer(bool state, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ player1_exit_dungeon = state; break;}
+		case 2:{ player2_exit_dungeon = state; break;}
+		case 3:{ player3_exit_dungeon = state; break;}
+		case 4:{ player4_exit_dungeon = state; break;}
+	}
+}
+
+void PlayerManager::GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4)
+{
+	*p1 = player1_exit_dungeon;
+	*p2 = player2_exit_dungeon;
+	*p3 = player3_exit_dungeon;
+	*p4 = player4_exit_dungeon;
 }

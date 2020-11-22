@@ -336,13 +336,6 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 	
 	if(dungeonPtr)
 	{
-		switch(num_player)
-		{
-			case 1:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerOne()); break;}
-			case 2:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerTwo()); break;}
-			case 3:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerThree()); break;}
-			case 4:{dungeonPtr->SetPointerToMainPlayer(m_player_manager_ptr->GetPointerToPlayerFour()); break;}
-		}
 		
 		dungeonPtr->setPointerToTimer(stepTimer);
 		
@@ -458,51 +451,52 @@ void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 {
+	bool p1_exit, p2_exit, p3_exit, p4_exit;
+	
+	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+	m_player_manager_ptr->GetDungeonExitBoolForPlayers(p1_exit,p2_exit,p3_exit,p4_exit);
+	
 	if(m_mini_dungeon_1)
 	{
-		if(m_mini_dungeon_1->getState() == GameState::State::NEXT)
+		if(p1_exit)
 		{
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
 			
-			//reset to running
-			m_mini_dungeon_1->setState(GameState::State::RUNNING);
+			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,1);
 		}
 	}
 	
 	if(m_mini_dungeon_2)
 	{
-		if(m_mini_dungeon_2->getState() == GameState::State::NEXT)
+		if(p2_exit && num_players > 1)
 		{
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
 			
-			//reset to running
-			m_mini_dungeon_2->setState(GameState::State::RUNNING);
+			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,2);
 		}
 	}
 	
 	if(m_mini_dungeon_3)
 	{
-		if(m_mini_dungeon_3->getState() == GameState::State::NEXT)
+		if(p3_exit && num_players > 2)
 		{
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
 			
-			//reset to running
-			m_mini_dungeon_3->setState(GameState::State::RUNNING);
+			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,3);
 		}
 	}
 	
 	if(m_mini_dungeon_4)
 	{
-		if(m_mini_dungeon_4->getState() == GameState::State::NEXT)
+		if(p4_exit && num_players > 3)
 		{
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
 			
-			//reset to running
-			m_mini_dungeon_4->setState(GameState::State::RUNNING);
+			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,4);
 		}
 	}
 	
@@ -899,7 +893,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 		
 		if(m_mini_dungeon_2)
 		{
-			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			std::int16_t d_index = m_mini_dungeon_2->GetDungeonIndex();
 			
 			if(p1_index_dungeon == d_index || 
 				p2_index_dungeon == d_index ||
@@ -912,7 +906,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 		
 		if(m_mini_dungeon_3)
 		{
-			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			std::int16_t d_index = m_mini_dungeon_3->GetDungeonIndex();
 			
 			if(p1_index_dungeon == d_index || 
 				p2_index_dungeon == d_index ||
@@ -925,7 +919,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 		
 		if(m_mini_dungeon_4)
 		{
-			std::int16_t d_index = m_mini_dungeon_1->GetDungeonIndex();
+			std::int16_t d_index = m_mini_dungeon_4->GetDungeonIndex();
 			
 			if(p1_index_dungeon == d_index || 
 				p2_index_dungeon == d_index ||
