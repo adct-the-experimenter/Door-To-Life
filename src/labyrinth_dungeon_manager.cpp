@@ -454,7 +454,7 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 	bool p1_exit, p2_exit, p3_exit, p4_exit;
 	
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
-	m_player_manager_ptr->GetDungeonExitBoolForPlayers(p1_exit,p2_exit,p3_exit,p4_exit);
+	m_player_manager_ptr->GetDungeonExitBoolForPlayers(&p1_exit,&p2_exit,&p3_exit,&p4_exit);
 	
 	if(m_mini_dungeon_1)
 	{
