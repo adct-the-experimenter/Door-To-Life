@@ -60,6 +60,6 @@ DungeonXMLEntry& DungeonXMLRegistry::GetReferenceToDungeonXMLEntry(size_t& index
 
 size_t DungeonXMLRegistry::GetSizeOfDungeonXMLEntriesVector(){return dungeon_xml_entries.size();}
 
-std::string DungeonXMLRegistry::GetXMLDungeonFilePathFromIndex(size_t index){ return dungeon_xml_entries[index].filepath;}
+std::string DungeonXMLRegistry::GetXMLDungeonFilePathFromIndex(size_t index){ return dungeon_xml_entries[index-1].filepath;}
 
 void DungeonXMLRegistry::ClearRegistry(){dungeon_xml_entries.clear();}
