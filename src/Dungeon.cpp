@@ -227,7 +227,7 @@ void Dungeon::setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& sc
                             SDL_Rect* camera)
 {
     //set place for dot to move in
-    mainPlayer->setPlace(screenWidth,screenHeight);
+    //mainPlayer->setPlace(screenWidth,screenHeight);
 
     lCamera = camera;
 }
@@ -427,6 +427,15 @@ void Dungeon::logic()
     //std::cout << "Logic called! \n";
     float timeStep = timer->getTicks() / 1000.f; //frame rate
 	
+	Dungeon::logic_alt(timeStep);
+    
+    //Restart timer
+    timer->start();
+    
+}
+
+void Dungeon::logic_alt(float& timeStep)
+{
 	//logic for player
     if(m_player_manager_ptr != nullptr)
     {
@@ -488,28 +497,7 @@ void Dungeon::logic()
 			}
 		}
         
-        
-		
-		/*
-		SDL_Rect* camera = nullptr;
-		switch(main_player_num)
-		{
-			case 1:{ camera = m_player_manager_ptr->GetPointerToCameraOne(); break;}
-			case 2:{ camera = m_player_manager_ptr->GetPointerToCameraTwo(); break;}
-			case 3:{ camera = m_player_manager_ptr->GetPointerToCameraThree(); break;}
-			case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
-		}
-		
-		Dungeon::moveMainDot(mainPlayer,timeStep,camera);
-        */
     }
-    
-    //move main dot
-    //Dungeon::moveMainDot(timeStep);
-    
-    //Restart timer
-    timer->start();
-    
 }
 
 void Dungeon::exitByTile()
@@ -645,46 +633,46 @@ void Dungeon::render(DrawingManager* gDrawManager)
 	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer1();
-		
-		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
-		
+				
 		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
 		{
 			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());		
 		}
+		
+		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 	}
 	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer2();
 		
-		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
-		
 		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
 		{
 			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());		
 		}
+		
+		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
 	}
 	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer3();
-		
-		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
-		
+				
 		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
 		{
 			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());		
 		}
+		
+		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
 	}
 	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer4();
 		
-		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
-		
 		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
 		{
 			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());		
 		}
+		
+		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
 	}
     
 }

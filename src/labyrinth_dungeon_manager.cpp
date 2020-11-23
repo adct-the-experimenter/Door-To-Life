@@ -352,7 +352,7 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 			case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
 		}
 		
-		dungeonPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
+		//dungeonPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
 		
 		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
 		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
@@ -700,7 +700,9 @@ void LabyrinthDungeonManager::handle_events_RNG(RNGType& rngSeed)
 
 void LabyrinthDungeonManager::logic()
 {
-	
+	//create timestep for moving objects
+    float timeStep = stepTimer->getTicks() / 1000.f; //frame rate
+    
 	if(m_player_manager_ptr)
 	{
 		//do logic for labyrinth if any of the players are in labyrinth
@@ -732,7 +734,7 @@ void LabyrinthDungeonManager::logic()
 		//render for labyrinth if any of the players are in labyrinth
 		if(one_player_in_lab)
 		{
-			m_labyrinth->logic();
+			m_labyrinth->logic_alt(timeStep);
 		}
 		
 		//do logic for each player
@@ -746,7 +748,7 @@ void LabyrinthDungeonManager::logic()
 				p3_index_dungeon == d_index ||
 				p4_index_dungeon == d_index)
 			{
-				m_mini_dungeon_1->logic();
+				m_mini_dungeon_1->logic_alt(timeStep);
 			}
 		}
 		
@@ -759,7 +761,7 @@ void LabyrinthDungeonManager::logic()
 				p3_index_dungeon == d_index ||
 				p4_index_dungeon == d_index)
 			{
-				m_mini_dungeon_2->logic();
+				m_mini_dungeon_2->logic_alt(timeStep);
 			}
 		}
 		
@@ -772,7 +774,7 @@ void LabyrinthDungeonManager::logic()
 				p3_index_dungeon == d_index ||
 				p4_index_dungeon == d_index)
 			{
-				m_mini_dungeon_3->logic();
+				m_mini_dungeon_3->logic_alt(timeStep);
 			}
 		}
 		
@@ -785,11 +787,14 @@ void LabyrinthDungeonManager::logic()
 				p3_index_dungeon == d_index ||
 				p4_index_dungeon == d_index)
 			{
-				m_mini_dungeon_4->logic();
+				m_mini_dungeon_4->logic_alt(timeStep);
 			}
 		}
 		
 	}
+	
+	//Restart timer
+    stepTimer->start();
 	
 }
 

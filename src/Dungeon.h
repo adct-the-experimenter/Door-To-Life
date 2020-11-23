@@ -112,7 +112,10 @@ public:
     //Game loop functions
     virtual void handle_events(Event& thisEvent);
     virtual void handle_events_RNG(RNGType& rngSeed);
+    
+    void logic_alt(float& timeStep);
     virtual void logic();
+    
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
 	virtual void render(DrawingManager* gDrawManager);
@@ -128,7 +131,6 @@ public:
 
     SDL_Rect getTileBox_under_dot();
 
-    
     
     void freeResources();
     

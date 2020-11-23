@@ -97,6 +97,10 @@ public:
     virtual void handle_events_RNG(RNGType& rngSeed);
     
     virtual void logic();
+    
+    //function used in labyrinthDungeonManager to share timer with Dungeon
+    void logic_alt(float& timeStep); 
+    
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
     virtual void render(DrawingManager* gDrawManager);

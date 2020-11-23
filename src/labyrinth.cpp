@@ -902,7 +902,15 @@ void Labyrinth::logic()
     //create timestep for moving objects
     float timeStep = labyrinthTimer->getTicks() / 1000.f; //frame rate
     
-    int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+    Labyrinth::logic_alt(timeStep);
+    
+    //Restart timer
+    labyrinthTimer->start();
+}
+
+void Labyrinth::logic_alt(float& timeStep)
+{
+	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
     
     //logic for player
     if(m_player_manager_ptr != nullptr)
@@ -1054,9 +1062,6 @@ void Labyrinth::logic()
 		}
         
     }
-    
-    //Restart timer
-    labyrinthTimer->start();
 }
 
 
