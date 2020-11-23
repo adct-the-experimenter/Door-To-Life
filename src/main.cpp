@@ -375,8 +375,16 @@ void DungeonGameLoop()
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);
     //render health bar
     playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
+    
     //render sub map
-    subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),nullptr,nullptr, gRenderer);
+    switch(g_num_players)
+    {
+		case 1:{subMap.renderSubMapAndDot(mainDotPointer.get(),nullptr,nullptr,nullptr, gRenderer); break;}
+		case 2:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),nullptr,nullptr, gRenderer); break;}
+		case 3:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),dotPointer3.get(),nullptr, gRenderer); break;}
+		case 4:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),dotPointer3.get(),dotPointer4.get(), gRenderer); break;}
+	}
+    
     
     //update screen
     SDL_RenderPresent(gRenderer);

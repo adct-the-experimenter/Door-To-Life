@@ -64,15 +64,19 @@ void SubMap::renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot
     double mini_width_per_map_width = double( mapViewPort.w) / double( (GRID_WIDTH / 20) * NODE_LEVEL_WIDTH ) ;
     double mini_height_per_map_height = double( mapViewPort.h ) / double( (GRID_HEIGHT / 20) * NODE_LEVEL_HEIGHT );
     
-    double dotMapX1 = thisDot1->getCollisionBox().x * mini_width_per_map_width;
+    if(thisDot1)
+    {
+		double dotMapX1 = thisDot1->getCollisionBox().x * mini_width_per_map_width;
                     
-    double dotMapY1 = thisDot1->getCollisionBox().y * mini_height_per_map_height;
+		double dotMapY1 = thisDot1->getCollisionBox().y * mini_height_per_map_height;
+		
+		//convert from grid node position to square position 
+		dot_rect1.x = dotMapX1;
+		dot_rect1.y = dotMapY1;
+		
+		SDL_RenderDrawRect(gRenderer,&dot_rect1);
+	}
     
-    //convert from grid node position to square position 
-    dot_rect1.x = dotMapX1;
-    dot_rect1.y = dotMapY1;
-    
-    SDL_RenderDrawRect(gRenderer,&dot_rect1);
     
     if(thisDot2)
     {
@@ -80,10 +84,36 @@ void SubMap::renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot
                     
 		double dotMapY2 = thisDot2->getCollisionBox().y * mini_height_per_map_height;
 		
-		dot_rect1.x = dotMapX2;
-		dot_rect1.y = dotMapY2;
+		dot_rect2.x = dotMapX2;
+		dot_rect2.y = dotMapY2;
 		
 		SDL_RenderDrawRect(gRenderer,&dot_rect2);
+		
+	}
+	
+	if(thisDot3)
+    {
+		double dotMapX3 = thisDot3->getCollisionBox().x * mini_width_per_map_width;
+                    
+		double dotMapY3 = thisDot3->getCollisionBox().y * mini_height_per_map_height;
+		
+		dot_rect3.x = dotMapX3;
+		dot_rect3.y = dotMapY3;
+		
+		SDL_RenderDrawRect(gRenderer,&dot_rect3);
+		
+	}
+	
+	if(thisDot4)
+    {
+		double dotMapX4 = thisDot4->getCollisionBox().x * mini_width_per_map_width;
+                    
+		double dotMapY4 = thisDot4->getCollisionBox().y * mini_height_per_map_height;
+		
+		dot_rect4.x = dotMapX4;
+		dot_rect4.y = dotMapY4;
+		
+		SDL_RenderDrawRect(gRenderer,&dot_rect4);
 		
 	}
     
