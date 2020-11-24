@@ -65,6 +65,7 @@ Dungeon::Dungeon()
 	
 	exitTilePtr = nullptr;
 
+	m_dungeon_index = 0;
 }
 
 Dungeon::~Dungeon()
@@ -72,10 +73,10 @@ Dungeon::~Dungeon()
     //std::cout << "Dungeon destructor called! \n";
 
      //Set lCamera values to zero
-    lCamera.x =0; lCamera.y=0; lCamera.w=0; lCamera.h=0;
+    lCamera = nullptr;
 
     //set main sprite pointer to NULL
-    mainDotPointer = nullptr;
+    mainPlayer = nullptr;
     
 
 }
@@ -129,7 +130,6 @@ void Dungeon::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHe
  LEVEL_HEIGHT = levelHeight;
 }
     
-void Dungeon::setPointerToMainDot(Dot* thisDot){mainDotPointer = thisDot;}
 void Dungeon::setPointerToTimer(LTimer* thisTimer){timer = thisTimer;}
 
 void Dungeon::setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer)
@@ -221,11 +221,13 @@ void Dungeon::deleteTiles()
 
 /** Dot Functions**/
 
+void Dungeon::SetPointerToMainPlayer(Player* player){mainPlayer = player;}
+
 void Dungeon::setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                            SDL_Rect& camera)
+                            SDL_Rect* camera)
 {
     //set place for dot to move in
-    mainDotPointer->setPlace(screenWidth,screenHeight);
+    //mainPlayer->setPlace(screenWidth,screenHeight);
 
     lCamera = camera;
 }
@@ -236,35 +238,56 @@ void Dungeon::moveMainDot(float& timeStep)
   //  std::cout << "timestep: " << timeStep <<std::endl;
 
     //set camera over dot
-    mainDotPointer->setCamera(lCamera);
+    //mainPlayer->setCamera(*lCamera);
 
     //move dot independent of frames, but rather dependent on time. includes collision detection
-    mainDotPointer->moveOnTiles(timeStep, dungeonTileSet );
+    mainPlayer->moveOnTiles(timeStep, dungeonTileSet );
 
     //Restart timer
     timer->start();
 
 }
 
+
+void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
+{
+    //set camera over dot
+    //Center the camera over the dot
+	thisCamera->x = ( (int)thisDot->getPosX() + thisDot->getWidth() / 2  ) - thisCamera->w / 2;
+	thisCamera->y = ( (int)thisDot->getPosY() + thisDot->getHeight() / 2  ) - thisCamera->h / 2;
+	
+	//Keep the camera in bounds
+	if( thisCamera->x < 0 )
+	{
+		thisCamera->x = 0;
+	}
+	if( thisCamera->y < 0 )
+	{
+		thisCamera->y = 0;
+	}
+
+    //move dot independent of frames, but rather dependent on time. includes collision detection
+    thisDot->moveOnTiles_TileType(timeStep, dungeonTileSet );
+		
+}
+
 void Dungeon::PlaceDotInThisLocation(float& x, float& y)
 {
-	mainDotPointer->setPosX(x);
-    mainDotPointer->setPosY(y);
+	mainPlayer->setPosX(x);
+    mainPlayer->setPosY(y);
 }
 
 
-void  Dungeon::PlacePlayerInLocationNearEntrance()
+void Dungeon::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 {
 	if(exitTilePtr)
 	{
-		
 		float x = exitTilePtr->getBox().x + 80;
 		float y = exitTilePtr->getBox().y + 80;
-		
-		mainDotPointer->setPosX(x);
-		mainDotPointer->setPosY(y);
+				
+		thisPlayer->setPosX(x);
+		thisPlayer->setPosY(y);
 	}
-	
     
 }
 /** Item Functions**/
@@ -378,7 +401,12 @@ void Dungeon::handle_events(Event& thisEvent)
         Dungeon::setState(GameState::State::EXIT);
     }
 
-    mainDotPointer->handleEvent(thisEvent);
+    //mainPlayer->handleEvent(thisEvent);
+    
+    if(m_player_manager_ptr)
+    {
+		m_player_manager_ptr->handleEvent(thisEvent);
+	}
 
 /*
     for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
@@ -395,24 +423,77 @@ void Dungeon::logic()
     //std::cout << "Logic called! \n";
     float timeStep = timer->getTicks() / 1000.f; //frame rate
 	
+	Dungeon::logic_alt(timeStep);
+    
+    //Restart timer
+    timer->start();
+    
+}
+
+void Dungeon::logic_alt(float& timeStep)
+{
 	//logic for player
     if(m_player_manager_ptr != nullptr)
     {
         m_player_manager_ptr->logic(timeStep);
         //if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
         
-        //if player hits dungeon entrance/exit
-        if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
-        { 
-			Dungeon::setState(GameState::State::NEXT);
+        bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
+        
+		std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
+		
+		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
+		
+		
+		//render sprites of other players if they are in the same dungeon
+		
+		if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraOne());
+			
+			//if player 1 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
+			}
+		}
+		if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraTwo());
+			
+			//if player 2 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
+			}
+		}
+		if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraThree());
+			
+			//if player 3 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
+			}
+		}
+		if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+		{
+			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
+								m_player_manager_ptr->GetPointerToCameraFour());
+			
+			//if player 4 hits dungeon entrance/exit
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
+			}
 		}
         
     }
-    
-    //move main dot
-    Dungeon::moveMainDot(timeStep);
-	
-	
 }
 
 void Dungeon::exitByTile()
@@ -429,7 +510,7 @@ void Dungeon::exitByTile()
                 smallerExitBox.x= dungeonTileSet[i]->getBox().x + 40; smallerExitBox.y= dungeonTileSet[i]->getBox().y + 40;
                 smallerExitBox.w=10; smallerExitBox.h=10;
 
-                if( checkCollision(mainDotPointer->getCollisionBox(), smallerExitBox ) == true 
+                if( checkCollision(mainPlayer->getCollisionBox(), smallerExitBox ) == true 
                 /*|| Dungeon::getExitState() == true */)
                 {
                     //go to next state
@@ -468,17 +549,17 @@ void Dungeon::doorCollision(float timeStep)
     if( dungeonDoorsVector.size() == 0)
     {
         //if dot collides with door
-        if( checkCollision( mainDotPointer->getCollisionBox(), 
+        if( checkCollision( mainPlayer->getCollisionBox(), 
                         dungeonDoorsVector[0].getCollisionBoxDoor1()) )
         {
             //move dot back
-            mainDotPointer->moveBack(timeStep);
+            mainPlayer->moveBack(timeStep);
         }
-        else if(checkCollision( mainDotPointer->getCollisionBox(), 
+        else if(checkCollision( mainPlayer->getCollisionBox(), 
                         dungeonDoorsVector[0].getCollisionBoxDoor2()))
         {
             //move dot back
-            mainDotPointer->moveBack(timeStep);
+            mainPlayer->moveBack(timeStep);
         }
 
     }
@@ -487,18 +568,18 @@ void Dungeon::doorCollision(float timeStep)
         for(size_t i=0;i < dungeonDoorsVector.size(); ++i)
         {
             //if dot collides with a door
-            if( checkCollision( mainDotPointer->getCollisionBox(), 
+            if( checkCollision( mainPlayer->getCollisionBox(), 
                                 dungeonDoorsVector[i].getCollisionBoxDoor1() ) )
             {
 
                 //move dot back
-                mainDotPointer->moveBack(timeStep);
+                mainPlayer->moveBack(timeStep);
             }
-            else if(checkCollision( mainDotPointer->getCollisionBox(), 
+            else if(checkCollision( mainPlayer->getCollisionBox(), 
                                 dungeonDoorsVector[i].getCollisionBoxDoor2() ))
             {
                 //move dot back
-                mainDotPointer->moveBack(timeStep);
+                mainPlayer->moveBack(timeStep);
             }
         }
     }
@@ -518,34 +599,78 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
 
 void Dungeon::render(SDL_Renderer* gRenderer)
 {
-  //  std::cout << "render called! \n";
+    std::cout << "render called in dungeon! \n";
 
     
     //Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
-        dungeonTileSet[i]->render(tileTextureMap,lCamera,gRenderer);
+        dungeonTileSet[i]->render(tileTextureMap,*lCamera,gRenderer);
     }
 
     //render dot
-    mainDotPointer->render(lCamera,gRenderer);
+    mainPlayer->render(*lCamera,gRenderer);
 
 
 }
 
 void Dungeon::render(DrawingManager* gDrawManager)
 {
-	//Render level
-    for( size_t i = 0; i < dungeonTileSet.size(); ++i )
-    {
-        dungeonTileSet[i]->render(tileTextureMap,*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
-        //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRendererTwo());
-        //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRendererThree());
-        //dungeonTileSet[i]->render(tileTextureMap,gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRendererFour());
-    }
-
-    //render dot
-    mainDotPointer->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+	
+	bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
+	std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
+	
+	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+	m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
+	
+	
+	//render sprites of other players if they are in the same dungeon
+	
+	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+	{
+		gDrawManager->SetToRenderViewPortPlayer1();
+				
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());		
+		}
+		
+		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+	}
+	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+	{
+		gDrawManager->SetToRenderViewPortPlayer2();
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());		
+		}
+		
+		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+	}
+	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+	{
+		gDrawManager->SetToRenderViewPortPlayer3();
+				
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());		
+		}
+		
+		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+	}
+	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+	{
+		gDrawManager->SetToRenderViewPortPlayer4();
+		
+		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		{
+			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());		
+		}
+		
+		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
+	}
+    
 }
 
 //Set States
@@ -556,7 +681,7 @@ int Dungeon::getDotTileNumber()
 {
     for(size_t i=0; i < dungeonTileSet.size(); ++i )
     {
-        if(checkCollision(mainDotPointer->getCollisionBox(), dungeonTileSet[i]->getBox() ) == true)
+        if(checkCollision(mainPlayer->getCollisionBox(), dungeonTileSet[i]->getBox() ) == true)
         {
             return dungeonTileSet[i]->getTileNumber();
         }
@@ -592,7 +717,7 @@ SDL_Rect Dungeon::getTileBox_under_dot()
 {
     for(size_t i=0; i < dungeonTileSet.size(); ++i )
     {
-        if( checkCollision(mainDotPointer->getCollisionBox(), dungeonTileSet[i]->getBox() ) == true)
+        if( checkCollision(mainPlayer->getCollisionBox(), dungeonTileSet[i]->getBox() ) == true)
         {
             return dungeonTileSet[i]->getBox();
         }
@@ -637,3 +762,8 @@ void Dungeon::SetupDungeonParametersAfterXMLRead()
 		
 	}
 }
+
+void Dungeon::SetDungeonIndex(std::int16_t index){m_dungeon_index = index;}
+
+std::int16_t Dungeon::GetDungeonIndex(){return m_dungeon_index;}
+

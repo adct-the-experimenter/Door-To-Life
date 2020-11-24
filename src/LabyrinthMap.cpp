@@ -143,21 +143,28 @@ void LabyrinthMap::renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap)
     }
 }
 
-void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextureMap)
+void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDrawManager,LTexture* tileTextureMap)
 {
 	int num_players = gDrawManager->GetNumberOfPlayers();
 	
+	bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
+    playerManager->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+	
     for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
     {
-		gDrawManager->SetToRenderViewPortPlayer1();
+		if(!p1_in_dungeon)
+		{
+			gDrawManager->SetToRenderViewPortPlayer1();
 		
-        labyrinthTilesVector[i]->render(tileTextureMap,
+			labyrinthTilesVector[i]->render(tileTextureMap,
 										*gDrawManager->GetPointerToCameraOne(),
 										gDrawManager->GetPointerToRenderer());
+		}
+		
 		
 		if(gDrawManager->GetMultiplePlayersBool())
 		{
-			if(num_players > 1)
+			if(num_players > 1 && !p2_in_dungeon)
 			{
 				gDrawManager->SetToRenderViewPortPlayer2();
 			
@@ -166,7 +173,7 @@ void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextur
 												gDrawManager->GetPointerToRenderer());
 			}
 			
-			if(num_players > 2)
+			if(num_players > 2 && !p3_in_dungeon)
 			{
 				gDrawManager->SetToRenderViewPortPlayer3();
 			
@@ -175,7 +182,7 @@ void LabyrinthMap::renderTiles(DrawingManager* gDrawManager,LTexture* tileTextur
 												gDrawManager->GetPointerToRenderer());
 			}
 			
-			if(num_players > 3)
+			if(num_players > 3 && !p4_in_dungeon)
 			{
 				gDrawManager->SetToRenderViewPortPlayer4();
 			
@@ -279,24 +286,29 @@ void LabyrinthMap::renderDoors(SDL_Renderer* gRenderer)
 }
 
 
-void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
+void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDrawManager)
 {
 	int num_players = gDrawManager->GetNumberOfPlayers();
+	
+	bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
+    playerManager->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 	
     for(size_t i = 0; i < labyrinthDoorsVector.size(); ++i)
     {
         if( checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
                 || checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
         {
-			gDrawManager->SetToRenderViewPortPlayer1();
-            labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+			if(!p1_in_dungeon)
+			{
+				gDrawManager->SetToRenderViewPortPlayer1();
+				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+			}
         }
         
         if(gDrawManager->GetMultiplePlayersBool())
         {
 			
-			
-			if(num_players > 1)
+			if(num_players > 1 && !p2_in_dungeon)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
@@ -306,7 +318,7 @@ void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
 				}
 			}
 			
-			if(num_players > 2)
+			if(num_players > 2 && !p3_in_dungeon)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
@@ -316,7 +328,7 @@ void LabyrinthMap::renderDoors(DrawingManager* gDrawManager)
 				}
 			}
 			
-			if(num_players > 3)
+			if(num_players > 3 && !p4_in_dungeon)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))

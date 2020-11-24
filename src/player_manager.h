@@ -43,19 +43,32 @@ public:
 	void logic(float& timestep);
 	void sound(AudioRenderer* gAudioRenderer);
 	
-	void handleEvent_player1(Event& thisEvent);
-	
+	void handleEvent_player1(Event& thisEvent);	
 	void handleEvent_player2(Event& thisEvent);
-	void handleEvent_player2(SDL_Joystick* joystick_controller);
-
+	void handleEvent_player3(Event& thisEvent);
+	void handleEvent_player4(Event& thisEvent);
+	
+	void SetDungeonEnteredForPlayer(std::int16_t dungeon_index, int num_player);
+	
+	void SetDungeonEnteredBoolForPlayer(bool state, int num_player);
+	
+	void GetBoolsForPlayersInDungeon(bool* p1,bool* p2,bool* p3,bool* p4 );
+	void GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::int16_t* p2,std::int16_t* p3,std::int16_t* p4 );
+	
+	std::int16_t GetDungeonIndexForThisPlayerInDungeon(int num_player);
+	
+	void SetDungeonExitBoolForPlayer(bool state, int num_player);
+	void GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4);
 	
 private:
 	
+	//pointers to players
 	Player* player_one_ptr;
 	Player* player_two_ptr;
 	Player* player_three_ptr;
 	Player* player_four_ptr;
 	
+	//pointers to cameras following players
 	SDL_Rect* camera1_ptr;
 	SDL_Rect* camera2_ptr;
 	SDL_Rect* camera3_ptr;
@@ -64,6 +77,24 @@ private:
 	bool mulitple_players_bool;
 	int m_num_players;
 	
+	//info on which dungeons players are in
+	
+	//player bools in labyrinth or in dugneon
+	bool player1_in_dungeon;
+	bool player2_in_dungeon;
+	bool player3_in_dungeon;
+	bool player4_in_dungeon;
+	
+	bool player1_exit_dungeon;
+	bool player2_exit_dungeon;
+	bool player3_exit_dungeon;
+	bool player4_exit_dungeon;
+	
+	//index of dungeon that players are in
+	std::int16_t num_dungeon_index_p1;
+	std::int16_t num_dungeon_index_p2;
+	std::int16_t num_dungeon_index_p3;
+	std::int16_t num_dungeon_index_p4;
 };
 
 #endif

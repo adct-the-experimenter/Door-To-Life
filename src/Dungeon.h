@@ -27,14 +27,11 @@ class Dungeon : public GameState
     
 public:
 
-
     //constructor to load resources
     Dungeon();
 
     //destructor to free resources
     ~Dungeon();
-    
-   
     
     //function to load dungeon media outside of Dungeon object
     friend bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
@@ -47,10 +44,8 @@ public:
     //function to generate plain base dungeon with tile clip set.
     void GenerateBaseDungeon();
     
-    
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
     
-    void setPointerToMainDot(Dot* thisDot);
     void setPointerToTimer(LTimer* thisTimer);
     
     //function to set pointers to media
@@ -73,13 +68,17 @@ public:
 /** Dot Functions **/
 
     void setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                            SDL_Rect& camera);
+                            SDL_Rect* camera);
+                            
+    void SetPointerToMainPlayer(Player* player);
                             
     void moveMainDot(float& timeStep);
     
+    void moveMainDot(Player* thisPlayer,float &timeStep,SDL_Rect* thisCamera);
+    
     void PlaceDotInThisLocation(float& x, float& y);
     
-    void PlacePlayerInLocationNearEntrance();
+    void PlacePlayerInLocationNearEntrance(Player* thisPlayer);
 
 
 /** Item Functions **/
@@ -113,7 +112,10 @@ public:
     //Game loop functions
     virtual void handle_events(Event& thisEvent);
     virtual void handle_events_RNG(RNGType& rngSeed);
+    
+    void logic_alt(float& timeStep);
     virtual void logic();
+    
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
 	virtual void render(DrawingManager* gDrawManager);
@@ -130,7 +132,6 @@ public:
     SDL_Rect getTileBox_under_dot();
 
     
-    
     void freeResources();
     
     friend class DungeonCreator;
@@ -144,13 +145,20 @@ public:
 	//set tiles
 	void SetupDungeonParametersAfterXMLRead();
 	
+	//functions to set and get dungeon id
+	void SetDungeonIndex(std::int16_t index);
+	std::int16_t GetDungeonIndex();
+	
 private:
 
 //members not inherited from GameState class
 
 
 /** Dungeon Setup**/
-
+	
+	//index of dungeon used to identify itself among other dungeons
+	std::int16_t m_dungeon_index;
+		
     //start coordinates of node
     std::int16_t NODE_X;
     std::int16_t NODE_Y;
@@ -168,7 +176,7 @@ private:
     LTexture* tileTextureMap;
 
     //pointer to camera
-    SDL_Rect lCamera;
+    SDL_Rect* lCamera;
 
     //pointer to timer in main
     LTimer* timer;
@@ -192,13 +200,15 @@ private:
    
 
 /** Beings in Dungeon**/
-    //main character
-    Dot* mainDotPointer;
+    
+    //main player that dungeon revolves around. Each player has a dungeon 
+    Player* mainPlayer;
+    
     PlayerManager* m_player_manager_ptr;
+    
 
 /** Items in Dungeon **/
 
-    
     EnemyInventory m_enemy_inventory;
     
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );

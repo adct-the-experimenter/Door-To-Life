@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "DrawingManager.h"
+#include "player_manager.h"
 
 //class to contain graphical part of labyrinth
 
@@ -69,13 +70,13 @@ public:
     //function to render tiles
     void renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap);
     
-    void renderTiles(DrawingManager* gDrawManager,LTexture* tileTextureMap);
+    void renderTiles(PlayerManager* playerManager,DrawingManager* gDrawManager,LTexture* tileTextureMap);
 
     void renderDotInLabyrinthMap(SDL_Renderer* gRenderer,Dot* mainDotpointer,SDL_Rect* thisCamera);
     
     void renderDoors(SDL_Renderer* gRenderer);
     
-    void renderDoors(DrawingManager* gDrawManager);
+    void renderDoors(PlayerManager* playerManager,DrawingManager* gDrawManager);
     
 
     friend class Labyrinth;

@@ -29,6 +29,7 @@
 #include "weapons_loader.h" //for loading media for weapons
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
+#include "dungeon_media_loader.h" //for doors,keys,dungeon music
 
 #include "Dungeon.h"
 #include "DungeonXMLReader.h"
@@ -36,6 +37,10 @@
 #include "DungeonXMLRegistry.h"
 
 #include "DrawingManager.h"
+
+#include "labyrinth_dungeon_manager.h"
+
+
 
 /** Constants and Global Variables**/
 
@@ -130,7 +135,7 @@ bool initResourcesForMultiplayer();
 bool loadMedia();
 bool loadMedia_score();
 
-#include "dungeon_media_loader.h" //for doors,keys,dungeon music
+
                             
 //frees and closes resources
 void close();
@@ -146,7 +151,7 @@ struct StateStruct
 GameState* baseGameState = NULL;
 
 // stack of structure stateStruct
-std::stack<StateStruct> state_stack;
+std::stack <StateStruct> state_stack;
 
 bool pauseStack = false;
 
@@ -223,10 +228,6 @@ bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 void freeMedia_HealthBar(LTexture* healthTex); 
 LTexture healthBarTexture;
 
-std::unique_ptr <CollisonHandler> mainCollisionHandler;
-std::unique_ptr <CollisonHandler> miniCollisionHandler;
-CollisonHandler* currentCollisionHandler;
-
 
 std::unique_ptr <GameInventory> gameInventory;
 
@@ -238,6 +239,8 @@ DungeonXMLRegistry dungeon_xml_reg;
 
 std::unique_ptr <Labyrinth> gLabyrinth;
 bool labyrinthCreated = false;
+
+std::unique_ptr <LabyrinthDungeonManager> gLabyrinthDungeonManager;
 
 //joysticks
 
@@ -309,6 +312,7 @@ void DungeonGameLoop()
     
 	
     run_event_handler();
+    
     //while event queue is not empty
     while(!isEventQueueEmpty_Player1())
     {
@@ -317,18 +321,35 @@ void DungeonGameLoop()
 		popEventInstanceFromFront_Player1();
 	}
 	
-	while(!isEventQueueEmpty_Player2())
+	while(!isEventQueueEmpty_Player2() && g_num_players > 1)
     {
 		mainPlayerManager.handleEvent_player2(getEventInstanceFront_Player2());
 		baseGameState->handle_events(getEventInstanceFront_Player2());
 		popEventInstanceFromFront_Player2();
 	}
 	
+	while(!isEventQueueEmpty_Player3() && g_num_players > 2)
+    {
+		mainPlayerManager.handleEvent_player3(getEventInstanceFront_Player3());
+		baseGameState->handle_events(getEventInstanceFront_Player3());
+		popEventInstanceFromFront_Player3();
+	}
+	
+	while(!isEventQueueEmpty_Player4() && g_num_players > 3)
+    {
+		mainPlayerManager.handleEvent_player4(getEventInstanceFront_Player4());
+		baseGameState->handle_events(getEventInstanceFront_Player4());
+		popEventInstanceFromFront_Player4();
+	}
+	
     
     baseGameState->handle_events_RNG(rng);
     
-    currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
-    
+    //currentCollisionHandler->run_collision_handler(g_num_players); //run collision handler to update collision states
+    if(gLabyrinthDungeonManager)
+    {
+		gLabyrinthDungeonManager->RunCollisionHandlersOps();
+	}
     //calculate FPS 
     frameRateCap.calculateFPS();
     
@@ -354,8 +375,16 @@ void DungeonGameLoop()
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);
     //render health bar
     playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
+    
     //render sub map
-    subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),nullptr,nullptr, gRenderer);
+    switch(g_num_players)
+    {
+		case 1:{subMap.renderSubMapAndDot(mainDotPointer.get(),nullptr,nullptr,nullptr, gRenderer); break;}
+		case 2:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),nullptr,nullptr, gRenderer); break;}
+		case 3:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),dotPointer3.get(),nullptr, gRenderer); break;}
+		case 4:{subMap.renderSubMapAndDot(mainDotPointer.get(),dotPointer2.get(),dotPointer3.get(),dotPointer4.get(), gRenderer); break;}
+	}
+    
     
     //update screen
     SDL_RenderPresent(gRenderer);
@@ -491,13 +520,155 @@ void NodeGeneration()
     }
 }
 
-size_t num_mini_dungeon_entered;
-float playerPosX_beforedungeon = 0;
-float playerPosY_beforedungeon = 0;
-
-
 void Dungeon1()
 {
+	if(gLabyrinthDungeonManager.get())
+	{
+		gLabyrinthDungeonManager->SetPointerToDungeonXMLRegistry(&dungeon_xml_reg);
+		//if labyrinth has not been created yet
+		if(!gLabyrinthDungeonManager->GetLabyrinthCreatedBool())
+		{
+			//set up labyrinth
+			if(!gLabyrinthDungeonManager->setupLabyrinth(&mainPlayerManager, gameInventory.get(),
+														&dungeon_xml_reg,rng,
+														&stepTimer,mainDotPointer.get(),
+														SCREEN_WIDTH , SCREEN_HEIGHT,
+														keyTexture, keySource,keyBuffer,
+														doorTexture, doorSource, doorBufferOpen, doorBufferFail,
+														doorClips) )
+			{
+				std::cout << "Failed to set up labyrinth! \n";
+				quitGame = true;
+			}
+			else
+			{
+				Labyrinth* thisLabyrinth = gLabyrinthDungeonManager->GetPointerToLabyrinth();
+				
+				 //initialize sub map
+				subMap.initParametersFromLabyrinth(*thisLabyrinth);
+				subMap.setPosition(0,0);
+				
+				//setup camera for audio renderer
+				gAudioRenderer.SetPointerToCamera(&camera);
+				
+				//setup fps timer
+				std::int16_t frame_rate = 60;
+				frameRateCap.setFrameRate(frame_rate);
+				
+				 //set camera for labyrinth 
+				thisLabyrinth->setCamera(&camera);
+						
+			}
+			
+		}
+		//else if labyrinth has been created
+		else
+		{
+			//run game loop
+			
+			gLabyrinthDungeonManager->SetPointerToTimer(&stepTimer);
+			gLabyrinthDungeonManager->SetPointerToGameInventory(gameInventory.get());
+			gLabyrinthDungeonManager->setupScreenDimensions(SCREEN_WIDTH,SCREEN_HEIGHT);
+			
+			// GameLoop
+		
+			//set base game state to gDungeon1
+			baseGameState = gLabyrinthDungeonManager.get();
+			baseGameState->setState(GameState::State::RUNNING);
+			//start timers 
+			stepTimer.start();
+			frameRateCap.startFrameCount();
+			
+			
+			bool quit = false;
+			bool toMiniDungeon = false;
+			
+			while(!quit)
+			{
+				//call game loop function
+				DungeonGameLoop();
+				
+				gLabyrinthDungeonManager->LabyrinthToMiniDungeonTransitionOperations();
+				
+				gLabyrinthDungeonManager->MiniDungeonToLabyrinthTransitionOperations();
+				
+				if(baseGameState->getState() == GameState::State::NEXT )
+				{
+					stepTimer.stop();
+					quit = true;
+				}
+				
+				else if(baseGameState->getState() == GameState::State::EXIT 
+					|| baseGameState->getState() == GameState::State::GAME_OVER)
+				{
+					stepTimer.stop();
+					quit = true;
+				}
+				else if(baseGameState->getState() == GameState::State::PAUSE)
+				{
+					//stop timer
+					
+					stepTimer.stop();
+					runMenuState();
+					//restart timer
+					stepTimer.start();
+				}
+
+			}
+			
+			if(toMiniDungeon)
+			{
+				
+				
+				baseGameState = nullptr;
+				state_stack.push(gMiniDungeonStateStructure);
+			}
+			else
+			{
+				gameInventory->freeWeapons();
+				
+				//delete doors and keys
+				//delete tiles
+				gLabyrinthDungeonManager->GetPointerToLabyrinth()->freeResources();
+				
+				if(baseGameState->getState() == GameState::State::EXIT )
+				{	
+					baseGameState = nullptr;
+					labyrinthCreated = false; //remake labyrinth
+					quitGame = true;
+				}
+				else if(baseGameState->getState() == GameState::State::GAME_OVER )
+				{	
+					baseGameState = nullptr;
+					labyrinthCreated = false; //remake labyrinth
+					GameOver();
+				}
+
+				else if(baseGameState->getState() == GameState::State::NEXT)
+				{
+					//go to next dungeon
+					baseGameState = nullptr;
+					
+					GameWon();
+					
+					quitGame = true;
+				}
+				
+			}
+
+			loop += 1;
+			std::cout << "Loop: " <<loop << std::endl;
+			
+		}
+		
+	}
+	
+}
+
+/*
+void Dungeon1()
+{
+	
     //if labyrinth has not been created
     if(!labyrinthCreated)
     {
@@ -512,13 +683,12 @@ void Dungeon1()
 		//else do nothing
 		else{std::cout << "Failed to setup labyrinth! \n";}
 		
-		
-		
 	}
 	//else if labyrinth has been created
 	else
 	{
-		/** GameLoop **/
+		// GameLoop
+		
         //set base game state to gDungeon1
         baseGameState = gLabyrinth.get();
         baseGameState->setState(GameState::State::RUNNING);
@@ -621,7 +791,11 @@ void Dungeon1()
     
 	
 }
+*/
 
+void MiniDungeon(){}
+
+/*
 void MiniDungeon()
 {
 	
@@ -684,7 +858,7 @@ void MiniDungeon()
 	//start game loop
 	
 	
-	/** GameLoop **/
+	// GameLoop 
 	//set base game state to dungeon
 	baseGameState = dungeonUPtr.get();
 	baseGameState->setState(GameState::State::RUNNING);
@@ -744,11 +918,10 @@ void MiniDungeon()
 		state_stack.pop();
 	}
 	
-
-	
-	
 }
+*/
 
+/*
 bool setupLabyrinth(Labyrinth& thisLabyrinth)
 {
     thisLabyrinth.setTimerPointer(&stepTimer);
@@ -798,8 +971,6 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
         subMap.setPosition(0,0);
         //thisLabyrinth.setDebugBool(true);
         
-        //Setup camera for collision system
-        mainCollisionHandler->setCameraForCollisionSystem(&camera);
         
         //setup camera for audio renderer
         gAudioRenderer.SetPointerToCamera(&camera);
@@ -828,7 +999,7 @@ bool setupLabyrinth(Labyrinth& thisLabyrinth)
     
     return false;
 }
-
+*/
 
 
 
@@ -871,8 +1042,6 @@ void GameOver()
 	
 	pauseStack = false;
 	
-	mainCollisionHandler->repeatPlay = true;
-
 }
 
 void GameWon()
@@ -1063,6 +1232,10 @@ void LoadGameResourcesState()
     }
     else
     {
+		//initialize labyrinth dungeon manager
+		std::unique_ptr <LabyrinthDungeonManager> thisLDManager(new LabyrinthDungeonManager());
+		gLabyrinthDungeonManager = std::move(thisLDManager);
+		
         //if media successfully loaded
         //push dungeon 1 state into stack
         state_stack.push(gDungeon1StateStructure);
@@ -1086,20 +1259,12 @@ bool initPlayers()
     }
     else
     {
-		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-		if(!ptrToCollisionHandler){return false;}
-		else
-		{
-			mainCollisionHandler = std::move(ptrToCollisionHandler);
-			currentCollisionHandler = mainCollisionHandler.get();
-		}
 		
 		std::unique_ptr <GameInventory> ptrToGameInventory(new GameInventory());
 		if(!ptrToGameInventory){return false;}
 		else
 		{
 			gameInventory = std::move(ptrToGameInventory);
-			gameInventory->SetPointerToCollisionHandler(mainCollisionHandler.get());
 		}
 		
 
@@ -1117,13 +1282,10 @@ bool initPlayers()
         float speed = 80 * 3;
         ptrToMC->setSpeed(speed);
         
-
         mainDotPointer = std::move(ptrToMC);
-        
         
         //set pointer to main player
         mainPlayer = dynamic_cast<Player*>(mainDotPointer.get());
-        
         
         mainPlayerManager.SetPointerToPlayerOne(mainPlayer);
         
@@ -1131,12 +1293,6 @@ bool initPlayers()
         
         
         gameInventory->setupDefaultGunForPlayer_equippedweapon(mainPlayer);
-		
-		mainCollisionHandler->addPlayerToCollisionSystem(mainPlayer->getCollisionObjectPtr());
-		mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																			nullptr,
-																			nullptr,nullptr);
-		mainCollisionHandler->setCameraForCollisionSystem(&camera);
 		
 		//pass pointer to player to player inventory
 		playerInventory->SetPointerToPlayer(mainPlayer);
@@ -1171,15 +1327,6 @@ bool initPlayers()
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player2);
 				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																nullptr,
-																nullptr);
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				nullptr,nullptr);
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,nullptr,nullptr);
 			}
 			//if there is a 3rd player
 			if(mainPlayerManager.GetNumberOfPlayers() > 2)
@@ -1197,16 +1344,6 @@ bool initPlayers()
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player3);
 				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																player3->getCollisionObjectPtr(),
-																nullptr);
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				player3->getPointerToEquippedPlayerWeapon(),
-																				nullptr);
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,nullptr);
 			}
 			//if there is a 4th player
 			if(mainPlayerManager.GetNumberOfPlayers() > 3)
@@ -1223,18 +1360,6 @@ bool initPlayers()
 				mainPlayerManager.SetPointerToPlayerFour(player4);
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player4);
-				
-				//add player to collision system
-				mainCollisionHandler->addPlayersToCollisionSystem( mainPlayer->getCollisionObjectPtr(),
-																player2->getCollisionObjectPtr(),
-																player3->getCollisionObjectPtr(),
-																player4->getCollisionObjectPtr());
-																
-				mainCollisionHandler->addPlayerEquippedWeaponsToCollisionSystem(mainPlayer->getPointerToEquippedPlayerWeapon(),
-																				player2->getPointerToEquippedPlayerWeapon(),
-																				player3->getPointerToEquippedPlayerWeapon(),
-																				player4->getPointerToEquippedPlayerWeapon());
-				mainCollisionHandler->SetCamerasForCollisionSystem(&camera,&camera2,&camera3,&camera4);
 				
 			}
 			
