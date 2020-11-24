@@ -73,7 +73,7 @@ void SubMap::renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot
                            gray_r,gray_g,gray_b,
                            50);
                            
-    SDL_RenderFillRect(gRenderer,&mapViewPort);
+    SDL_RenderFillRect(gRenderer,NULL);
    
     //render red dot over gray square
     SDL_SetRenderDrawColor(gRenderer,

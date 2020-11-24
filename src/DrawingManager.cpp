@@ -53,7 +53,7 @@ void DrawingManager::InitViewportsForThisNumberOfPlayers(int num, int screen_wid
 			player2Viewport.x = screen_width / 2; player2Viewport.y = 0;
 			player2Viewport.w = screen_width / 2; player2Viewport.h = screen_height / 2;
 			
-			player3Viewport.x = screen_width / 3; player3Viewport.y = screen_height / 2;
+			player3Viewport.x = screen_width / 4; player3Viewport.y = screen_height / 2;
 			player3Viewport.w = screen_width / 2; player3Viewport.h = screen_height / 2; 
 			break;
 		}

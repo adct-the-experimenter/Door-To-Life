@@ -546,7 +546,17 @@ void Dungeon1()
 				
 				 //initialize sub map
 				subMap.initParametersFromLabyrinth(*thisLabyrinth);
-				subMap.setPosition(0,0);
+				
+				switch(g_num_players)
+				{
+					
+					case 1:{subMap.setPosition(0,0); break;}
+					case 2:{subMap.setPosition((SCREEN_WIDTH / 2) - 50,0); break;}
+					case 3:{subMap.setPosition(0,(SCREEN_HEIGHT / 2) - 50); break;}
+					case 4:{subMap.setPosition((SCREEN_WIDTH / 2) - 50 ,(SCREEN_HEIGHT / 2) - 50 ); break;}
+				}
+				
+				
 				
 				//setup camera for audio renderer
 				gAudioRenderer.SetPointerToCamera(&camera);
