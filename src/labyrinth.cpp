@@ -1722,7 +1722,11 @@ void Labyrinth::DungeonEntranceHitOperations()
 	{
 		DungeonTile* dungeonEntranceTile = dungeonEntrances[i].tile_ptr;
 	    
-		if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+	    bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
+		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+    
+	    
+		if( !p1_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
 		{
 			Labyrinth::setPlayerHitDungeonEntranceBool(true,1);
 			
@@ -1736,7 +1740,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 1)
 		{
-			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			if( !p2_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,2);
 				
@@ -1749,7 +1753,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 2)
 		{
-			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			if( !p3_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,3);
 				
@@ -1762,7 +1766,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 3)
 		{
-			if( checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			if( !p4_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,4);
 				

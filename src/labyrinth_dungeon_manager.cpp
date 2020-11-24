@@ -315,6 +315,9 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 		{
 			thisDungeon->PlacePlayerInLocationNearEntrance(thisPlayer);
 		}
+		
+		//reset player hit entrance bool
+		m_labyrinth->setPlayerHitDungeonEntranceBool(false,num_player_entered);
 	}
 }
 
@@ -343,16 +346,6 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 		dungeonPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
 		dungeonPtr->SetPointerToGameInventory(m_game_inventory_ptr);
 				
-		SDL_Rect* camera = nullptr;
-		switch(num_player)
-		{
-			case 1:{ camera = m_player_manager_ptr->GetPointerToCameraOne(); break;}
-			case 2:{ camera = m_player_manager_ptr->GetPointerToCameraTwo(); break;}
-			case 3:{ camera = m_player_manager_ptr->GetPointerToCameraThree(); break;}
-			case 4:{ camera = m_player_manager_ptr->GetPointerToCameraFour(); break;}
-		}
-		
-		//dungeonPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
 		
 		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
 		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
