@@ -127,7 +127,8 @@ public:
     void SetIndexMiniDungeonEntered(std::int16_t num);
     std::int16_t GetIndexMiniDungeonEntered();
     
-    
+    void getDungeonEntranceLocationForThisIndex(size_t& index, int* x, int* y);
+    size_t getNumberOfDungeonEntranceLocations();
     
 private:
     

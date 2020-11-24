@@ -1806,3 +1806,15 @@ bool Labyrinth::getPlayerHitDungeonEntraceBool(int num_player)
 
 void Labyrinth::SetIndexMiniDungeonEntered(std::int16_t num){indexMiniDungeonEntered = num;}
 std::int16_t Labyrinth::GetIndexMiniDungeonEntered(){return indexMiniDungeonEntered;}
+
+void Labyrinth::getDungeonEntranceLocationForThisIndex(size_t& index, int* x, int* y)
+{
+	if(index < dungeonEntrances.size())
+	{
+		*x = dungeonEntrances.at(index).tile_ptr->getBox().x;
+		*y = dungeonEntrances.at(index).tile_ptr->getBox().y;
+	}
+	
+}
+
+size_t Labyrinth::getNumberOfDungeonEntranceLocations(){return dungeonEntrances.size();}

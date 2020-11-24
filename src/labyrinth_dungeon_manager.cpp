@@ -446,7 +446,6 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 {
 	
-	
 }
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
@@ -464,6 +463,8 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
 			
 			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,1);
+			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,1);
+			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,1);
 		}
 	}
 	
@@ -475,6 +476,8 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
 			
 			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,2);
+			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,2);
+			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,2);
 		}
 	}
 	
@@ -486,6 +489,8 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
 			
 			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,3);
+			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,3);
+			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,3);
 		}
 	}
 	
@@ -497,6 +502,8 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
 			
 			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,4);
+			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,4);
+			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,4);
 		}
 	}
 	

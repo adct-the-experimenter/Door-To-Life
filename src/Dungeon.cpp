@@ -268,9 +268,7 @@ void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
 
     //move dot independent of frames, but rather dependent on time. includes collision detection
     thisDot->moveOnTiles_TileType(timeStep, dungeonTileSet );
-	
-	std::cout << "Dot Position: " << thisDot->getPosX() << " , " << thisDot->getPosY() << std::endl;
-	
+		
 }
 
 void Dungeon::PlaceDotInThisLocation(float& x, float& y)
@@ -286,9 +284,7 @@ void Dungeon::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 	{
 		float x = exitTilePtr->getBox().x + 80;
 		float y = exitTilePtr->getBox().y + 80;
-		
-		std::cout << "Placed player at " << x << " , " << y << std::endl;
-		
+				
 		thisPlayer->setPosX(x);
 		thisPlayer->setPosY(y);
 	}
