@@ -11,6 +11,8 @@
 
 #include "DungeonXMLReader.h"
 
+#include "WinnerDecisionRoom.h"
+
 class LabyrinthDungeonManager : public GameState
 {
 public:
@@ -33,6 +35,9 @@ public:
 											LTexture& keyTexture, ALuint& keySource,ALuint& keyBuffer,
 											LTexture& doorTexture, ALuint& doorSource, ALuint& doorBufferOpen, ALuint& doorBufferFail,
 											std::vector <SDL_Rect> &doorClips);
+	
+	
+	bool setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory);
 											
 	Labyrinth* GetPointerToLabyrinth();
 	
@@ -85,7 +90,6 @@ private:
 	DungeonXMLRegistry* m_dungeon_xml_reg_ptr;
 	
 	
-	
 	//container for a mini dungeons, one for each player
 	std::unique_ptr <Dungeon> m_mini_dungeon_1;
 	std::unique_ptr <Dungeon> m_mini_dungeon_2;
@@ -97,6 +101,7 @@ private:
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d2;
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d3;
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d4;
+
 	
 	float player1PosX_beforedungeon;
 	float player1PosY_beforedungeon;
@@ -109,6 +114,12 @@ private:
 	
 	float player4PosX_beforedungeon;
 	float player4PosY_beforedungeon;
+	
+	//winner room
+	
+	std::unique_ptr <WinnerDecisionRoom> m_winner_room;
+	
+	
 };
 
 #endif

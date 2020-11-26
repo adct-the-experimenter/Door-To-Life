@@ -30,6 +30,7 @@
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
 #include "dungeon_media_loader.h" //for doors,keys,dungeon music
+#include "winner_media_loader.h" //for loading media for winner room
 
 #include "Dungeon.h"
 #include "DungeonXMLReader.h"
@@ -1729,13 +1730,18 @@ bool loadMedia()
         printf("Failed to load menu media! \n");
         success = false;
     }
-   
     //load dungeon door key media
     if(!loadDungeon_Door_Key_Media(gRenderer) )
     {
         printf("Failed to load all dungeon media! \n");
         success = false;
     }
+    //load winner room media
+    if(!loadWinnerRoom_Media(gRenderer))
+    {
+		printf("Failed to load winner room media! \n");
+        success = false;
+	}
     //load health bar media
     if(!loadMedia_HealthBar(&healthBarTexture,gRenderer))
     {

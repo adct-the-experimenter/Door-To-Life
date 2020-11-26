@@ -938,6 +938,27 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 	
 }
 
+bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory)
+{
+	std::unique_ptr <WinnerDecisionRoom> roomUPtr(new WinnerDecisionRoom() );
+	
+	WinnerDecisionRoom* winRoomPtr = nullptr;
+	
+	m_winner_room = std::move(roomUPtr); 
+	winRoomPtr = m_winner_room.get(); break;}
+		
+	if(winRoomPtr)
+	{
+		
+	}
+	else
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 Labyrinth* LabyrinthDungeonManager::GetPointerToLabyrinth(){return m_labyrinth.get();}
 
 bool LabyrinthDungeonManager::GetLabyrinthCreatedBool(){return labyrinthCreated;}

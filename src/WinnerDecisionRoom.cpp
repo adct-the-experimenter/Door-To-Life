@@ -1,12 +1,13 @@
-#include "Dungeon.h"
+#include "WinnerDecisionRoom.h"
 
     
-bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,
+bool loadWinnerDecisionRoomMedia(SDL_Renderer* gRenderer,LTexture* tileMap,
+LTexture* wnjudge1_texture,LTexture* wnjudge2_texture,LTexture* wnjudge3_texture,LTexture* wnjudge4_texture,
 ALuint* source,ALuint* buffer)
 {
     bool success = true;
     
-    std::string tileFilePath = DATADIR_STR + std::string("/Graphics/tiles-alt.png");
+    std::string tileFilePath = DATADIR_STR + std::string("/Graphics/tiles-winner-room.png");
     //load texture for member tileTextureMap
     if(!tileMap->loadFromFile(tileFilePath.c_str(), gRenderer))
     {
@@ -17,31 +18,58 @@ ALuint* source,ALuint* buffer)
     {
         //if tileTextureMap loaded successfully
         
-        std::string path = std::string("/Sound/Threshing-Floor-VG-Ambient-Beautiful-Haunting-Remix.ogg");
-        if(!LoadBuffer(buffer,path))
-        {
-			printf("Failed to load dungeon music! \n");
-			return false;
-		}
-        else
-        {
+        //std::string path = std::string("/Sound/Threshing-Floor-VG-Ambient-Beautiful-Haunting-Remix.ogg");
+        //if(!LoadBuffer(buffer,path))
+        //{
+		//	printf("Failed to load dungeon music! \n");
+		//	return false;
+		//}
+        //else
+        //{
             //setup source of dungeon music
-            alGenSources(1, source); //allocate source 
+            //alGenSources(1, source); //allocate source 
 
-            alSource3f(*source, AL_POSITION, 0.0f, 1.0f, 0.0f); //source position is above player(origin)
-            alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
+            //alSource3f(*source, AL_POSITION, 0.0f, 1.0f, 0.0f); //source position is above player(origin)
+            //alSource3f(*source, AL_VELOCITY, 0.0f, 0.0f, 0.0f); //source is not moving
             
             //attach buffer to source
-			alSourcei(*source, AL_BUFFER, (ALint)(*buffer));
+			//alSourcei(*source, AL_BUFFER, (ALint)(*buffer));
+			
+			//load textures for winner judges
+			
+			if(wnjudge1_texture)
+			{
+				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-1player.png");
+				wnjudge1_texture->loadFromFile(fp.c_str(), gRenderer);
+			}
+			
+			if(wnjudge2_texture)
+			{
+				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-2player.png");
+				wnjudge2_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+			}
+			
+			if(wnjudge3_texture)
+			{
+				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-3player.png");
+				wnjudge3_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+			}
+			
+			if(wnjudge4_texture)
+			{
+				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-4player.png");
+				wnjudge4_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+			}
             
-        }        
+        //}        
     }
     
     return success;
 }
 
-void freeDungeonMedia(LTexture* tileMap,
-                        ALuint* source,ALuint* buffer)
+void freeWinnerDecisionRoomMedia(LTexture* tileMap,
+								LTexture* wnjudge1_texture,LTexture* wnjudge2_texture,LTexture* wnjudge3_texture,LTexture* wnjudge4_texture,
+								ALuint* source,ALuint* buffer)
 {
     //free source
     alDeleteSources(1, source); // delete source
@@ -51,41 +79,41 @@ void freeDungeonMedia(LTexture* tileMap,
     
     //free tile texture map
     tileMap->free();
+    
+    wnjudge1_texture->free();
+    wnjudge2_texture->free();
+    wnjudge3_texture->free();
+    wnjudge4_texture->free();
+    
 }
 
 
-Dungeon::Dungeon()
+WinnerDecisionRoom::WinnerDecisionRoom()
 {
-    //std::cout << "Dungeon constructor called! \n";
+    //std::cout << "WinnerDecisionRoom constructor called! \n";
     //start off with running state
-    Dungeon::setState(GameState::State::RUNNING);
+    WinnerDecisionRoom::setState(GameState::State::RUNNING);
 	
 	m_player_manager_ptr = nullptr;
 	mainInventoryPtr = nullptr;
 	
-	exitTilePtr = nullptr;
-
-	m_dungeon_index = 0;
 }
 
-Dungeon::~Dungeon()
+WinnerDecisionRoom::~WinnerDecisionRoom()
 {
-    //std::cout << "Dungeon destructor called! \n";
-
-     //Set lCamera values to zero
-    lCamera = nullptr;
+    //std::cout << "WinnerDecisionRoom destructor called! \n";
 
     //set main sprite pointer to NULL
     mainPlayer = nullptr;
     
-
 }
 
-void Dungeon::SetPointerToPlayerManager(PlayerManager* pm){m_player_manager_ptr = pm;}
+void WinnerDecisionRoom::SetPointerToPlayerManager(PlayerManager* pm){m_player_manager_ptr = pm;}
 
-void Dungeon::SetPointerToGameInventory(GameInventory* thisInventory){mainInventoryPtr = thisInventory;}
+void WinnerDecisionRoom::SetPointerToGameInventory(GameInventory* thisInventory){mainInventoryPtr = thisInventory;}
 
-void Dungeon::GenerateEmptyDungeonForXMLLoad()
+
+void WinnerDecisionRoom::GenerateBaseRoom()
 {
 	std::int16_t startX = 0;
     std::int16_t startY = 0;
@@ -98,48 +126,37 @@ void Dungeon::GenerateEmptyDungeonForXMLLoad()
     //calculate number of tiles in dungeon
     numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
     
-    Dungeon::createBlankTiles(startX,startY,
-                            tileWidth,tileHeight,
-                            numTiles);
-}
-
-void Dungeon::GenerateBaseDungeon()
-{
-	std::int16_t startX = 0;
-    std::int16_t startY = 0;
-    
-    std::int16_t numTiles = 0;
-    
-    std::int16_t tileWidth = globalTileWidth;
-    std::int16_t tileHeight = globalTileHeight;
-
-    //calculate number of tiles in dungeon
-    numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
-    
-    Dungeon::createBlankTiles(startX,startY,
+    WinnerDecisionRoom::createBlankTiles(startX,startY,
                             tileWidth,tileHeight,
                             numTiles);
     
     //set tile clips
-    Dungeon::setTiles();
+    WinnerDecisionRoom::setTiles();
 }
 
-void Dungeon::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
+void WinnerDecisionRoom::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
 {
- LEVEL_WIDTH = levelWidth;
- LEVEL_HEIGHT = levelHeight;
+	LEVEL_WIDTH = levelWidth;
+	LEVEL_HEIGHT = levelHeight;
 }
     
-void Dungeon::setPointerToTimer(LTimer* thisTimer){timer = thisTimer;}
+void WinnerDecisionRoom::setPointerToTimer(LTimer* thisTimer){timer = thisTimer;}
 
-void Dungeon::setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer)
+void WinnerDecisionRoom::setPointersToMedia(LTexture* tileMap,
+											LTexture* winner_judge1,LTexture* winner_judge2,LTexture* winner_judge3,LTexture* winner_judge4,
+											ALuint* source,ALuint* buffer)
 {
     tileTextureMap = tileMap;
-    dgmSource = source;
-    dgmBuffer = buffer;
+    roomSource = source;
+    roomBuffer = buffer;
+    
+    one_player_winner_judge.SetPointerToTexture(winner_judge1);
+    two_player_winner_judge.SetPointerToTexture(winner_judge2);
+    three_player_winner_judge.SetPointerToTexture(winner_judge3);
+    four_player_winner_judge.SetPointerToTexture(winner_judge4);
 }
 
-void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
+void WinnerDecisionRoom::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
                                     std::int16_t& tileWidth, std::int16_t& tileHeight,
                                     std::int16_t& numTiles)
 {
@@ -199,7 +216,7 @@ void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
 
 }
 
-void Dungeon::setTiles()
+void WinnerDecisionRoom::setTiles()
 {
     //std::cout << "set tile clips called! \n";
     //Set tile clips
@@ -209,7 +226,7 @@ void Dungeon::setTiles()
     }
 }
 
-void Dungeon::deleteTiles()
+void WinnerDecisionRoom::deleteTiles()
 {
         //free the tiles allocated in bool setTiles
         for(size_t i=0; i < dungeonTileSet.size(); ++i)
@@ -221,19 +238,10 @@ void Dungeon::deleteTiles()
 
 /** Dot Functions**/
 
-void Dungeon::SetPointerToMainPlayer(Player* player){mainPlayer = player;}
-
-void Dungeon::setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                            SDL_Rect* camera)
-{
-    //set place for dot to move in
-    //mainPlayer->setPlace(screenWidth,screenHeight);
-
-    lCamera = camera;
-}
+void WinnerDecisionRoom::SetPointerToMainPlayer(Player* player){mainPlayer = player;}
 
 
-void Dungeon::moveMainDot(float& timeStep)
+void WinnerDecisionRoom::moveMainDot(float& timeStep)
 {
   //  std::cout << "timestep: " << timeStep <<std::endl;
 
@@ -249,7 +257,7 @@ void Dungeon::moveMainDot(float& timeStep)
 }
 
 
-void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
+void WinnerDecisionRoom::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
 {
     //set camera over dot
     //Center the camera over the dot
@@ -271,14 +279,14 @@ void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
 		
 }
 
-void Dungeon::PlaceDotInThisLocation(float& x, float& y)
+void WinnerDecisionRoom::PlaceDotInThisLocation(float& x, float& y)
 {
 	mainPlayer->setPosX(x);
     mainPlayer->setPosY(y);
 }
 
 
-void Dungeon::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
+void WinnerDecisionRoom::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 {
 	if(exitTilePtr)
 	{
@@ -290,102 +298,12 @@ void Dungeon::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 	}
     
 }
-/** Item Functions**/
-
-
-void Dungeon::setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow)
-{
-    //make tiles left,right,above,and below it floor tiles
-    //left
-    if(xCol - 1 <= xEndCol)
-    {
-        //if tile isn't wall and is a hole
-        if( !dungeon_tile_look_up [xCol - 1][yRow]->getTypeWall() 
-            && dungeon_tile_look_up [xCol - 1][yRow]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol - 1][yRow]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //down left
-    if(xCol - 1 <= xEndCol && yRow + 1 <= yEndRow)
-    {
-        //if tile isn't wall and is a hole
-        if( !dungeon_tile_look_up [xCol - 1][yRow + 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol - 1][yRow + 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol - 1][yRow + 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //right
-    if(xCol + 1 <= xEndCol)
-    {
-        //if tile right of door is center tile
-        if( dungeon_tile_look_up [xCol + 1][yRow]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol + 1][yRow]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //down right
-    if(xCol + 1 <= xEndCol && yRow + 1 <= yEndRow)
-    {
-        //if tile isn't wall and is a hole
-        if( !dungeon_tile_look_up [xCol + 1][yRow + 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol + 1][yRow + 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol + 1][yRow + 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //above
-    if(yRow - 1 <= yEndRow)
-    {
-         if(!dungeon_tile_look_up [xCol ][yRow - 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol][yRow - 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol][yRow - 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //up left
-    if(xCol - 1 <= xEndCol && yRow - 1 <= yEndRow)
-    {
-        //if tile isn't wall and is a hole
-        if( !dungeon_tile_look_up [xCol - 1][yRow - 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol - 1][yRow - 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol - 1][yRow - 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //up right
-    if(xCol + 1 <= xEndCol && yRow - 1 <= yEndRow)
-    {
-        //if tile isn't wall and is a hole
-        if( !dungeon_tile_look_up [xCol + 1][yRow - 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol + 1][yRow - 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol + 1][yRow - 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-    //below
-    if(yRow + 1 <= yEndRow)
-    {
-        if(!dungeon_tile_look_up [xCol ][yRow + 1]->getTypeWall() 
-            && dungeon_tile_look_up [xCol][yRow + 1]->getType() == DungeonTile::TileType::CENTER)
-            {
-                dungeon_tile_look_up [xCol][yRow + 1]->setType(DungeonTile::TileType::RED);
-            }
-    }
-}
-
-
-void Dungeon::checkKeyAndDot()
-{
-
-}
 
 
 
 /** Game Loop Functions**/
 
-void Dungeon::handle_events(Event& thisEvent)
+void WinnerDecisionRoom::handle_events(Event& thisEvent)
 {
    // std::cout << "Handle events called! \n";
 
@@ -393,12 +311,12 @@ void Dungeon::handle_events(Event& thisEvent)
     if( thisEvent.event_id == Event_ID::ESCAPE )
     {
         //set pause state
-        Dungeon::setState(GameState::State::PAUSE);
+        WinnerDecisionRoom::setState(GameState::State::PAUSE);
     }
     //User requests quit by X out window
     else if(thisEvent.event_id == Event_ID::QUIT_WINDOW)
     {
-        Dungeon::setState(GameState::State::EXIT);
+        WinnerDecisionRoom::setState(GameState::State::EXIT);
     }
 
     //mainPlayer->handleEvent(thisEvent);
@@ -410,27 +328,27 @@ void Dungeon::handle_events(Event& thisEvent)
 
 }
 
-void Dungeon::handle_events_RNG(RNGType& rngSeed){}
+void WinnerDecisionRoom::handle_events_RNG(RNGType& rngSeed){}
 
-void Dungeon::logic()
+void WinnerDecisionRoom::logic()
 {
     //std::cout << "Logic called! \n";
     float timeStep = timer->getTicks() / 1000.f; //frame rate
 	
-	Dungeon::logic_alt(timeStep);
+	WinnerDecisionRoom::logic_alt(timeStep);
     
     //Restart timer
     timer->start();
     
 }
 
-void Dungeon::logic_alt(float& timeStep)
+void WinnerDecisionRoom::logic_alt(float& timeStep)
 {
 	//logic for player
     if(m_player_manager_ptr != nullptr)
     {
         m_player_manager_ptr->logic(timeStep);
-        //if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
+        //if(mainPlayerPointer->getHealth() <= 0 ){WinnerDecisionRoom::setState(GameState::State::GAME_OVER);}
         
         bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
         
@@ -446,7 +364,7 @@ void Dungeon::logic_alt(float& timeStep)
 		if(p1_in_dungeon && d_index_p1 == m_dungeon_index 
 			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
 		{
-			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
+			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
 			
 			//if player 1 hits dungeon entrance/exit
@@ -458,7 +376,7 @@ void Dungeon::logic_alt(float& timeStep)
 		if(p2_in_dungeon && d_index_p2 == m_dungeon_index 
 			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
 		{
-			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
+			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraTwo());
 			
 			//if player 2 hits dungeon entrance/exit
@@ -470,7 +388,7 @@ void Dungeon::logic_alt(float& timeStep)
 		if(p3_in_dungeon && d_index_p3 == m_dungeon_index  
 			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
 		{
-			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
+			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraThree());
 			
 			//if player 3 hits dungeon entrance/exit
@@ -482,7 +400,7 @@ void Dungeon::logic_alt(float& timeStep)
 		if(p4_in_dungeon && d_index_p4 == m_dungeon_index  
 			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
 		{
-			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
+			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraFour());
 			
 			//if player 4 hits dungeon entrance/exit
@@ -495,112 +413,23 @@ void Dungeon::logic_alt(float& timeStep)
     }
 }
 
-void Dungeon::exitByTile()
-{
-    //if dot collides with an exit tile
-    for(size_t i =0; i < dungeonTileSet.size(); ++i)
-	{
-		if( dungeonTileSet[i]->getTypeExit() == true )
-		{
-			//make smaller rectangle copy of exit tile
-			SDL_Rect smallerExitBox;
-			smallerExitBox = dungeonTileSet[i]->getBox();
-
-			smallerExitBox.x= dungeonTileSet[i]->getBox().x + 40; smallerExitBox.y= dungeonTileSet[i]->getBox().y + 40;
-			smallerExitBox.w=10; smallerExitBox.h=10;
-
-			if( checkCollision(mainPlayer->getCollisionBox(), smallerExitBox ) == true 
-			/*|| Dungeon::getExitState() == true */)
-			{
-				//go to next state
-				Dungeon::setState(GameState::State::NEXT);
-			}
-		}
-	}
-
-}
-
-void Dungeon::exitByDoor()
-{
-    for(size_t i=0; i < dungeonDoorsVector.size(); ++i)
-    {
-
-        //run open door logic
-        dungeonDoorsVector[i].openDoorLogic();
-
-            if( dungeonDoorsVector[i].getDoorState() == Door::State::DOOR_OPEN)
-            {
-                //go to next state
-                Dungeon::setState(GameState::State::NEXT);
-            }
-    }
-
-}
-
-void Dungeon::checkWrongDoor()
-{
-    
-}
-
-void Dungeon::doorCollision(float timeStep)
-{
-    
-    if( dungeonDoorsVector.size() == 0)
-    {
-        //if dot collides with door
-        if( checkCollision( mainPlayer->getCollisionBox(), 
-                        dungeonDoorsVector[0].getCollisionBoxDoor1()) )
-        {
-            //move dot back
-            mainPlayer->moveBack(timeStep);
-        }
-        else if(checkCollision( mainPlayer->getCollisionBox(), 
-                        dungeonDoorsVector[0].getCollisionBoxDoor2()))
-        {
-            //move dot back
-            mainPlayer->moveBack(timeStep);
-        }
-
-    }
-    else
-    {
-        for(size_t i=0;i < dungeonDoorsVector.size(); ++i)
-        {
-            //if dot collides with a door
-            if( checkCollision( mainPlayer->getCollisionBox(), 
-                                dungeonDoorsVector[i].getCollisionBoxDoor1() ) )
-            {
-
-                //move dot back
-                mainPlayer->moveBack(timeStep);
-            }
-            else if(checkCollision( mainPlayer->getCollisionBox(), 
-                                dungeonDoorsVector[i].getCollisionBoxDoor2() ))
-            {
-                //move dot back
-                mainPlayer->moveBack(timeStep);
-            }
-        }
-    }
-     
-}
 
 //play sounds
-void Dungeon::sound(AudioRenderer* gAudioRenderer)
+void WinnerDecisionRoom::sound(AudioRenderer* gAudioRenderer)
 {
     
     //play dungeon music
     //play sound from dgmSource
-    alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
-    if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
+    alGetSourcei(*roomSource, AL_SOURCE_STATE, &musicState);
+    if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*roomSource);}
 
 }
 
-void Dungeon::render(SDL_Renderer* gRenderer)
+void WinnerDecisionRoom::render(SDL_Renderer* gRenderer)
 {
     std::cout << "render called in dungeon! \n";
 
-    
+    /*
     //Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
     {
@@ -609,11 +438,11 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 
     //render dot
     mainPlayer->render(*lCamera,gRenderer);
-
+	*/
 
 }
 
-void Dungeon::render(DrawingManager* gDrawManager)
+void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 {
 	
 	bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
@@ -673,10 +502,10 @@ void Dungeon::render(DrawingManager* gDrawManager)
 }
 
 //Set States
-void Dungeon::setState(GameState::State thisState){GameState::setState(thisState);}
-GameState::State Dungeon::getState(){return GameState::getState();}
+void WinnerDecisionRoom::setState(GameState::State thisState){GameState::setState(thisState);}
+GameState::State WinnerDecisionRoom::getState(){return GameState::getState();}
 
-int Dungeon::getDotTileNumber()
+int WinnerDecisionRoom::getDotTileNumber()
 {
     for(size_t i=0; i < dungeonTileSet.size(); ++i )
     {
@@ -688,7 +517,7 @@ int Dungeon::getDotTileNumber()
 
 }
 
-int Dungeon::getTileNumberFromPosition(int x, int y)
+int WinnerDecisionRoom::getTileNumberFromPosition(int x, int y)
 {
     int tileNumber =0;
 
@@ -712,7 +541,7 @@ int Dungeon::getTileNumberFromPosition(int x, int y)
 }
 
 
-SDL_Rect Dungeon::getTileBox_under_dot()
+SDL_Rect WinnerDecisionRoom::getTileBox_under_dot()
 {
     for(size_t i=0; i < dungeonTileSet.size(); ++i )
     {
@@ -724,7 +553,7 @@ SDL_Rect Dungeon::getTileBox_under_dot()
 
 }
 
-DungeonTile* Dungeon::getDungeonTileFromPosition(int x, int y) 
+DungeonTile* WinnerDecisionRoom::getDungeonTileFromPosition(int x, int y) 
 {
     size_t xCol = ( x - NODE_X ) / TILE_WIDTH;
     size_t yRow = ( y - NODE_Y ) / TILE_HEIGHT;
@@ -733,14 +562,14 @@ DungeonTile* Dungeon::getDungeonTileFromPosition(int x, int y)
     else{ return dungeon_tile_look_up [xCol] [yRow];}
 }
 
-void Dungeon::getXColYRowFromPosition(int x, int y,size_t& xCol, size_t& yRow)
+void WinnerDecisionRoom::getXColYRowFromPosition(int x, int y,size_t& xCol, size_t& yRow)
 {
      xCol= ( x - NODE_X ) / TILE_WIDTH;
      yRow = ( y - NODE_Y   ) / TILE_HEIGHT;
 }
 
 
-void Dungeon::freeResources()
+void WinnerDecisionRoom::freeResources()
 {
 	//Set the pointers' adressses to nullptr
     for(size_t i = 0; i < dungeonTileSet.size(); ++i)
@@ -749,20 +578,3 @@ void Dungeon::freeResources()
         dungeonTileSet[i] = nullptr;
     }
 }
-
-void Dungeon::SetupDungeonParametersAfterXMLRead()
-{
-	for(size_t i = 0; i < dungeonTileSet.size(); i++)
-	{
-		if(dungeonTileSet[i]->getType() == DungeonTile::TileType::DUNGEON_ENTRANCE)
-		{
-			exitTilePtr = dungeonTileSet[i];
-		}
-		
-	}
-}
-
-void Dungeon::SetDungeonIndex(std::int16_t index){m_dungeon_index = index;}
-
-std::int16_t Dungeon::GetDungeonIndex(){return m_dungeon_index;}
-

@@ -48,12 +48,13 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
-src/labyrinth.cpp src/Dungeon.cpp src/labyrinth_dungeon_manager.cpp
+src/WinnerDecisionRoom.cpp src/winner_judge.cpp src/labyrinth.cpp src/Dungeon.cpp src/labyrinth_dungeon_manager.cpp
 src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp
 src/enemy_inventory.cpp
+src/winner_media_loader.cpp
 src/dungeon_media_loader.cpp
 src/enemy_media_loader.cpp
 src/player_media_loader.cpp
