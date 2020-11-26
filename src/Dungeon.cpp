@@ -446,9 +446,11 @@ void Dungeon::logic_alt(float& timeStep)
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
 		
 		
-		//render sprites of other players if they are in the same dungeon
 		
-		if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+		//do logic of other players if they are in the same dungeon
+		
+		if(p1_in_dungeon && d_index_p1 == m_dungeon_index 
+			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
@@ -459,7 +461,8 @@ void Dungeon::logic_alt(float& timeStep)
 				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
 			}
 		}
-		if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+		if(p2_in_dungeon && d_index_p2 == m_dungeon_index 
+			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraTwo());
@@ -470,7 +473,8 @@ void Dungeon::logic_alt(float& timeStep)
 				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
 			}
 		}
-		if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+		if(p3_in_dungeon && d_index_p3 == m_dungeon_index  
+			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraThree());
@@ -481,7 +485,8 @@ void Dungeon::logic_alt(float& timeStep)
 				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
 			}
 		}
-		if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+		if(p4_in_dungeon && d_index_p4 == m_dungeon_index  
+			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraFour());

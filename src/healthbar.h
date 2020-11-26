@@ -32,9 +32,13 @@ public:
     //function to render health container and bar.
     void render(std::int16_t& x, std::int16_t& y, SDL_Renderer* gRenderer);
     
+    void render(SDL_Renderer* gRenderer);
+    
     //function to set pointers to health texture and container texture
     void setPointerToHealthTexture(LTexture* thisTexture);
     
+    //function to set position of health bar
+    void SetPosition(std::int16_t x, std::int16_t y);
     
 private:
     //pointer to texture for health
@@ -51,6 +55,9 @@ private:
     
     std::int16_t width_per_bar;
     std::int16_t health_per_bar;
+    
+    std::int16_t xPos;
+    std::int16_t yPos;
 };
 
 #endif

@@ -71,8 +71,6 @@ int checkForRendererDriverInput(int& argc, char* argv[]);
 SDL_Color textColor = {96,96,96 };
 
 
-
-
 // Game Over
 
 //Game over texture
@@ -222,6 +220,10 @@ bool initPauseMenu();
 
 //Health bar
 HealthBar playerHealthBar;
+HealthBar playerHealthBar2;
+HealthBar playerHealthBar3;
+HealthBar playerHealthBar4;
+
 //friend function to setup a texture for health bar
 bool loadMedia_HealthBar(LTexture* healthTex,SDL_Renderer* gRenderer);
 //friend function to free a texture for health bar
@@ -360,6 +362,10 @@ void DungeonGameLoop()
 //    gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
+    if(g_num_players > 1){playerHealthBar2.updateHealthBar(player2->getHealthAddress());}
+    if(g_num_players > 2){playerHealthBar2.updateHealthBar(player3->getHealthAddress());}
+    if(g_num_players > 3){playerHealthBar2.updateHealthBar(player4->getHealthAddress());}
+    
     //play audio
     baseGameState->sound(&gAudioRenderer);
 
@@ -374,7 +380,13 @@ void DungeonGameLoop()
     //render fps
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);
     //render health bar
-    playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
+    //playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
+    gDrawManager.SetToRenderViewPortPlayer1();
+    playerHealthBar.render(gRenderer);
+    
+    if(g_num_players > 1){ gDrawManager.SetToRenderViewPortPlayer2(); playerHealthBar2.render(gDrawManager.GetPointerToRenderer());}
+    if(g_num_players > 2){ gDrawManager.SetToRenderViewPortPlayer3(); playerHealthBar3.render(gDrawManager.GetPointerToRenderer());}
+    if(g_num_players > 3){ gDrawManager.SetToRenderViewPortPlayer4(); playerHealthBar4.render(gDrawManager.GetPointerToRenderer());}
     
     //render sub map
     switch(g_num_players)
@@ -555,7 +567,6 @@ void Dungeon1()
 					case 3:{subMap.setPosition(0,(SCREEN_HEIGHT / 2) - 50); break;}
 					case 4:{subMap.setPosition((SCREEN_WIDTH / 2) - 50 ,(SCREEN_HEIGHT / 2) - 50 ); break;}
 				}
-				
 				
 				
 				//setup camera for audio renderer
@@ -1277,8 +1288,6 @@ bool initPlayers()
 			gameInventory = std::move(ptrToGameInventory);
 		}
 		
-
-		
 		std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
 		if(!ptrToPlayerInventory){return false;}
 		else
@@ -1286,7 +1295,6 @@ bool initPlayers()
 			playerInventory = std::move(ptrToPlayerInventory);
 		}
 		
-        
          //define dot object that will be in the states, allocate memory for it in heap
          //set speed to 
         float speed = 80 * 3;
@@ -1317,7 +1325,6 @@ bool initPlayers()
 		mainPlayer->setHealth(initialHealth);
 		mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
 		
-			
 		if(mainPlayerManager.GetMultiplePlayersBool())
 		{
 			//if there is a 2nd player
@@ -1737,16 +1744,64 @@ bool loadMedia()
     }
     else
     {
+		//set pointer to texture
         playerHealthBar.setPointerToHealthTexture(&healthBarTexture);
+        playerHealthBar2.setPointerToHealthTexture(&healthBarTexture);
+        playerHealthBar3.setPointerToHealthTexture(&healthBarTexture);
+        playerHealthBar4.setPointerToHealthTexture(&healthBarTexture);
+        
         //initialize health bar
         //container dimensions
         std::int16_t contX = 31; std::int16_t contY = 16; 
         std::int16_t contW = 131; std::int16_t contH = 52;
         playerHealthBar.setContainerRectClip(contX,contY,contW,contH);
+        playerHealthBar2.setContainerRectClip(contX,contY,contW,contH);
+        playerHealthBar3.setContainerRectClip(contX,contY,contW,contH);
+        playerHealthBar4.setContainerRectClip(contX,contY,contW,contH);
+        
         //health dimensions
         std::int16_t healthX = 37; std::int16_t healthY = 94; 
         std::int16_t healthW = 119;  std::int16_t healthH = 40;
+        
         playerHealthBar.setHealthRectClip(healthX,healthY,healthW,healthH);
+        playerHealthBar2.setHealthRectClip(healthX,healthY,healthW,healthH);
+        playerHealthBar3.setHealthRectClip(healthX,healthY,healthW,healthH);
+        playerHealthBar4.setHealthRectClip(healthX,healthY,healthW,healthH);
+        
+        //set screen position based on the number of players
+        switch(g_num_players)
+        {
+			case 1:
+			{
+				playerHealthBar.SetPosition(SCREEN_WIDTH,0);
+				break;
+			}
+			case 2:
+			{
+				//set relative to width of view ports for each player
+				playerHealthBar.SetPosition(0,0);
+				playerHealthBar2.SetPosition(SCREEN_WIDTH / 2,0);
+				break;
+			}
+			case 3:
+			{
+				//set relative to width of view ports for each player
+				playerHealthBar.SetPosition(0,0);
+				playerHealthBar2.SetPosition(SCREEN_WIDTH / 2,0);
+				playerHealthBar3.SetPosition(0,0);
+				break;
+			}
+			case 4:
+			{
+				//set relative to width of view ports for each player
+				playerHealthBar.SetPosition(0,0);
+				playerHealthBar2.SetPosition(SCREEN_WIDTH / 2,0);
+				playerHealthBar3.SetPosition(0,0);
+				playerHealthBar4.SetPosition(SCREEN_WIDTH / 2,0);
+				break;
+			}
+			default:{std::cout << "number invalid for health bars!\n"; break;}
+		}
     }
     //load main player media
     if(!setup_loadPlayerMedia(mainPlayer,gRenderer,1) )
