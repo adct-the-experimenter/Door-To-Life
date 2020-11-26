@@ -1,5 +1,5 @@
-#ifndef DUNGEON_H
-#define DUNGEON_H
+#ifndef WINNER_DECISION_ROOM_H
+#define WINNER_DECISION_ROOM_H
 
 #include "globalvariables.h"
 #include <vector>
@@ -83,10 +83,9 @@ public:
     
     void PlacePlayerInLocationNearEntrance(Player* thisPlayer);
 
+	void PlacePlayerInThisLocation(Player* thisPlayer, float& x, float& y);
 
 /** Item Functions **/
-
-
 
     //logic
 
@@ -131,10 +130,8 @@ private:
 //members not inherited from GameState class
 
 
-/** Dungeon Setup**/
+/** Room Setup**/
 	
-	//index of dungeon used to identify itself among other dungeons
-	std::int16_t m_dungeon_index;
 		
     //start coordinates of node
     std::int16_t NODE_X;

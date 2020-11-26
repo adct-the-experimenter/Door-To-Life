@@ -2,6 +2,8 @@
 
 #include "dungeon_media_loader.h"
 
+#include "winner_media_loader.h"
+
 LabyrinthDungeonManager::LabyrinthDungeonManager()
 {
 	
@@ -278,7 +280,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 	//if need to load new dungeon for player entered to mini dungeon entered
 	if(loadNewDungeon && num_player_entered != 0 && num_mini_dungeon_entered != 0)
 	{
-		std::cout << "loading dungeon index" << num_mini_dungeon_entered << std::endl;
+		std::cout << "loading dungeon index " << num_mini_dungeon_entered << std::endl;
 		//load mini dungeon
 		LabyrinthDungeonManager::SetupMiniDungeon(num_player_entered,num_mini_dungeon_entered);
 		
@@ -289,7 +291,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 	else if(!loadNewDungeon && num_player_entered != 0 && num_mini_dungeon_entered != 0
 			&& mini_dungeon_to_enter != 0)
 	{
-		std::cout << "Placing player in dungeon index" << num_mini_dungeon_entered << std::endl;
+		std::cout << "Placing player in dungeon index " << num_mini_dungeon_entered << std::endl;
 		
 		Player* thisPlayer = nullptr;
 		switch(num_player_entered)
@@ -502,6 +504,100 @@ void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 	
 }
 
+bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory)
+{
+	std::unique_ptr <WinnerDecisionRoom> roomUPtr(new WinnerDecisionRoom() );
+	
+	WinnerDecisionRoom* winRoomPtr = nullptr;
+	
+	m_winner_room = std::move(roomUPtr); 
+	winRoomPtr = m_winner_room.get();
+		
+	if(winRoomPtr)
+	{
+		winRoomPtr->SetPointerToPlayerManager(pm);
+		winRoomPtr->SetPointerToGameInventory(gameInventory);
+		
+		winRoomPtr->setPointersToMedia(&winner_room_TilesTexture,
+									&winner_judge1_texture,&winner_judge2_texture,&winner_judge3_texture,&winner_judge4_texture,
+									&winner_room_MusicSource, &winner_room_MusicBuffer);
+		
+		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 2;
+		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
+
+		winRoomPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
+		
+		winRoomPtr->GenerateBaseRoom();
+	}
+	else
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations()
+{
+	bool p1_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(1);
+	bool p2_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(2);
+	bool p3_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(3);
+	bool p4_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(4);
+	
+	int player_num_entered = 0;
+	
+	if(p1_exit)
+	{
+		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,1);
+		m_labyrinth->setPlayerHitLabyrinthExitBool(false,1);
+		
+		player_num_entered = 1;
+	}
+	
+	if(p2_exit)
+	{
+		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,2);
+		m_labyrinth->setPlayerHitLabyrinthExitBool(false,2);
+		
+		player_num_entered = 2;
+	}
+	
+	if(p3_exit)
+	{
+		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,3);
+		m_labyrinth->setPlayerHitLabyrinthExitBool(false,3);
+		
+		player_num_entered = 3;
+	}
+	
+	if(p4_exit)
+	{
+		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,4);
+		m_labyrinth->setPlayerHitLabyrinthExitBool(false,4);
+		
+		player_num_entered = 4;
+	}
+	
+	
+		
+	Player* thisPlayer = nullptr;
+	switch(player_num_entered)
+	{
+		case 1:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerOne(); break;}
+		case 2:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerTwo(); break;}
+		case 3:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerThree(); break;}
+		case 4:{thisPlayer = m_player_manager_ptr->GetPointerToPlayerFour(); break;}
+	}
+	
+	if(thisPlayer)
+	{
+		std::cout << "Placing player in winner room \n";
+		
+		float x = 200; float y = 200;
+		m_winner_room->PlacePlayerInThisLocation(thisPlayer,x,y);
+	}
+}
+
 //Game loop
 
 void LabyrinthDungeonManager::setState(GameState::State thisState){GameState::setState(thisState);}
@@ -601,6 +697,16 @@ void LabyrinthDungeonManager::handle_events(Event& thisEvent)
 				m_mini_dungeon_4->handle_events(thisEvent);
 			}
 		}
+		
+		if(m_winner_room)
+		{
+			m_winner_room->handle_events(thisEvent);
+		}
+		
+		if(m_player_manager_ptr)
+		{
+			m_player_manager_ptr->handleEvent(thisEvent);
+		}
 	}
 	
 }
@@ -692,6 +798,11 @@ void LabyrinthDungeonManager::handle_events_RNG(RNGType& rngSeed)
 			{
 				m_mini_dungeon_4->handle_events_RNG(rngSeed);
 			}
+		}
+		
+		if(m_winner_room)
+		{
+			m_winner_room->handle_events_RNG(rngSeed);
 		}
 		
 	}
@@ -789,6 +900,11 @@ void LabyrinthDungeonManager::logic()
 			{
 				m_mini_dungeon_4->logic_alt(timeStep);
 			}
+		}
+		
+		if(m_winner_room)
+		{
+			m_winner_room->logic_alt(timeStep);
 		}
 		
 	}
@@ -934,30 +1050,18 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 				m_mini_dungeon_4->render(gDrawManager);
 			}
 		}
+		
+		if(m_winner_room)
+		{
+			m_winner_room->render(gDrawManager);
+		}
 	}
 	
 }
 
-bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory)
-{
-	std::unique_ptr <WinnerDecisionRoom> roomUPtr(new WinnerDecisionRoom() );
-	
-	WinnerDecisionRoom* winRoomPtr = nullptr;
-	
-	m_winner_room = std::move(roomUPtr); 
-	winRoomPtr = m_winner_room.get(); break;}
-		
-	if(winRoomPtr)
-	{
-		
-	}
-	else
-	{
-		return false;
-	}
-	
-	return true;
-}
+
+
+WinnerDecisionRoom* LabyrinthDungeonManager::GetPointerToWinnerDecisionRoom(){return m_winner_room.get();}
 
 Labyrinth* LabyrinthDungeonManager::GetPointerToLabyrinth(){return m_labyrinth.get();}
 

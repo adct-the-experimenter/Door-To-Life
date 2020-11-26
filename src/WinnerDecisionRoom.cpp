@@ -126,10 +126,29 @@ void WinnerDecisionRoom::GenerateBaseRoom()
     //calculate number of tiles in dungeon
     numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
     
+    //create blank tiles
     WinnerDecisionRoom::createBlankTiles(startX,startY,
                             tileWidth,tileHeight,
                             numTiles);
     
+    //set tile types
+    for(size_t i = 0; i < dungeonTileSet.size(); i++)
+    {
+		DungeonTile::TileType type = DungeonTile::TileType::BLUE;
+		
+		if(i % 2 != 0){type = DungeonTile::TileType::RED;}
+		
+		if(i % 3 == 0){type = DungeonTile::TileType::GREEN;}
+		
+		if(i == dungeonTileSet.size() / 2)
+		{
+			exitTilePtr = dungeonTileSet[i];
+			type = DungeonTile::TileType::DUNGEON_ENTRANCE;
+		}
+		
+		dungeonTileSet[i]->setType(type);
+	}
+	
     //set tile clips
     WinnerDecisionRoom::setTiles();
 }
@@ -285,6 +304,11 @@ void WinnerDecisionRoom::PlaceDotInThisLocation(float& x, float& y)
     mainPlayer->setPosY(y);
 }
 
+void WinnerDecisionRoom::PlacePlayerInThisLocation(Player* thisPlayer, float& x, float& y)
+{
+	thisPlayer->setPosX(x);
+    thisPlayer->setPosY(y);
+}
 
 void WinnerDecisionRoom::PlacePlayerInLocationNearEntrance(Player* thisPlayer)
 {
@@ -348,66 +372,59 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
     if(m_player_manager_ptr != nullptr)
     {
         m_player_manager_ptr->logic(timeStep);
-        //if(mainPlayerPointer->getHealth() <= 0 ){WinnerDecisionRoom::setState(GameState::State::GAME_OVER);}
         
-        bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
-        
-		std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
-		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
-		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
-		
-		
+        bool p1_in_room, p2_in_room, p3_in_room, p4_in_room;
+		m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_room,&p2_in_room,&p3_in_room,&p4_in_room);
 		
 		//do logic of other players if they are in the same dungeon
 		
-		if(p1_in_dungeon && d_index_p1 == m_dungeon_index 
+		if(p1_in_room  
 			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
 			
 			//if player 1 hits dungeon entrance/exit
-			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
-			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
-			}
+			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+			//{ 
+				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
+			//}
 		}
-		if(p2_in_dungeon && d_index_p2 == m_dungeon_index 
+		if(p2_in_room
 			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraTwo());
 			
 			//if player 2 hits dungeon entrance/exit
-			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
-			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
-			}
+			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			//{ 
+				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
+			//}
 		}
-		if(p3_in_dungeon && d_index_p3 == m_dungeon_index  
+		if(p3_in_room   
 			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraThree());
 			
 			//if player 3 hits dungeon entrance/exit
-			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
-			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
-			}
+			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			//{ 
+				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
+			//}
 		}
-		if(p4_in_dungeon && d_index_p4 == m_dungeon_index  
+		if(p4_in_room  
 			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraFour());
 			
 			//if player 4 hits dungeon entrance/exit
-			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
-			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
-			}
+			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			//{ 
+				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
+			//}
 		}
         
     }
@@ -427,8 +444,6 @@ void WinnerDecisionRoom::sound(AudioRenderer* gAudioRenderer)
 
 void WinnerDecisionRoom::render(SDL_Renderer* gRenderer)
 {
-    std::cout << "render called in dungeon! \n";
-
     /*
     //Render level
     for( size_t i = 0; i < dungeonTileSet.size(); ++i )
@@ -445,27 +460,24 @@ void WinnerDecisionRoom::render(SDL_Renderer* gRenderer)
 void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 {
 	
-	bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
-	std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
-	
-	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
-	m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
-	
+	bool p1_in_room, p2_in_room, p3_in_room, p4_in_room;
+	m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_room,&p2_in_room,&p3_in_room,&p4_in_room);	
 	
 	//render sprites of other players if they are in the same dungeon
 	
-	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+	if(p1_in_room)
 	{
 		gDrawManager->SetToRenderViewPortPlayer1();
 				
-		for( size_t i = 0; i < dungeonTileSet.size(); ++i )
+		for( size_t i = 0; i < dungeonTileSet.size(); i++ )
 		{
 			dungeonTileSet[i]->render(tileTextureMap,*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());		
 		}
 		
 		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+	
+	if(p2_in_room)
 	{
 		gDrawManager->SetToRenderViewPortPlayer2();
 		
@@ -476,7 +488,8 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		
 		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+	
+	if(p3_in_room)
 	{
 		gDrawManager->SetToRenderViewPortPlayer3();
 				
@@ -487,7 +500,8 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		
 		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+	
+	if(p4_in_room)
 	{
 		gDrawManager->SetToRenderViewPortPlayer4();
 		

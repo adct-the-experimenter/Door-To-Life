@@ -60,6 +60,9 @@ public:
 	void SetDungeonExitBoolForPlayer(bool state, int num_player);
 	void GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4);
 	
+	void SetWinnerRoomBoolForPlayer(bool state, int num_player);
+	void GetBoolsForPlayersInWinnerRoom(bool* p1,bool* p2,bool* p3,bool* p4 );
+	
 private:
 	
 	//pointers to players
@@ -95,6 +98,12 @@ private:
 	std::int16_t num_dungeon_index_p2;
 	std::int16_t num_dungeon_index_p3;
 	std::int16_t num_dungeon_index_p4;
+	
+	//player bool to indicate if in winner decition room
+	bool player1_in_winner_room;
+	bool player2_in_winner_room;
+	bool player3_in_winner_room;
+	bool player4_in_winner_room;
 };
 
 #endif

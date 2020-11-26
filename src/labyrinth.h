@@ -130,6 +130,11 @@ public:
     void getDungeonEntranceLocationForThisIndex(size_t& index, int* x, int* y);
     size_t getNumberOfDungeonEntranceLocations();
     
+    //exit tile
+    
+    void setPlayerHitLabyrinthExitBool(bool state, int num_player);
+    bool getPlayerHitLabyrinthExitBool(int num_player);
+    
 private:
     
     //Generator for nodes
@@ -235,6 +240,12 @@ private:
 	
 	std::int16_t indexMiniDungeonEntered;
 	std::vector <DungeonEntrance> dungeonEntrances;
+	
+	//exit tile
+	bool hitLabyrinthExit_p1;
+	bool hitLabyrinthExit_p2;
+	bool hitLabyrinthExit_p3;
+	bool hitLabyrinthExit_p4;
 	
 };
 

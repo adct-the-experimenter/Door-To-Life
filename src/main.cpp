@@ -579,7 +579,12 @@ void Dungeon1()
 				
 				 //set camera for labyrinth 
 				thisLabyrinth->setCamera(&camera);
-						
+				
+				//setup winner decision
+				if(!gLabyrinthDungeonManager->setupWinnerRoom(&mainPlayerManager,gameInventory.get()))
+				{
+					std::cout << "Failed to set tup winner decision room!\n";
+				}
 			}
 			
 		}
@@ -614,6 +619,8 @@ void Dungeon1()
 				
 				gLabyrinthDungeonManager->MiniDungeonToLabyrinthTransitionOperations();
 				
+				gLabyrinthDungeonManager->LabyrinthToWinnerDecisionRoomTransitionOperations();
+				
 				if(baseGameState->getState() == GameState::State::NEXT )
 				{
 					stepTimer.stop();
@@ -640,8 +647,6 @@ void Dungeon1()
 			
 			if(toMiniDungeon)
 			{
-				
-				
 				baseGameState = nullptr;
 				state_stack.push(gMiniDungeonStateStructure);
 			}
@@ -652,6 +657,8 @@ void Dungeon1()
 				//delete doors and keys
 				//delete tiles
 				gLabyrinthDungeonManager->GetPointerToLabyrinth()->freeResources();
+				
+				gLabyrinthDungeonManager->GetPointerToWinnerDecisionRoom()->freeResources();
 				
 				if(baseGameState->getState() == GameState::State::EXIT )
 				{	

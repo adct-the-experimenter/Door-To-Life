@@ -403,10 +403,6 @@ void Dungeon::handle_events(Event& thisEvent)
 
     //mainPlayer->handleEvent(thisEvent);
     
-    if(m_player_manager_ptr)
-    {
-		m_player_manager_ptr->handleEvent(thisEvent);
-	}
 
 }
 

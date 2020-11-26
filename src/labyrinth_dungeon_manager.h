@@ -37,7 +37,7 @@ public:
 											std::vector <SDL_Rect> &doorClips);
 	
 	
-	bool setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory);
+
 											
 	Labyrinth* GetPointerToLabyrinth();
 	
@@ -53,6 +53,14 @@ public:
 	
 	void SetupMiniDungeon(int num_player, std::int16_t& num_mini_dungeon_entered);
 	void CloseMiniDungeon(int num_player);
+	
+	//winner decision room specific functions
+	
+	bool setupWinnerRoom(PlayerManager* pm,GameInventory* gameInventory);
+	
+	void LabyrinthToWinnerDecisionRoomTransitionOperations();
+	
+	WinnerDecisionRoom* GetPointerToWinnerDecisionRoom();
 	
 	//Game loop functions
 	

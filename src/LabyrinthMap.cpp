@@ -137,7 +137,7 @@ void LabyrinthMap::moveMainDot(Dot* mainDotPointer,float &timeStep,SDL_Rect* thi
 
 void LabyrinthMap::renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap)
 {
-    for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
+    for(size_t i = 0; i < labyrinthTilesVector.size(); i++)
     {
         labyrinthTilesVector[i]->render(tileTextureMap,*lCamera,gRenderer);
     }
@@ -150,7 +150,7 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 	bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
     playerManager->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 	
-    for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
+    for(size_t i = 0; i < labyrinthTilesVector.size(); i++)
     {
 		if(!p1_in_dungeon)
 		{

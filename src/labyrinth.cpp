@@ -13,6 +13,11 @@ Labyrinth::Labyrinth()
 	hitDungeonEntrace_p2 = false;
 	hitDungeonEntrace_p3 = false;
 	hitDungeonEntrace_p4 = false;
+	
+	hitLabyrinthExit_p1 = false;
+	hitLabyrinthExit_p2 = false;
+	hitLabyrinthExit_p3 = false;
+	hitLabyrinthExit_p4 = false;
 }
 
 Labyrinth::~Labyrinth()
@@ -825,7 +830,10 @@ void Labyrinth::handle_events(Event& thisEvent)
     bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
 	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
     
-    if(!p1_in_dungeon)
+    bool p1_in_wroom,p2_in_wroom,p3_in_wroom,p4_in_wroom;
+	m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_wroom,&p2_in_wroom,&p3_in_wroom,&p4_in_wroom);
+    
+    if(!p1_in_dungeon && !p1_in_wroom)
     {
 		labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraOne());
 	}
@@ -838,17 +846,17 @@ void Labyrinth::handle_events(Event& thisEvent)
 		{
 			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 			
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && !p2_in_dungeon && !p2_in_wroom)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraTwo());
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && !p3_in_dungeon && !p3_in_wroom)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraThree());
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && !p4_in_dungeon && !p4_in_wroom)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraFour());
 			}
@@ -866,7 +874,10 @@ void Labyrinth::handle_events_RNG(RNGType& rngSeed)
 		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
 		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 		
-		if(!p1_in_dungeon)
+		bool p1_in_wroom,p2_in_wroom,p3_in_wroom,p4_in_wroom;
+		m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_wroom,&p2_in_wroom,&p3_in_wroom,&p4_in_wroom);
+		
+		if(!p1_in_dungeon && !p1_in_wroom)
 		{
 			m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraOne());
 		}
@@ -875,17 +886,17 @@ void Labyrinth::handle_events_RNG(RNGType& rngSeed)
 		{
 			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 			
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && !p2_in_dungeon && !p2_in_wroom)
 			{
 				m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraTwo());
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && !p3_in_dungeon && !p3_in_wroom)
 			{
 				m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraThree());
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && !p4_in_dungeon && !p4_in_wroom)
 			{
 				m_enemy_inventory.run_enemies_handle_events(rngSeed, *m_player_manager_ptr->GetPointerToCameraFour());
 			}
@@ -918,40 +929,36 @@ void Labyrinth::logic_alt(float& timeStep)
 		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
 		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 		
+		bool p1_in_wroom,p2_in_wroom,p3_in_wroom,p4_in_wroom;
+		m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_wroom,&p2_in_wroom,&p3_in_wroom,&p4_in_wroom);
+		
         m_player_manager_ptr->logic(timeStep);
         //if(mainPlayerPointer->getHealth() <= 0 ){Labyrinth::setState(GameState::State::GAME_OVER);}
         
         //if main player collides with exit tile
         //win game
         if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) 
-			&& !p1_in_dungeon )
+			&& !p1_in_dungeon && !p1_in_wroom)
         { 
-			Labyrinth::setState(GameState::State::NEXT);
+			Labyrinth::setPlayerHitLabyrinthExitBool(true,1);
 		}
 		
-		if( m_player_manager_ptr->GetMultiplePlayersBool() )
+		if(num_players > 1 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) 
+			&& !p2_in_dungeon && !p2_in_wroom)
 		{
-			if(num_players > 1 && !p2_in_dungeon)
-			{
-				if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
-				{ 
-					Labyrinth::setState(GameState::State::NEXT);
-				}
-			}
-			if(num_players > 2 && !p3_in_dungeon)
-			{
-				if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
-				{ 
-					Labyrinth::setState(GameState::State::NEXT);
-				}
-			}
-			if(num_players > 3 && !p4_in_dungeon)
-			{
-				if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
-				{ 
-					Labyrinth::setState(GameState::State::NEXT);
-				}
-			}
+			Labyrinth::setPlayerHitLabyrinthExitBool(true,2);
+		}
+		
+		if(num_players > 2 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) 
+			&& !p3_in_dungeon && !p3_in_wroom)
+		{
+			Labyrinth::setPlayerHitLabyrinthExitBool(true,3);
+		}
+		
+		if(num_players > 3 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) 
+			&& !p4_in_dungeon && !p4_in_wroom)
+		{
+			Labyrinth::setPlayerHitLabyrinthExitBool(true,4);
 		}
         
         //uncommented for now until something happens
@@ -985,22 +992,22 @@ void Labyrinth::logic_alt(float& timeStep)
 		
 		
 		//push back dot if collide with door
-		if(!p1_in_dungeon)
+		if(!p1_in_wroom && !p1_in_dungeon )
 		{
 			labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,m_player_manager_ptr->GetPointerToCameraOne());
 		}
 		
 		if(m_player_manager_ptr->GetMultiplePlayersBool())
 		{
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && !p2_in_wroom && !p2_in_dungeon)
 			{
 				labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,m_player_manager_ptr->GetPointerToCameraTwo());
 			}
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && !p3_in_wroom && !p3_in_dungeon)
 			{
 				labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,m_player_manager_ptr->GetPointerToCameraThree());
 			}
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && !p4_in_wroom && !p4_in_dungeon)
 			{
 				labyrinthMap.doorToDot_Logic(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,m_player_manager_ptr->GetPointerToCameraFour());
 			}
@@ -1008,7 +1015,7 @@ void Labyrinth::logic_alt(float& timeStep)
 		}
 		
 		//move enemies 
-		if(!p1_in_dungeon)
+		if(!p1_in_wroom && !p1_in_dungeon)
 		{
 			m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraOne(), 
 							labyrinthMap.labyrinthTilesVector);
@@ -1016,19 +1023,19 @@ void Labyrinth::logic_alt(float& timeStep)
 							
 		if(m_player_manager_ptr->GetMultiplePlayersBool())
 		{
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && !p2_in_wroom && !p2_in_dungeon)
 			{
 				m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraTwo(), 
 							labyrinthMap.labyrinthTilesVector);
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2  && !p3_in_wroom && !p3_in_dungeon)
 			{
 				m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraThree(), 
 							labyrinthMap.labyrinthTilesVector);
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && !p4_in_wroom && !p4_in_dungeon)
 			{
 				m_enemy_inventory.run_enemies_logic(timeStep,*m_player_manager_ptr->GetPointerToCameraFour(), 
 							labyrinthMap.labyrinthTilesVector);
@@ -1044,17 +1051,17 @@ void Labyrinth::logic_alt(float& timeStep)
 		
 		if(m_player_manager_ptr->GetMultiplePlayersBool())
 		{
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && !p2_in_wroom && !p2_in_dungeon)
 			{
 				m_enemy_inventory.checkAndRemoveDeadEnemies(*m_player_manager_ptr->GetPointerToCameraTwo());
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && !p3_in_wroom && !p3_in_dungeon)
 			{
 				m_enemy_inventory.checkAndRemoveDeadEnemies(*m_player_manager_ptr->GetPointerToCameraThree());
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && !p4_in_wroom && !p4_in_dungeon)
 			{
 				m_enemy_inventory.checkAndRemoveDeadEnemies(*m_player_manager_ptr->GetPointerToCameraFour());
 			}
@@ -1105,7 +1112,10 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
     m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
     
-    if(!p1_in_dungeon)
+    bool p1_in_wroom,p2_in_wroom,p3_in_wroom,p4_in_wroom;
+	m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_wroom,&p2_in_wroom,&p3_in_wroom,&p4_in_wroom);
+    
+    if(!p1_in_wroom && !p1_in_dungeon)
     {
 		 //render enemies
 		gDrawManager->SetToRenderViewPortPlayer1();
@@ -1114,20 +1124,20 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     
     if(gDrawManager->GetMultiplePlayersBool())
     {
-		if(num_players > 1 && !p2_in_dungeon)
+		if(num_players > 1  && !p2_in_wroom && !p2_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer2();
 			m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer() );
 			
 		}
 		
-		if(num_players > 2 && !p3_in_dungeon)
+		if(num_players > 2 && !p3_in_wroom && !p3_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer3();
 			m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer() );
 		}
 		
-		if(num_players > 3 && !p4_in_dungeon)
+		if(num_players > 3 && !p4_in_wroom && !p4_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer4();
 			m_enemy_inventory.run_enemies_render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer() );
@@ -1141,20 +1151,20 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     
     if(gDrawManager->GetMultiplePlayersBool())
     {
-		if(num_players > 1 && !p2_in_dungeon)
+		if(num_players > 1 && !p2_in_wroom && !p2_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer2();
 			m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRenderer(),*gDrawManager->GetPointerToCameraTwo());
 		}
 		
-		if(num_players > 2 && !p3_in_dungeon)
+		if(num_players > 2 && !p3_in_wroom && !p3_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer3();
 			m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRenderer(),*gDrawManager->GetPointerToCameraThree());
 			
 		}
 		
-		if(num_players > 3 && !p4_in_dungeon)
+		if(num_players > 3 && !p4_in_wroom && !p4_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer4();
 			m_game_inventory_ptr->run_weapons_render(gDrawManager->GetPointerToRenderer(),*gDrawManager->GetPointerToCameraFour());
@@ -1213,7 +1223,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			}
 		}
 		
-		if(player1_active && !p1_in_dungeon)
+		if(player1_active && !p1_in_wroom && !p1_in_dungeon)
 		{
 			gDrawManager->SetToRenderViewPortPlayer1();
 			labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
@@ -1248,7 +1258,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			}
 		}
 										
-		if(player2_active && !p2_in_dungeon)
+		if(player2_active && !p2_in_wroom && !p2_in_dungeon)
 		{
 			//render player 2 in player 2 view port										
 			gDrawManager->SetToRenderViewPortPlayer2();
@@ -1292,7 +1302,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			
 		}
 		
-		if(player3_active && !p3_in_dungeon)
+		if(player3_active && !p3_in_wroom && !p3_in_dungeon)
 		{
 			//render player 3 in player 3 view port										
 			gDrawManager->SetToRenderViewPortPlayer3();
@@ -1336,7 +1346,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			
 		}
 		
-		if(player4_active && !p4_in_dungeon)
+		if(player4_active  && !p4_in_wroom && !p4_in_dungeon)
 		{
 			//render player 4 in player 4 view port										
 			gDrawManager->SetToRenderViewPortPlayer4();
@@ -1724,9 +1734,12 @@ void Labyrinth::DungeonEntranceHitOperations()
 	    
 	    bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
 		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
-    
+		
+		bool p1_in_wroom,p2_in_wroom,p3_in_wroom,p4_in_wroom;
+		m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_wroom,&p2_in_wroom,&p3_in_wroom,&p4_in_wroom);
 	    
-		if( !p1_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+		if( !p1_in_wroom && !p1_in_dungeon && 
+			checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
 		{
 			Labyrinth::setPlayerHitDungeonEntranceBool(true,1);
 			
@@ -1740,7 +1753,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 1)
 		{
-			if( !p2_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			if( !p2_in_wroom && !p2_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,2);
 				
@@ -1753,7 +1766,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 2)
 		{
-			if( !p3_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			if( !p3_in_wroom && !p3_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,3);
 				
@@ -1766,7 +1779,7 @@ void Labyrinth::DungeonEntranceHitOperations()
 		
 		if(num_players > 3)
 		{
-			if( !p4_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			if( !p4_in_wroom && !p4_in_dungeon && checkCollision(dungeonEntranceTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
 			{
 				Labyrinth::setPlayerHitDungeonEntranceBool(true,4);
 				
@@ -1822,3 +1835,29 @@ void Labyrinth::getDungeonEntranceLocationForThisIndex(size_t& index, int* x, in
 }
 
 size_t Labyrinth::getNumberOfDungeonEntranceLocations(){return dungeonEntrances.size();}
+
+void Labyrinth::setPlayerHitLabyrinthExitBool(bool state, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ hitLabyrinthExit_p1 = state; break;}
+		case 2:{ hitLabyrinthExit_p2 = state; break;}
+		case 3:{ hitLabyrinthExit_p3 = state; break;}
+		case 4:{ hitLabyrinthExit_p4 = state; break;}
+	}
+}
+
+bool Labyrinth::getPlayerHitLabyrinthExitBool(int num_player)
+{
+	bool boolToReturn = false;
+	
+	switch(num_player)
+	{
+		case 1:{ boolToReturn = hitLabyrinthExit_p1; break;}
+		case 2:{ boolToReturn = hitLabyrinthExit_p2; break;}
+		case 3:{ boolToReturn = hitLabyrinthExit_p3; break;}
+		case 4:{ boolToReturn = hitLabyrinthExit_p4; break;}
+	}
+	
+	return boolToReturn;
+}

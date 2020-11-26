@@ -23,6 +23,11 @@ PlayerManager::PlayerManager()
 	player2_exit_dungeon = false;
 	player3_exit_dungeon = false;
 	player4_exit_dungeon = false;
+	
+	player1_in_winner_room = false;
+	player2_in_winner_room = false;
+	player3_in_winner_room = false;
+	player4_in_winner_room = false;
 }
 
 PlayerManager::~PlayerManager()
@@ -207,4 +212,23 @@ void PlayerManager::GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, b
 	*p2 = player2_exit_dungeon;
 	*p3 = player3_exit_dungeon;
 	*p4 = player4_exit_dungeon;
+}
+
+void PlayerManager::SetWinnerRoomBoolForPlayer(bool state, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ player1_in_winner_room = state; break;}
+		case 2:{ player2_in_winner_room = state; break;}
+		case 3:{ player3_in_winner_room = state; break;}
+		case 4:{ player4_in_winner_room = state; break;}
+	}
+}
+
+void PlayerManager::GetBoolsForPlayersInWinnerRoom(bool* p1,bool* p2,bool* p3,bool* p4 )
+{
+	*p1 = player1_in_winner_room;
+	*p2 = player2_in_winner_room;
+	*p3 = player3_in_winner_room;
+	*p4 = player4_in_winner_room;
 }

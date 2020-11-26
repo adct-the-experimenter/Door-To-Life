@@ -48,7 +48,7 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
-src/WinnerDecisionRoom.cpp src/winner_judge.cpp src/labyrinth.cpp src/Dungeon.cpp src/labyrinth_dungeon_manager.cpp
+src/labyrinth_dungeon_manager.cpp src/WinnerDecisionRoom.cpp src/winner_judge.cpp src/labyrinth.cpp src/Dungeon.cpp 
 src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp
 src/collisionhandler.cpp
