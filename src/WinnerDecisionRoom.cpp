@@ -122,7 +122,8 @@ void WinnerDecisionRoom::GenerateBaseRoom()
     
     std::int16_t tileWidth = globalTileWidth;
     std::int16_t tileHeight = globalTileHeight;
-
+    
+	
     //calculate number of tiles in dungeon
     numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
     
@@ -134,11 +135,11 @@ void WinnerDecisionRoom::GenerateBaseRoom()
     //set tile types
     for(size_t i = 0; i < dungeonTileSet.size(); i++)
     {
-		DungeonTile::TileType type = DungeonTile::TileType::BLUE;
+		DungeonTile::TileType type = DungeonTile::TileType::RED;
 		
-		if(i % 2 != 0){type = DungeonTile::TileType::RED;}
+		if(i % 2 != 0){type = DungeonTile::TileType::BLUE;}
 		
-		if(i % 3 == 0){type = DungeonTile::TileType::GREEN;}
+		if(i % 4 == 0){type = DungeonTile::TileType::GREEN;}
 		
 		if(i == dungeonTileSet.size() / 2)
 		{

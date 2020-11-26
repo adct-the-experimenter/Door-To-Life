@@ -593,8 +593,7 @@ void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations(
 	{
 		std::cout << "Placing player in winner room \n";
 		
-		float x = 200; float y = 200;
-		m_winner_room->PlacePlayerInThisLocation(thisPlayer,x,y);
+		m_winner_room->PlacePlayerInLocationNearEntrance(thisPlayer);
 	}
 }
 

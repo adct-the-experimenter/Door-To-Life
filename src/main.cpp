@@ -580,10 +580,14 @@ void Dungeon1()
 				 //set camera for labyrinth 
 				thisLabyrinth->setCamera(&camera);
 				
+				
+				gLabyrinthDungeonManager->SetPointerToGameInventory(gameInventory.get());
+				gLabyrinthDungeonManager->setupScreenDimensions(SCREEN_WIDTH,SCREEN_HEIGHT);
+				
 				//setup winner decision
-				if(!gLabyrinthDungeonManager->setupWinnerRoom(&mainPlayerManager,gameInventory.get()))
+				if(!gLabyrinthDungeonManager->setupWinnerRoom(&mainPlayerManager,gameInventory.get()) )
 				{
-					std::cout << "Failed to set tup winner decision room!\n";
+					std::cout << "Failed to set up winner decision room!\n";
 				}
 			}
 			
@@ -594,8 +598,6 @@ void Dungeon1()
 			//run game loop
 			
 			gLabyrinthDungeonManager->SetPointerToTimer(&stepTimer);
-			gLabyrinthDungeonManager->SetPointerToGameInventory(gameInventory.get());
-			gLabyrinthDungeonManager->setupScreenDimensions(SCREEN_WIDTH,SCREEN_HEIGHT);
 			
 			// GameLoop
 		
