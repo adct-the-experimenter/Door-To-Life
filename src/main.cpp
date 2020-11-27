@@ -1334,6 +1334,7 @@ bool initPlayers()
 		std::int16_t initialHealth = 100;
 		mainPlayer->setHealth(initialHealth);
 		mainPlayer->setPlayerState(Player::PlayerState::NORMAL);
+		mainPlayerManager.SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,1);
 		
 		if(mainPlayerManager.GetMultiplePlayersBool())
 		{
@@ -1353,6 +1354,7 @@ bool initPlayers()
 				mainPlayerManager.SetPointerToPlayerTwo(player2);
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player2);
+				mainPlayerManager.SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,2);
 				
 			}
 			//if there is a 3rd player
@@ -1370,6 +1372,7 @@ bool initPlayers()
 				mainPlayerManager.SetPointerToPlayerThree(player3);
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player3);
+				mainPlayerManager.SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,3);
 				
 			}
 			//if there is a 4th player
@@ -1387,6 +1390,7 @@ bool initPlayers()
 				mainPlayerManager.SetPointerToPlayerFour(player4);
 				
 				gameInventory->setupDefaultGunForPlayer_equippedweapon(player4);
+				mainPlayerManager.SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,4);
 				
 			}
 			

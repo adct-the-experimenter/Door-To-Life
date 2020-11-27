@@ -424,22 +424,16 @@ void Dungeon::logic_alt(float& timeStep)
 {
 	//logic for player
     if(m_player_manager_ptr != nullptr)
-    {
-        m_player_manager_ptr->logic(timeStep);
-        //if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
-        
-        bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
+    {        
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
         
 		std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
-		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
-		
-		
 		
 		//do logic of other players if they are in the same dungeon
 		
-		if(p1_in_dungeon && d_index_p1 == m_dungeon_index 
+		if(p1_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p1 == m_dungeon_index 
 			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
@@ -448,10 +442,10 @@ void Dungeon::logic_alt(float& timeStep)
 			//if player 1 hits dungeon entrance/exit
 			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
 			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH,1);
 			}
 		}
-		if(p2_in_dungeon && d_index_p2 == m_dungeon_index 
+		if(p2_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p2 == m_dungeon_index 
 			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
@@ -460,10 +454,10 @@ void Dungeon::logic_alt(float& timeStep)
 			//if player 2 hits dungeon entrance/exit
 			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
 			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH,2);
 			}
 		}
-		if(p3_in_dungeon && d_index_p3 == m_dungeon_index  
+		if(p3_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p3 == m_dungeon_index  
 			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
@@ -472,10 +466,10 @@ void Dungeon::logic_alt(float& timeStep)
 			//if player 3 hits dungeon entrance/exit
 			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
 			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH,3);
 			}
 		}
-		if(p4_in_dungeon && d_index_p4 == m_dungeon_index  
+		if(p4_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p4 == m_dungeon_index  
 			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
 		{
 			Dungeon::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
@@ -484,7 +478,7 @@ void Dungeon::logic_alt(float& timeStep)
 			//if player 4 hits dungeon entrance/exit
 			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
 			{ 
-				m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH,4);
 			}
 		}
         
@@ -611,17 +605,16 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 
 void Dungeon::render(DrawingManager* gDrawManager)
 {
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
-	bool p1_in_dungeon, p2_in_dungeon, p3_in_dungeon, p4_in_dungeon;
 	std::int16_t d_index_p1, d_index_p2, d_index_p3, d_index_p4;
-	
-	m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
 	m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&d_index_p1,&d_index_p2,&d_index_p3,&d_index_p4);
 	
 	
 	//render sprites of other players if they are in the same dungeon
 	
-	if(p1_in_dungeon && d_index_p1 == m_dungeon_index)
+	if(p1_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p1 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer1();
 				
@@ -632,7 +625,7 @@ void Dungeon::render(DrawingManager* gDrawManager)
 		
 		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p2_in_dungeon && d_index_p2 == m_dungeon_index)
+	if(p2_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p2 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer2();
 		
@@ -643,7 +636,7 @@ void Dungeon::render(DrawingManager* gDrawManager)
 		
 		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p3_in_dungeon && d_index_p3 == m_dungeon_index)
+	if(p3_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p3 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer3();
 				
@@ -654,7 +647,7 @@ void Dungeon::render(DrawingManager* gDrawManager)
 		
 		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
 	}
-	if(p4_in_dungeon && d_index_p4 == m_dungeon_index)
+	if(p4_loc == PlayerManager::PlayerLocation::DUNGEON && d_index_p4 == m_dungeon_index)
 	{
 		gDrawManager->SetToRenderViewPortPlayer4();
 		

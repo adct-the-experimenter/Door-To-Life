@@ -14,20 +14,10 @@ PlayerManager::PlayerManager()
 	num_dungeon_index_p3 = 0;
 	num_dungeon_index_p4 = 0;
 	
-	player1_in_dungeon = false;
-	player2_in_dungeon = false;
-	player3_in_dungeon = false;
-	player4_in_dungeon = false;
-	
-	player1_exit_dungeon = false;
-	player2_exit_dungeon = false;
-	player3_exit_dungeon = false;
-	player4_exit_dungeon = false;
-	
-	player1_in_winner_room = false;
-	player2_in_winner_room = false;
-	player3_in_winner_room = false;
-	player4_in_winner_room = false;
+	player1_location = PlayerManager::PlayerLocation::NONE;
+	player2_location = PlayerManager::PlayerLocation::NONE;
+	player3_location = PlayerManager::PlayerLocation::NONE;
+	player4_location = PlayerManager::PlayerLocation::NONE;
 }
 
 PlayerManager::~PlayerManager()
@@ -140,6 +130,27 @@ void PlayerManager::sound(AudioRenderer* gAudioRenderer)
 	
 }
 
+
+
+void PlayerManager::SetLocationEnumOfPlayer(PlayerLocation thisLocation, int num_player)
+{
+	switch(num_player)
+	{
+		case 1:{ player1_location = thisLocation; break;}
+		case 2:{ player2_location = thisLocation; break;}
+		case 3:{ player3_location = thisLocation; break;}
+		case 4:{ player4_location = thisLocation; break;}
+	}
+}
+
+void PlayerManager::GetLocationEnumOfPlayers(PlayerLocation* p1,PlayerLocation* p2,PlayerLocation* p3,PlayerLocation* p4)
+{
+	*p1 = player1_location;
+	*p2 = player2_location;
+	*p3 = player3_location;
+	*p4 = player4_location;
+}
+
 void PlayerManager::SetDungeonEnteredForPlayer(std::int16_t dungeon_index, int num_player)
 {
 	switch(num_player)
@@ -150,26 +161,6 @@ void PlayerManager::SetDungeonEnteredForPlayer(std::int16_t dungeon_index, int n
 		case 4:{ num_dungeon_index_p4 = dungeon_index; break;}
 		default:{ std::cout << "Invalid dungeon index entered for player!\n"; break;}
 	}
-}
-
-void PlayerManager::SetDungeonEnteredBoolForPlayer(bool state, int num_player)
-{
-	switch(num_player)
-	{
-		case 1:{ player1_in_dungeon = state; break;}
-		case 2:{ player2_in_dungeon = state; break;}
-		case 3:{ player3_in_dungeon = state; break;}
-		case 4:{ player4_in_dungeon = state; break;}
-		default:{ std::cout << "Invalid dungeon index entered for player!\n"; break;}
-	}
-}
-
-void PlayerManager::GetBoolsForPlayersInDungeon(bool* p1,bool* p2,bool* p3,bool* p4 )
-{
-	*p1 = player1_in_dungeon;
-	*p2 = player2_in_dungeon;
-	*p3 = player3_in_dungeon;
-	*p4 = player4_in_dungeon;
 }
 
 void PlayerManager::GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::int16_t* p2,std::int16_t* p3,std::int16_t* p4 )
@@ -195,40 +186,3 @@ std::int16_t PlayerManager::GetDungeonIndexForThisPlayerInDungeon(int num_player
 	return indexToReturn;
 }
 
-void PlayerManager::SetDungeonExitBoolForPlayer(bool state, int num_player)
-{
-	switch(num_player)
-	{
-		case 1:{ player1_exit_dungeon = state; break;}
-		case 2:{ player2_exit_dungeon = state; break;}
-		case 3:{ player3_exit_dungeon = state; break;}
-		case 4:{ player4_exit_dungeon = state; break;}
-	}
-}
-
-void PlayerManager::GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4)
-{
-	*p1 = player1_exit_dungeon;
-	*p2 = player2_exit_dungeon;
-	*p3 = player3_exit_dungeon;
-	*p4 = player4_exit_dungeon;
-}
-
-void PlayerManager::SetWinnerRoomBoolForPlayer(bool state, int num_player)
-{
-	switch(num_player)
-	{
-		case 1:{ player1_in_winner_room = state; break;}
-		case 2:{ player2_in_winner_room = state; break;}
-		case 3:{ player3_in_winner_room = state; break;}
-		case 4:{ player4_in_winner_room = state; break;}
-	}
-}
-
-void PlayerManager::GetBoolsForPlayersInWinnerRoom(bool* p1,bool* p2,bool* p3,bool* p4 )
-{
-	*p1 = player1_in_winner_room;
-	*p2 = player2_in_winner_room;
-	*p3 = player3_in_winner_room;
-	*p4 = player4_in_winner_room;
-}

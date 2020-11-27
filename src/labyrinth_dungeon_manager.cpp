@@ -175,18 +175,17 @@ bool LabyrinthDungeonManager::setupLabyrinth(PlayerManager* mainPlayerManager, G
 
 void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 {
-	bool p1_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(1);
-	bool p2_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(2);
-	bool p3_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(3);
-	bool p4_entered = m_labyrinth->getPlayerHitDungeonEntraceBool(4);
 	
-	bool loadNewDungeon = true;
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+	
 	int num_player_entered = 0;
 	std::int16_t num_mini_dungeon_entered = 0;
 	int mini_dungeon_to_enter = 0; //used to indicate if should enter mini dungeon mini_dungeon_1 member, 2, 3 or 4
 	
 	//if player 1 entered mini dungeon
-	if(p1_entered)
+	if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH_2_DUNGEON)
 	{
 		
 		//get position in labyrinth near mini dungeon entrance
@@ -202,7 +201,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 	
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 	
-	if(p2_entered && num_players > 1)
+	if(p2_loc == PlayerManager::PlayerLocation::LABYRINTH_2_DUNGEON && num_players > 1)
 	{
 		
 		//get position in labyrinth near mini dungeon entrance
@@ -216,7 +215,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 		
 	}
 	
-	if(p3_entered && num_players > 2)
+	if(p3_loc == PlayerManager::PlayerLocation::LABYRINTH_2_DUNGEON && num_players > 2)
 	{
 		//get index of mini dungeon entered
 		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(3);
@@ -228,7 +227,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 		num_player_entered = 3;
 	}
 	
-	if(p4_entered && num_players > 3)
+	if(p4_loc == PlayerManager::PlayerLocation::LABYRINTH_2_DUNGEON && num_players > 3)
 	{
 		//get index of mini dungeon entered
 		num_mini_dungeon_entered = m_player_manager_ptr->GetDungeonIndexForThisPlayerInDungeon(4);
@@ -240,6 +239,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 		num_player_entered = 4;
 	}
 	
+	bool loadNewDungeon = true;
 	
 	if(m_mini_dungeon_1)
 	{
@@ -315,6 +315,7 @@ void LabyrinthDungeonManager::LabyrinthToMiniDungeonTransitionOperations()
 		
 		if(thisPlayer && thisDungeon)
 		{
+			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON,num_player_entered);
 			thisDungeon->PlacePlayerInLocationNearEntrance(thisPlayer);
 		}
 		
@@ -383,6 +384,7 @@ void LabyrinthDungeonManager::SetupMiniDungeon(int num_player, std::int16_t& num
 			
 			if(thisPlayer)
 			{
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::DUNGEON,num_player);
 				dungeonPtr->PlacePlayerInLocationNearEntrance(thisPlayer);
 			}
 			
@@ -445,60 +447,54 @@ void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 {
-	bool p1_exit, p2_exit, p3_exit, p4_exit;
+	
 	
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
-	m_player_manager_ptr->GetDungeonExitBoolForPlayers(&p1_exit,&p2_exit,&p3_exit,&p4_exit);
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
 	if(m_mini_dungeon_1)
 	{
-		if(p1_exit)
+		if(p1_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH)
 		{
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
 			
-			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,1);
-			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,1);
-			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,1);
+			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,1);
 		}
 	}
 	
 	if(m_mini_dungeon_2)
 	{
-		if(p2_exit && num_players > 1)
+		if(p2_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 1)
 		{
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
 			
-			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,2);
-			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,2);
-			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,2);
+			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,2);
 		}
 	}
 	
 	if(m_mini_dungeon_3)
 	{
-		if(p3_exit && num_players > 2)
+		if(p3_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 2)
 		{
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
 			
-			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,3);
-			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,3);
-			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,3);
+			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,3);
 		}
 	}
 	
 	if(m_mini_dungeon_4)
 	{
-		if(p4_exit && num_players > 3)
+		if(p4_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 3)
 		{
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
 			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
 			
-			m_player_manager_ptr->SetDungeonExitBoolForPlayer(false,4);
-			m_player_manager_ptr->SetDungeonEnteredBoolForPlayer(false,4);
-			m_player_manager_ptr->SetDungeonEnteredForPlayer(0,4);
+			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,4);
 		}
 	}
 	
@@ -539,40 +535,34 @@ bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* g
 
 void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations()
 {
-	bool p1_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(1);
-	bool p2_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(2);
-	bool p3_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(3);
-	bool p4_exit = m_labyrinth->getPlayerHitLabyrinthExitBool(4);
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
 	int player_num_entered = 0;
 	
-	if(p1_exit)
+	if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM)
 	{
-		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,1);
 		m_labyrinth->setPlayerHitLabyrinthExitBool(false,1);
 		
 		player_num_entered = 1;
 	}
 	
-	if(p2_exit)
+	if(p2_loc == PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM)
 	{
-		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,2);
 		m_labyrinth->setPlayerHitLabyrinthExitBool(false,2);
 		
 		player_num_entered = 2;
 	}
 	
-	if(p3_exit)
+	if(p3_loc == PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM)
 	{
-		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,3);
 		m_labyrinth->setPlayerHitLabyrinthExitBool(false,3);
 		
 		player_num_entered = 3;
 	}
 	
-	if(p4_exit)
+	if(p4_loc == PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM)
 	{
-		m_player_manager_ptr->SetWinnerRoomBoolForPlayer(true,4);
 		m_labyrinth->setPlayerHitLabyrinthExitBool(false,4);
 		
 		player_num_entered = 4;
@@ -592,7 +582,7 @@ void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations(
 	if(thisPlayer)
 	{
 		std::cout << "Placing player in winner room \n";
-		
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM,player_num_entered);
 		m_winner_room->PlacePlayerInLocationNearEntrance(thisPlayer);
 	}
 }
@@ -614,27 +604,34 @@ void LabyrinthDungeonManager::handle_events(Event& thisEvent)
 	{
 		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 		
-		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
-		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+
+		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;		
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&p1_index_dungeon,&p2_index_dungeon,&p3_index_dungeon,&p4_index_dungeon);
 		
 		bool one_player_in_lab = true;
 		
 		if(num_players > 1)
 		{
-			if(p1_in_dungeon && p2_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
 		if(num_players > 2)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 3)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon && p4_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
+				&& p3_loc == p1_loc && p4_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		//handle events for labyrinth if any of the players are in labyrinth
@@ -717,27 +714,34 @@ void LabyrinthDungeonManager::handle_events_RNG(RNGType& rngSeed)
 		
 		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 		
-		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;		
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&p1_index_dungeon,&p2_index_dungeon,&p3_index_dungeon,&p4_index_dungeon);
 		
 		bool one_player_in_lab = true;
 		
 		if(num_players > 1)
 		{
-			if(p1_in_dungeon && p2_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
 		if(num_players > 2)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 3)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon && p4_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
+				&& p3_loc == p1_loc && p4_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		//handle events for labyrinth if any of the players are in labyrinth
@@ -815,30 +819,40 @@ void LabyrinthDungeonManager::logic()
     
 	if(m_player_manager_ptr)
 	{
+		//do logic for players
+		m_player_manager_ptr->logic(timeStep);
+		
 		//do logic for labyrinth if any of the players are in labyrinth
 		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 		
-		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&p1_index_dungeon,&p2_index_dungeon,&p3_index_dungeon,&p4_index_dungeon);
 		
 		bool one_player_in_lab = true;
 		
 		if(num_players > 1)
 		{
-			if(p1_in_dungeon && p2_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
 		if(num_players > 2)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 3)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon && p4_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
+				&& p3_loc == p1_loc && p4_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		//render for labyrinth if any of the players are in labyrinth
@@ -919,27 +933,34 @@ void LabyrinthDungeonManager::sound(AudioRenderer* gAudioRenderer)
 	{
 		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 		
-		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&p1_index_dungeon,&p2_index_dungeon,&p3_index_dungeon,&p4_index_dungeon);
 		
 		bool one_player_in_lab = true;
 		
 		if(num_players > 1)
 		{
-			if(p1_in_dungeon && p2_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
 		if(num_players > 2)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 3)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon && p4_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
+				&& p3_loc == p1_loc && p4_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		//render for labyrinth if any of the players are in labyrinth
@@ -967,27 +988,37 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 	{
 		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 		
-		bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
+		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
-		m_player_manager_ptr->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+		std::int16_t p1_index_dungeon,p2_index_dungeon,p3_index_dungeon,p4_index_dungeon;
 		m_player_manager_ptr->GetDungeonIndexesForPlayersInDungeon(&p1_index_dungeon,&p2_index_dungeon,&p3_index_dungeon,&p4_index_dungeon);
 		
 		bool one_player_in_lab = true;
 		
 		if(num_players > 1)
 		{
-			if(p1_in_dungeon && p2_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 2)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		if(num_players > 3)
 		{
-			if(p1_in_dungeon && p2_in_dungeon && p3_in_dungeon && p4_in_dungeon){one_player_in_lab = false;}
+			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
+				&& p3_loc == p1_loc && p4_loc == p1_loc)
+			{
+				one_player_in_lab = false;
+			}
 		}
 		
 		//render for labyrinth if any of the players are in labyrinth

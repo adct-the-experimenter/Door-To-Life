@@ -372,26 +372,25 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
 	//logic for player
     if(m_player_manager_ptr != nullptr)
     {
-        m_player_manager_ptr->logic(timeStep);
         
-        bool p1_in_room, p2_in_room, p3_in_room, p4_in_room;
-		m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_room,&p2_in_room,&p3_in_room,&p4_in_room);
+        PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
 		//do logic of other players if they are in the same dungeon
 		
-		if(p1_in_room  
+		if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM  
 			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
 			
 			//if player 1 hits dungeon entrance/exit
-			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
-			//{ 
-				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,1);
-			//}
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH,1);
+			}
 		}
-		if(p2_in_room
+		if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM
 			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
@@ -403,7 +402,7 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
 				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
 			//}
 		}
-		if(p3_in_room   
+		if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM  
 			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
@@ -415,7 +414,7 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
 				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
 			//}
 		}
-		if(p4_in_room  
+		if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM 
 			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
@@ -461,12 +460,12 @@ void WinnerDecisionRoom::render(SDL_Renderer* gRenderer)
 void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 {
 	
-	bool p1_in_room, p2_in_room, p3_in_room, p4_in_room;
-	m_player_manager_ptr->GetBoolsForPlayersInWinnerRoom(&p1_in_room,&p2_in_room,&p3_in_room,&p4_in_room);	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);	
 	
 	//render sprites of other players if they are in the same dungeon
 	
-	if(p1_in_room)
+	if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
 	{
 		gDrawManager->SetToRenderViewPortPlayer1();
 				
@@ -478,7 +477,7 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
 	}
 	
-	if(p2_in_room)
+	if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
 	{
 		gDrawManager->SetToRenderViewPortPlayer2();
 		
@@ -490,7 +489,7 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
 	}
 	
-	if(p3_in_room)
+	if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
 	{
 		gDrawManager->SetToRenderViewPortPlayer3();
 				
@@ -502,7 +501,7 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
 	}
 	
-	if(p4_in_room)
+	if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
 	{
 		gDrawManager->SetToRenderViewPortPlayer4();
 		

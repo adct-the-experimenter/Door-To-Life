@@ -47,21 +47,21 @@ public:
 	void handleEvent_player2(Event& thisEvent);
 	void handleEvent_player3(Event& thisEvent);
 	void handleEvent_player4(Event& thisEvent);
+		
+	//enum to describe where player is. 
+	// Transition partially counts as a location and is used to help the labyrinthdungeonmanager class
+	// move player from one place to another.
+	enum class PlayerLocation : std::int8_t {NONE=0, LABYRINTH, DUNGEON, WINNER_ROOM,
+											LABYRINTH_2_DUNGEON, DUNGEON_2_LABYRINTH, 
+											LABYRINTH_2_WINNER_ROOM, WINNER_ROOM_2_LABYRINTH};
+	
+	void SetLocationEnumOfPlayer(PlayerLocation thisLocation, int num_player);
+	void GetLocationEnumOfPlayers(PlayerLocation* p1,PlayerLocation* p2,PlayerLocation* p3,PlayerLocation* p4);
 	
 	void SetDungeonEnteredForPlayer(std::int16_t dungeon_index, int num_player);
-	
-	void SetDungeonEnteredBoolForPlayer(bool state, int num_player);
-	
-	void GetBoolsForPlayersInDungeon(bool* p1,bool* p2,bool* p3,bool* p4 );
 	void GetDungeonIndexesForPlayersInDungeon(std::int16_t* p1,std::int16_t* p2,std::int16_t* p3,std::int16_t* p4 );
 	
 	std::int16_t GetDungeonIndexForThisPlayerInDungeon(int num_player);
-	
-	void SetDungeonExitBoolForPlayer(bool state, int num_player);
-	void GetDungeonExitBoolForPlayers(bool* p1, bool* p2, bool* p3, bool* p4);
-	
-	void SetWinnerRoomBoolForPlayer(bool state, int num_player);
-	void GetBoolsForPlayersInWinnerRoom(bool* p1,bool* p2,bool* p3,bool* p4 );
 	
 private:
 	
@@ -82,16 +82,10 @@ private:
 	
 	//info on which dungeons players are in
 	
-	//player bools in labyrinth or in dugneon
-	bool player1_in_dungeon;
-	bool player2_in_dungeon;
-	bool player3_in_dungeon;
-	bool player4_in_dungeon;
-	
-	bool player1_exit_dungeon;
-	bool player2_exit_dungeon;
-	bool player3_exit_dungeon;
-	bool player4_exit_dungeon;
+	PlayerManager::PlayerLocation player1_location;
+	PlayerManager::PlayerLocation player2_location;
+	PlayerManager::PlayerLocation player3_location;
+	PlayerManager::PlayerLocation player4_location;
 	
 	//index of dungeon that players are in
 	std::int16_t num_dungeon_index_p1;
@@ -99,11 +93,7 @@ private:
 	std::int16_t num_dungeon_index_p3;
 	std::int16_t num_dungeon_index_p4;
 	
-	//player bool to indicate if in winner decition room
-	bool player1_in_winner_room;
-	bool player2_in_winner_room;
-	bool player3_in_winner_room;
-	bool player4_in_winner_room;
+
 };
 
 #endif

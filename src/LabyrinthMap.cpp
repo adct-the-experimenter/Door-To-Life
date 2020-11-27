@@ -147,12 +147,12 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 {
 	int num_players = gDrawManager->GetNumberOfPlayers();
 	
-	bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-    playerManager->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	playerManager->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
     for(size_t i = 0; i < labyrinthTilesVector.size(); i++)
     {
-		if(!p1_in_dungeon)
+		if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
 		{
 			gDrawManager->SetToRenderViewPortPlayer1();
 		
@@ -164,7 +164,7 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 		
 		if(gDrawManager->GetMultiplePlayersBool())
 		{
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				gDrawManager->SetToRenderViewPortPlayer2();
 			
@@ -173,7 +173,7 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 												gDrawManager->GetPointerToRenderer());
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				gDrawManager->SetToRenderViewPortPlayer3();
 			
@@ -182,7 +182,7 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 												gDrawManager->GetPointerToRenderer());
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				gDrawManager->SetToRenderViewPortPlayer4();
 			
@@ -290,15 +290,15 @@ void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDra
 {
 	int num_players = gDrawManager->GetNumberOfPlayers();
 	
-	bool p1_in_dungeon,p2_in_dungeon,p3_in_dungeon,p4_in_dungeon;
-    playerManager->GetBoolsForPlayersInDungeon(&p1_in_dungeon,&p2_in_dungeon,&p3_in_dungeon,&p4_in_dungeon);
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	playerManager->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
     for(size_t i = 0; i < labyrinthDoorsVector.size(); ++i)
     {
         if( checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
                 || checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
         {
-			if(!p1_in_dungeon)
+			if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				gDrawManager->SetToRenderViewPortPlayer1();
 				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
@@ -308,7 +308,7 @@ void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDra
         if(gDrawManager->GetMultiplePlayersBool())
         {
 			
-			if(num_players > 1 && !p2_in_dungeon)
+			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
@@ -318,7 +318,7 @@ void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDra
 				}
 			}
 			
-			if(num_players > 2 && !p3_in_dungeon)
+			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
@@ -328,7 +328,7 @@ void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDra
 				}
 			}
 			
-			if(num_players > 3 && !p4_in_dungeon)
+			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				if( checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
 					|| checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
