@@ -79,6 +79,8 @@ public:
 	
 	void RunCollisionHandlersOps();
 	
+	void CheckForWinners();
+	void GetWinnersBool(bool* p1, bool* p2, bool* p3, bool* p4);
 	
 private:
 	
@@ -129,6 +131,10 @@ private:
 	
 	std::unique_ptr <WinnerDecisionRoom> m_winner_room;
 	
+	bool player1_win;
+	bool player2_win;
+	bool player3_win;
+	bool player4_win;
 	
 };
 

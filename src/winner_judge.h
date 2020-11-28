@@ -49,13 +49,15 @@ public:
 	//set pointer to texture for judge
 	void SetPointerToTexture(LTexture* thisTexture);
 	
+	SDL_Rect* getCollisionBoxPtr();
+	
 //game loop functions
 	
 	//check collision for players
-	void CheckPlayerandJudgeCollisions(PlayerManager* pm);
+	void CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager::PlayerLocation location);
 	
 	//render the judge
-	void render(DrawingManager* gDrawManager);
+	void render(SDL_Renderer* gRenderer, SDL_Rect& camera);
 	
 private:
 	

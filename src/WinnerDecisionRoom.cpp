@@ -46,19 +46,19 @@ ALuint* source,ALuint* buffer)
 			if(wnjudge2_texture)
 			{
 				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-2player.png");
-				wnjudge2_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+				wnjudge2_texture->loadFromFile(fp.c_str(), gRenderer);
 			}
 			
 			if(wnjudge3_texture)
 			{
 				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-3player.png");
-				wnjudge3_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+				wnjudge3_texture->loadFromFile(fp.c_str(), gRenderer);
 			}
 			
 			if(wnjudge4_texture)
 			{
 				std::string fp = DATADIR_STR + std::string("/Graphics/winner-judge-4player.png");
-				wnjudge4_texture->loadFromFile(tileFilePath.c_str(), gRenderer);
+				wnjudge4_texture->loadFromFile(fp.c_str(), gRenderer);
 			}
             
         //}        
@@ -133,7 +133,7 @@ void WinnerDecisionRoom::GenerateBaseRoom()
                             numTiles);
     
     //set tile types
-    for(size_t i = 0; i < dungeonTileSet.size(); i++)
+    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
     {
 		DungeonTile::TileType type = DungeonTile::TileType::RED;
 		
@@ -150,8 +150,57 @@ void WinnerDecisionRoom::GenerateBaseRoom()
 		dungeonTileSet[i]->setType(type);
 	}
 	
-    //set tile clips
+    //set tile clips for each tile based on tile type
     WinnerDecisionRoom::setTiles();
+    
+}
+
+void WinnerDecisionRoom::PlaceWinnerJudges(int num_players)
+{
+	
+	//set winner judge position for 1 player win
+	
+	if(LEVEL_WIDTH > 0 && LEVEL_HEIGHT > 0)
+	{
+		std::int16_t x = 0;
+		std::int16_t y = 0;
+		
+		x = LEVEL_WIDTH / 4;
+		y = LEVEL_HEIGHT / 4;
+		
+		one_player_winner_judge.SetNumberOfPlayersToWin(1);
+		one_player_winner_judge.SetPosition(x,y);
+		
+		//set for 2 player win
+		if(num_players > 1)
+		{
+			x = (3*LEVEL_WIDTH) / 4;
+			y = LEVEL_HEIGHT / 4;
+			
+			two_player_winner_judge.SetNumberOfPlayersToWin(2);
+			two_player_winner_judge.SetPosition(x,y);
+		}
+		
+		if(num_players > 2)
+		{
+			x = LEVEL_WIDTH / 4;
+			y = (3*LEVEL_HEIGHT) / 4;
+			
+			three_player_winner_judge.SetNumberOfPlayersToWin(3);
+			three_player_winner_judge.SetPosition(x,y);
+		}
+		
+		if(num_players > 3)
+		{
+			x = (3*LEVEL_WIDTH) / 4;
+			y = (3*LEVEL_HEIGHT) / 4;
+		
+			four_player_winner_judge.SetNumberOfPlayersToWin(4);
+			four_player_winner_judge.SetPosition(x,y);
+		}
+	}
+	
+	
 }
 
 void WinnerDecisionRoom::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
@@ -427,6 +476,9 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
 				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH,4);
 			}
 		}
+		
+		//do logic for winner judges
+		WinnerDecisionRoom::logic_winner_judges();
         
     }
 }
@@ -463,6 +515,8 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 	
 	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);	
+	
+	
 	
 	//render sprites of other players if they are in the same dungeon
 	
@@ -514,6 +568,219 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
 	}
     
+    //render winner judges
+    WinnerDecisionRoom::render_winner_judges(gDrawManager);
+    
+}
+
+void WinnerDecisionRoom::render_winner_judges(DrawingManager* gDrawManager)
+{
+
+	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);	
+    
+    //render on player 1 viewport if player in winner room
+    if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+    {
+		gDrawManager->SetToRenderViewPortPlayer1();
+		
+		
+		SDL_Rect* camera_ptr = gDrawManager->GetPointerToCameraOne();
+		
+		if(checkCollision(*camera_ptr,*one_player_winner_judge.getCollisionBoxPtr()) )
+		{
+			one_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+		}
+		
+		if(num_players > 1 )
+		{
+			if(checkCollision(*camera_ptr,*two_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				two_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 2 )
+		{
+		   if(checkCollision(*camera_ptr,*three_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				three_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 3 )
+		{
+			if(checkCollision(*camera_ptr,*four_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				four_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+	}
+	
+	//render on player 2 viewport if player in winner room
+    if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+    {
+		gDrawManager->SetToRenderViewPortPlayer2();
+		
+		
+		SDL_Rect* camera_ptr = gDrawManager->GetPointerToCameraTwo();
+		
+		if(checkCollision(*camera_ptr,*one_player_winner_judge.getCollisionBoxPtr()) )
+		{
+			one_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+		}
+		
+		if(num_players > 1 )
+		{
+			if(checkCollision(*camera_ptr,*two_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				two_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 2 )
+		{
+		   if(checkCollision(*camera_ptr,*three_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				three_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 3 )
+		{
+			if(checkCollision(*camera_ptr,*four_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				four_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+	}
+	
+	//render on player 3 viewport if player in winner room
+    if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+    {
+		gDrawManager->SetToRenderViewPortPlayer3();
+		
+		
+		SDL_Rect* camera_ptr = gDrawManager->GetPointerToCameraThree();
+		
+		if(checkCollision(*camera_ptr,*one_player_winner_judge.getCollisionBoxPtr()) )
+		{
+			one_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+		}
+		
+		if(num_players > 1 )
+		{
+			if(checkCollision(*camera_ptr,*two_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				two_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 2 )
+		{
+		   if(checkCollision(*camera_ptr,*three_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				three_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 3 )
+		{
+			if(checkCollision(*camera_ptr,*four_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				four_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+	}
+	
+	//render on player 4 viewport if player in winner room
+    if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+    {
+		gDrawManager->SetToRenderViewPortPlayer4();
+		
+		SDL_Rect* camera_ptr = gDrawManager->GetPointerToCameraFour();
+		
+		if(checkCollision(*camera_ptr,*one_player_winner_judge.getCollisionBoxPtr()) )
+		{
+			one_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+		}
+		
+		if(num_players > 1 )
+		{
+			if(checkCollision(*camera_ptr,*two_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				two_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 2 )
+		{
+		   if(checkCollision(*camera_ptr,*three_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				three_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+
+		if(num_players > 3 )
+		{
+			if(checkCollision(*camera_ptr,*four_player_winner_judge.getCollisionBoxPtr()) )
+			{
+				four_player_winner_judge.render(gDrawManager->GetPointerToRenderer(),*camera_ptr);
+			}
+		}
+	}
+	
+}
+
+void WinnerDecisionRoom::logic_winner_judges()
+{
+	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+	//collision check for one player winner judge
+	one_player_winner_judge.CheckPlayerandJudgeCollisions(m_player_manager_ptr,PlayerManager::PlayerLocation::WINNER_ROOM);
+	
+	//collision check for two player winner judge
+	if(num_players > 1)
+	{
+		two_player_winner_judge.CheckPlayerandJudgeCollisions(m_player_manager_ptr,PlayerManager::PlayerLocation::WINNER_ROOM);
+	}
+	
+	//collision check for three player winner judge
+	if(num_players > 2)
+	{
+		three_player_winner_judge.CheckPlayerandJudgeCollisions(m_player_manager_ptr,PlayerManager::PlayerLocation::WINNER_ROOM);
+	}
+	
+	//collision check for four player winner judge
+	if(num_players > 3)
+	{
+		four_player_winner_judge.CheckPlayerandJudgeCollisions(m_player_manager_ptr,PlayerManager::PlayerLocation::WINNER_ROOM);
+	}
+}
+
+WinnerJudge::WinningPlayers WinnerDecisionRoom::GetOneWinnersResult()
+{
+	return one_player_winner_judge.GetPlayersWon();
+}
+
+WinnerJudge::WinningPlayers WinnerDecisionRoom::GetTwoWinnersResult()
+{
+	return two_player_winner_judge.GetPlayersWon();
+}
+
+WinnerJudge::WinningPlayers WinnerDecisionRoom::GetThreeWinnersResult()
+{
+	return three_player_winner_judge.GetPlayersWon();
+}
+
+WinnerJudge::WinningPlayers WinnerDecisionRoom::GetFourWinnersResult()
+{
+	return four_player_winner_judge.GetPlayersWon();
 }
 
 //Set States

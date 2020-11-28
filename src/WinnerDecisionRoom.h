@@ -45,10 +45,13 @@ public:
 											LTexture* wnjudge1_texture,LTexture* wnjudge2_texture,LTexture* wnjudge3_texture,LTexture* wnjudge4_texture,
 											ALuint* source,ALuint* buffer);
     
-    //function to generate plain base dungeon with tile clip set.
+    void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
+    
+    //function to generate plain base dungeon with tile clip set. Call after set level dimensions
     void GenerateBaseRoom();
     
-    void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
+    //function to set winner judges
+    void PlaceWinnerJudges(int num_players);
     
     void setPointerToTimer(LTimer* thisTimer);
     
@@ -89,8 +92,6 @@ public:
 
     //logic
 
-    //checks for collision with key(s) and main dot
-    void checkKeyAndDot();
 
     /** GameState Functions**/
 
@@ -110,7 +111,8 @@ public:
     virtual void render(SDL_Renderer* gRenderer);
 	virtual void render(DrawingManager* gDrawManager);
 
-
+	
+	
     int getDotTileNumber();
 
     //returns a number of a tile that has the x and y coordinates inputed
@@ -124,7 +126,11 @@ public:
     void SetPointerToPlayerManager(PlayerManager* pm);
 	void SetPointerToGameInventory(GameInventory* thisInventory);
 	
-		
+	WinnerJudge::WinningPlayers GetOneWinnersResult();
+	WinnerJudge::WinningPlayers GetTwoWinnersResult();
+	WinnerJudge::WinningPlayers GetThreeWinnersResult();
+	WinnerJudge::WinningPlayers GetFourWinnersResult();
+	
 private:
 
 //members not inherited from GameState class
@@ -188,6 +194,11 @@ private:
     WinnerJudge two_player_winner_judge;
     WinnerJudge three_player_winner_judge;
     WinnerJudge four_player_winner_judge;
+    
+    void render_winner_judges(DrawingManager* gDrawManager);
+    
+    void logic_winner_judges();
+    
 };
 
 #endif

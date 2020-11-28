@@ -10,6 +10,10 @@ LabyrinthDungeonManager::LabyrinthDungeonManager()
 	labyrinthCreated = false;
 	m_player_manager_ptr = nullptr;
 	
+	player1_win = false;
+	player2_win = false;
+	player3_win = false;
+	player4_win = false;
 	
 }
 
@@ -510,6 +514,8 @@ bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* g
 		winRoomPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
 		
 		winRoomPtr->GenerateBaseRoom();
+		
+		winRoomPtr->PlaceWinnerJudges(pm->GetNumberOfPlayers());
 	}
 	else
 	{
@@ -576,6 +582,7 @@ void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations(
 			{
 				player1PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosX() + 80;
 				player1PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosY() + 80;
+				
 				break;
 			}
 			
@@ -600,6 +607,8 @@ void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations(
 				break;
 			}
 		}
+		
+		m_winner_room->PlacePlayerInLocationNearEntrance(thisPlayer);
 	}
 }
 
@@ -993,6 +1002,10 @@ void LabyrinthDungeonManager::logic()
 		if(m_winner_room)
 		{
 			m_winner_room->logic_alt(timeStep);
+			
+			//check for winners in winner room
+			LabyrinthDungeonManager::CheckForWinners();
+			
 		}
 		
 	}
@@ -1000,6 +1013,119 @@ void LabyrinthDungeonManager::logic()
 	//Restart timer
     stepTimer->start();
 	
+}
+
+void LabyrinthDungeonManager::CheckForWinners()
+{
+	if(m_winner_room)
+	{
+		int num_players = m_player_manager_ptr->GetNumberOfPlayers();
+		
+		//check for winning player(s)
+		if(num_players > 0)
+		{
+			switch(m_winner_room->GetOneWinnersResult())
+			{
+				case WinnerJudge::WinningPlayers::PLAYERS_1:{player1_win = true; break;}
+				case WinnerJudge::WinningPlayers::PLAYERS_2:{player2_win = true; break;}
+				case WinnerJudge::WinningPlayers::PLAYERS_3:{player3_win = true; break;}
+				case WinnerJudge::WinningPlayers::PLAYERS_4:{player4_win = true; break;}
+				default:{break;}
+			}
+		}
+		
+		if(num_players > 1)
+		{
+			switch(m_winner_room->GetTwoWinnersResult())
+			{
+				case WinnerJudge::WinningPlayers::PLAYERS_1_2:
+				{
+					player1_win = true; player2_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_1_3:
+				{
+					player1_win = true; player3_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_1_4:
+				{
+					player1_win = true; player4_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_2_3:
+				{
+					player2_win = true; player3_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_2_4:
+				{
+					player2_win = true; player4_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_3_4:
+				{
+					player3_win = true; player4_win = true;
+					break;
+				}
+				default:{break;}
+			}
+		}
+		
+		if(num_players > 2)
+		{
+			switch(m_winner_room->GetThreeWinnersResult())
+			{
+				case WinnerJudge::WinningPlayers::PLAYERS_1_2_3:
+				{
+					player1_win = true; player2_win = true; player3_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_1_2_4:
+				{
+					player1_win = true; player2_win = true; player4_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_1_3_4:
+				{
+					player1_win = true; player3_win = true; player4_win = true;
+					break;
+				}
+				case WinnerJudge::WinningPlayers::PLAYERS_2_3_4:
+				{
+					player2_win = true; player3_win = true; player4_win = true;
+					break;
+				}
+				default:{break;}
+			}
+		}
+		
+		if(num_players > 3)
+		{
+			switch(m_winner_room->GetFourWinnersResult())
+			{
+				case WinnerJudge::WinningPlayers::PLAYERS_1_2_3_4:
+				{
+					player1_win = true; player2_win = true; player3_win = true; player4_win = true;
+					break;
+				}
+				default:{break;}
+			}
+		}
+		
+		if(player1_win || player2_win || player3_win || player4_win)
+		{
+			LabyrinthDungeonManager::setState(GameState::State::NEXT);
+		}
+	}
+}
+
+void LabyrinthDungeonManager::GetWinnersBool(bool* p1, bool* p2, bool* p3, bool* p4)
+{
+	*p1 = player1_win;
+	*p2 = player2_win;
+	*p3 = player3_win;
+	*p4 = player4_win;
 }
 
 void LabyrinthDungeonManager::sound(AudioRenderer* gAudioRenderer)

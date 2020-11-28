@@ -5,8 +5,8 @@ WinnerJudge::WinnerJudge()
 	//set collider
 	collider.x = 0;
 	collider.y = 0;
-	collider.w = 20;
-	collider.h = 20;
+	collider.w = 80;
+	collider.h = 80;
 	
 }
 
@@ -35,7 +35,9 @@ void WinnerJudge::SetPosition(std::int16_t x, std::int16_t y)
 
 void WinnerJudge::SetPointerToTexture(LTexture* thisTexture){m_texture_ptr = thisTexture;}
 
-void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
+SDL_Rect* WinnerJudge::getCollisionBoxPtr(){return &collider;}
+
+void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager::PlayerLocation location)
 {
 	//count for number of players touching the judge
 	int player_collision_count = 0;
@@ -50,10 +52,14 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
 	bool p3_collide = false;
 	bool p4_collide = false;
 	
+	//make collision check location dependent
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	pm->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
 	if(p1)
 	{
 		//if there is a collision
-		if(checkCollision(collider,*p1->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p1_loc == location && checkCollision(collider,*p1->getCollisionObjectPtr()->ptrToCollisionBox))
 		{
 			p1_collide = true;
 			player_collision_count++;
@@ -71,7 +77,7 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
 	if(p2)
 	{
 		//if there is a collision
-		if(checkCollision(collider,*p2->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p2_loc == location && checkCollision(collider,*p2->getCollisionObjectPtr()->ptrToCollisionBox))
 		{
 			p2_collide = true;
 			player_collision_count++;
@@ -97,7 +103,7 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
 	if(p3)
 	{
 		//if there is a collision
-		if(checkCollision(collider,*p3->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p3_loc == location && checkCollision(collider,*p3->getCollisionObjectPtr()->ptrToCollisionBox))
 		{
 			p3_collide = true;
 			player_collision_count++;
@@ -138,7 +144,7 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
 	
 	if(p4)
 	{
-		if(checkCollision(collider,*p4->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p4_loc == location && checkCollision(collider,*p4->getCollisionObjectPtr()->ptrToCollisionBox))
 		{
 			p4_collide = true;
 			player_collision_count++;
@@ -210,10 +216,13 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm)
 	}
 }
 
-void WinnerJudge::render(DrawingManager* gDrawManager)
+void WinnerJudge::render(SDL_Renderer* gRenderer, SDL_Rect& camera)
 {
 	if(m_texture_ptr)
 	{
-		m_texture_ptr->render(collider.x,collider.y,gDrawManager->GetPointerToRenderer(),nullptr);
+		std::int16_t x = collider.x - camera.x;
+        std::int16_t y = collider.y - camera.y;
+        
+		m_texture_ptr->render(x,y,gRenderer,nullptr);
 	}
 }

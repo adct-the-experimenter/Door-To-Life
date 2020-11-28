@@ -649,54 +649,48 @@ void Dungeon1()
 
 			}
 			
-			if(toMiniDungeon)
-			{
+			//free resources 
+			gameInventory->freeWeapons();
+			
+			//delete doors and keys
+			//delete tiles
+			gLabyrinthDungeonManager->GetPointerToLabyrinth()->freeResources();
+			
+			gLabyrinthDungeonManager->GetPointerToWinnerDecisionRoom()->freeResources();
+			
+			if(baseGameState->getState() == GameState::State::EXIT )
+			{	
 				baseGameState = nullptr;
-				state_stack.push(gMiniDungeonStateStructure);
+				labyrinthCreated = false; //remake labyrinth
+				quitGame = true;
 			}
-			else
-			{
-				gameInventory->freeWeapons();
-				
-				//delete doors and keys
-				//delete tiles
-				gLabyrinthDungeonManager->GetPointerToLabyrinth()->freeResources();
-				
-				gLabyrinthDungeonManager->GetPointerToWinnerDecisionRoom()->freeResources();
-				
-				if(baseGameState->getState() == GameState::State::EXIT )
-				{	
-					baseGameState = nullptr;
-					labyrinthCreated = false; //remake labyrinth
-					quitGame = true;
-				}
-				else if(baseGameState->getState() == GameState::State::GAME_OVER )
-				{	
-					baseGameState = nullptr;
-					labyrinthCreated = false; //remake labyrinth
-					GameOver();
-				}
+			else if(baseGameState->getState() == GameState::State::GAME_OVER )
+			{	
+				baseGameState = nullptr;
+				labyrinthCreated = false; //remake labyrinth
+				GameOver();
+			}
 
-				else if(baseGameState->getState() == GameState::State::NEXT)
-				{
-					//go to next dungeon
-					baseGameState = nullptr;
-					
-					GameWon();
-					
-					quitGame = true;
-				}
+			else if(baseGameState->getState() == GameState::State::NEXT)
+			{
+				//go to next dungeon
+				baseGameState = nullptr;
 				
+				GameWon();
+				
+				quitGame = true;
 			}
+				
+		}
 
 			loop += 1;
 			std::cout << "Loop: " <<loop << std::endl;
 			
 		}
 		
-	}
-	
 }
+	
+
 
 /*
 void Dungeon1()
