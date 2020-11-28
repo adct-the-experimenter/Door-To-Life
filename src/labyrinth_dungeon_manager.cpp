@@ -1101,9 +1101,12 @@ void LabyrinthDungeonManager::RunCollisionHandlersOps()
 {
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 	
-	if(mainLabCollisionHandler)
+	PlayerManager::PlayerLocation location = PlayerManager::PlayerLocation::NONE;
+	
+	if(mainLabCollisionHandler && m_player_manager_ptr)
 	{
-		mainLabCollisionHandler->run_collision_handler(num_players);
+		location = PlayerManager::PlayerLocation::LABYRINTH;
+		mainLabCollisionHandler->run_collision_handler(*m_player_manager_ptr,location);
 	}
 	
 	

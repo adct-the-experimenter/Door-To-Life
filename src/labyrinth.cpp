@@ -1097,7 +1097,6 @@ void Labyrinth::render(DrawingManager* gDrawManager)
     //render doors
     labyrinthMap.renderDoors(m_player_manager_ptr,gDrawManager);
     
-    
     PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
     

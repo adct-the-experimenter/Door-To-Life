@@ -8,6 +8,7 @@
 #include <cstdint> //for integer types with specific size
 #include <vector>
 
+#include "player_manager.h"
 
 class CollisonHandler
 {
@@ -37,8 +38,8 @@ public:
 	
 	void SetCamerasForCollisionSystem(SDL_Rect* camera1,SDL_Rect* camera2,SDL_Rect* camera3,SDL_Rect* camera4);
 
-	//function to do collision process
-	void run_collision_handler(int& num_players);
+	//function to do collision process based on number of players and location
+	void run_collision_handler(PlayerManager& playerManager,PlayerManager::PlayerLocation& location);
 	
 	//function to empty the collision objects vector of all collision objects.
 	//used for restarting the game safely.
