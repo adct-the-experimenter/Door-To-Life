@@ -447,55 +447,41 @@ void LabyrinthDungeonManager::CloseMiniDungeon(int num_player)
 
 void LabyrinthDungeonManager::MiniDungeonToLabyrinthTransitionOperations()
 {
-	
-	
 	int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 	
 	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
-	if(m_mini_dungeon_1)
+	if(p1_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH)
 	{
-		if(p1_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH)
-		{
-			m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
-			m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
-			
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,1);
-		}
+		m_player_manager_ptr->GetPointerToPlayerOne()->setPosX(player1PosX_beforedungeon);
+		m_player_manager_ptr->GetPointerToPlayerOne()->setPosY(player1PosY_beforedungeon);
+		
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,1);
 	}
 	
-	if(m_mini_dungeon_2)
+	if(p2_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 1)
 	{
-		if(p2_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 1)
-		{
-			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
-			m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
-			
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,2);
-		}
+		m_player_manager_ptr->GetPointerToPlayerTwo()->setPosX(player2PosX_beforedungeon);
+		m_player_manager_ptr->GetPointerToPlayerTwo()->setPosY(player2PosY_beforedungeon);
+		
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,2);
 	}
 	
-	if(m_mini_dungeon_3)
+	if(p3_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 2)
 	{
-		if(p3_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 2)
-		{
-			m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
-			m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
-			
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,3);
-		}
+		m_player_manager_ptr->GetPointerToPlayerThree()->setPosX(player3PosX_beforedungeon);
+		m_player_manager_ptr->GetPointerToPlayerThree()->setPosY(player3PosY_beforedungeon);
+		
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,3);
 	}
 	
-	if(m_mini_dungeon_4)
+	if(p4_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 3)
 	{
-		if(p4_loc == PlayerManager::PlayerLocation::DUNGEON_2_LABYRINTH && num_players > 3)
-		{
-			m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
-			m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
-			
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,4);
-		}
+		m_player_manager_ptr->GetPointerToPlayerFour()->setPosX(player4PosX_beforedungeon);
+		m_player_manager_ptr->GetPointerToPlayerFour()->setPosY(player4PosY_beforedungeon);
+		
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,4);
 	}
 	
 }
@@ -583,7 +569,96 @@ void LabyrinthDungeonManager::LabyrinthToWinnerDecisionRoomTransitionOperations(
 	{
 		std::cout << "Placing player in winner room \n";
 		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM,player_num_entered);
-		m_winner_room->PlacePlayerInLocationNearEntrance(thisPlayer);
+		
+		switch(player_num_entered)
+		{
+			case 1:
+			{
+				player1PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosX() + 80;
+				player1PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerOne()->getPosY() + 80;
+				break;
+			}
+			
+			case 2:
+			{
+				player2PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerTwo()->getPosX() + 80;
+				player2PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerTwo()->getPosY() + 80;
+				break;
+			}
+			
+			case 3:
+			{
+				player3PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerThree()->getPosX() + 80;
+				player3PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerThree()->getPosY() + 80;
+				break;
+			}
+			
+			case 4:
+			{
+				player4PosX_beforedungeon = m_player_manager_ptr->GetPointerToPlayerFour()->getPosX() + 80;
+				player4PosY_beforedungeon = m_player_manager_ptr->GetPointerToPlayerFour()->getPosY() + 80;
+				break;
+			}
+		}
+	}
+}
+
+void LabyrinthDungeonManager::WinnerDecisionRoomToLabyrinthTransitionOperations()
+{
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+	int player_num_entered = 0;
+	Player* thisPlayer = nullptr;
+	float posX,posY;
+	
+	if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH)
+	{
+		player_num_entered = 1;
+		
+		posX = player1PosX_beforedungeon;
+		posY = player1PosY_beforedungeon;
+		
+		thisPlayer = m_player_manager_ptr->GetPointerToPlayerOne();		
+	}
+	
+	if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH)
+	{
+		player_num_entered = 2;
+		
+		posX = player1PosX_beforedungeon;
+		posY = player1PosY_beforedungeon;
+				
+		thisPlayer = m_player_manager_ptr->GetPointerToPlayerTwo();
+	}
+	
+	if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH)
+	{
+		player_num_entered = 3;
+		
+		posX = player1PosX_beforedungeon;
+		posY = player1PosY_beforedungeon;
+				
+		thisPlayer = m_player_manager_ptr->GetPointerToPlayerThree();
+	}
+	
+	if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH)
+	{
+		player_num_entered = 4;
+		
+		posX = player1PosX_beforedungeon;
+		posY = player1PosY_beforedungeon;
+				
+		thisPlayer = m_player_manager_ptr->GetPointerToPlayerFour();
+	}
+	
+	if(thisPlayer)
+	{
+		std::cout << "Placing player in labyrinth from winner room. \n";
+		m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH,player_num_entered);
+		
+		thisPlayer->setPosX(posX);
+		thisPlayer->setPosY(posY);
 	}
 }
 

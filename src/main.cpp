@@ -623,6 +623,8 @@ void Dungeon1()
 				
 				gLabyrinthDungeonManager->LabyrinthToWinnerDecisionRoomTransitionOperations();
 				
+				gLabyrinthDungeonManager->WinnerDecisionRoomToLabyrinthTransitionOperations();
+				
 				if(baseGameState->getState() == GameState::State::NEXT )
 				{
 					stepTimer.stop();

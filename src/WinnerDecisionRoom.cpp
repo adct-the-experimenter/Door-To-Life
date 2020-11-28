@@ -376,10 +376,11 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
         PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
+		
 		//do logic of other players if they are in the same dungeon
 		
 		if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM  
-			&& m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
+			&& m_player_manager_ptr->GetPointerToPlayerOne() )
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerOne(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraOne());
@@ -391,40 +392,40 @@ void WinnerDecisionRoom::logic_alt(float& timeStep)
 			}
 		}
 		if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM
-			&& m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
+			&& m_player_manager_ptr->GetPointerToPlayerTwo() )
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerTwo(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraTwo());
 			
 			//if player 2 hits dungeon entrance/exit
-			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
-			//{ 
-				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,2);
-			//}
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH,2);
+			}
 		}
 		if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM  
-			&& m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
+			&& m_player_manager_ptr->GetPointerToPlayerThree() )
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerThree(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraThree());
 			
 			//if player 3 hits dungeon entrance/exit
-			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
-			//{ 
-				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,3);
-			//}
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH,3);
+			}
 		}
 		if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM 
-			&& m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
+			&& m_player_manager_ptr->GetPointerToPlayerFour() )
 		{
 			WinnerDecisionRoom::moveMainDot(m_player_manager_ptr->GetPointerToPlayerFour(),timeStep,
 								m_player_manager_ptr->GetPointerToCameraFour());
 			
 			//if player 4 hits dungeon entrance/exit
-			//if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
-			//{ 
-				//m_player_manager_ptr->SetDungeonExitBoolForPlayer(true,4);
-			//}
+			if( checkCollision(exitTilePtr->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) )
+			{ 
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::WINNER_ROOM_2_LABYRINTH,4);
+			}
 		}
         
     }

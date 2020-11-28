@@ -60,6 +60,8 @@ public:
 	
 	void LabyrinthToWinnerDecisionRoomTransitionOperations();
 	
+	void WinnerDecisionRoomToLabyrinthTransitionOperations();
+	
 	WinnerDecisionRoom* GetPointerToWinnerDecisionRoom();
 	
 	//Game loop functions
