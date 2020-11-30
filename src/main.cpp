@@ -372,9 +372,13 @@ void DungeonGameLoop()
 
     //clear screen
     SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
-    
     SDL_RenderClear(gRenderer);
-
+    
+    #ifdef _WIN32
+    SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
+	SDL_RenderFillRect(gRenderer,NULL);
+	#endif 
+	
     //Render
     baseGameState->render(&gDrawManager);
     
