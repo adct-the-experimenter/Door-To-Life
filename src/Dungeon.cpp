@@ -251,23 +251,25 @@ void Dungeon::moveMainDot(float& timeStep)
 
 void Dungeon::moveMainDot(Player* thisDot,float &timeStep,SDL_Rect* thisCamera)
 {
+	//move dot independent of frames, but rather dependent on time. includes collision detection
+    thisDot->moveOnTiles_TileType(timeStep, dungeonTileSet );
+    
     //set camera over dot
     //Center the camera over the dot
 	thisCamera->x = ( (int)thisDot->getPosX() + thisDot->getWidth() / 2  ) - thisCamera->w / 2;
 	thisCamera->y = ( (int)thisDot->getPosY() + thisDot->getHeight() / 2  ) - thisCamera->h / 2;
 	
 	//Keep the camera in bounds
-	if( thisCamera->x < 0 )
+	if( thisCamera->x < 1 )
 	{
-		thisCamera->x = 0;
+		thisCamera->x = 1;
 	}
-	if( thisCamera->y < 0 )
+	if( thisCamera->y < 1 )
 	{
-		thisCamera->y = 0;
+		thisCamera->y = 1;
 	}
 
-    //move dot independent of frames, but rather dependent on time. includes collision detection
-    thisDot->moveOnTiles_TileType(timeStep, dungeonTileSet );
+    
 		
 }
 

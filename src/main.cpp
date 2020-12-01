@@ -1942,6 +1942,8 @@ void close()
     freeWeaponsMedia();
     
     freeDungeon_Door_Key_Media();
+    freeWinnerRoom_Media();
+    
     //free health bar texture
     freeMedia_HealthBar(&healthBarTexture);
     

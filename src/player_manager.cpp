@@ -186,3 +186,42 @@ std::int16_t PlayerManager::GetDungeonIndexForThisPlayerInDungeon(int num_player
 	return indexToReturn;
 }
 
+void PlayerManager::KeepCamerasInBounds()
+{
+	//player 1 camera
+	SDL_Rect* thisCamera = PlayerManager::GetPointerToCameraOne();
+	
+	if(thisCamera)
+	{
+		if(thisCamera->x < 0){thisCamera->x = 0;} 
+		if(thisCamera->y < 0){thisCamera->y = 0;} 
+		std::cout << "camera  x: " << thisCamera->x << " y: " << thisCamera->y << std::endl;
+	}
+	
+	//player 2 camera
+	thisCamera = PlayerManager::GetPointerToCameraTwo();
+	
+	if(thisCamera && m_num_players > 1)
+	{
+		if(thisCamera->x < 1){thisCamera->x = 1;} 
+		if(thisCamera->y < 1){thisCamera->y = 1;} 
+	}
+	
+	//player 3 camera
+	thisCamera = PlayerManager::GetPointerToCameraThree();
+	
+	if(thisCamera && m_num_players > 2)
+	{
+		if(thisCamera->x < 1){thisCamera->x = 1;} 
+		if(thisCamera->y < 1){thisCamera->y = 1;} 
+	}
+	
+	//player 4 camera
+	thisCamera = PlayerManager::GetPointerToCameraFour();
+	
+	if(thisCamera && m_num_players > 3)
+	{
+		if(thisCamera->x < 1){thisCamera->x = 1;} 
+		if(thisCamera->y < 1){thisCamera->y = 1;} 
+	}
+}

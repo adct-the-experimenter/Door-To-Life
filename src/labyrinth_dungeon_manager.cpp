@@ -1007,7 +1007,7 @@ void LabyrinthDungeonManager::logic()
 			LabyrinthDungeonManager::CheckForWinners();
 			
 		}
-		
+				
 	}
 	
 	//Restart timer

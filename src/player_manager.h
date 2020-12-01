@@ -63,6 +63,9 @@ public:
 	
 	std::int16_t GetDungeonIndexForThisPlayerInDungeon(int num_player);
 	
+	//function to keep cameras in bounds
+	void KeepCamerasInBounds();
+	
 private:
 	
 	//pointers to players

@@ -110,34 +110,32 @@ void LabyrinthMap::setLabyrinthCameraForDot(Dot* mainDotPointer,
 
 }
 
-void LabyrinthMap::moveMainDot(Dot* mainDotPointer,float &timeStep,SDL_Rect* thisCamera)
+void LabyrinthMap::moveMainDot(Dot* mainDotPointer, float &timeStep, SDL_Rect* thisCamera)
 {
+	//move dot independent of frames, but rather dependent on time. includes collision detection
+    mainDotPointer->moveOnTiles_TileType(timeStep, labyrinthTilesVector );
+    
     //set camera over dot
     //Center the camera over the dot
 	thisCamera->x = ( (int)mainDotPointer->getPosX() + mainDotPointer->getWidth() / 2  ) - thisCamera->w / 2;
 	thisCamera->y = ( (int)mainDotPointer->getPosY() + mainDotPointer->getHeight() / 2  ) - thisCamera->h / 2;
 	
 	//Keep the camera in bounds
-	if( thisCamera->x < 0 )
+	if( thisCamera->x < 1 )
 	{
-		thisCamera->x = 0;
+		thisCamera->x = 1;
 	}
-	if( thisCamera->y < 0 )
+	if( thisCamera->y < 1 )
 	{
-		thisCamera->y = 0;
+		thisCamera->y = 1;
 	}
-
-//    mainDotPointer->setCamera(*thisCamera);
-
-    //move dot independent of frames, but rather dependent on time. includes collision detection
-    mainDotPointer->moveOnTiles_TileType(timeStep, labyrinthTilesVector );
 
 }
 
 
 void LabyrinthMap::renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap)
 {
-    for(size_t i = 0; i < labyrinthTilesVector.size(); i++)
+    for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
     {
         labyrinthTilesVector[i]->render(tileTextureMap,*lCamera,gRenderer);
     }
@@ -150,7 +148,7 @@ void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDra
 	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	playerManager->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 	
-    for(size_t i = 0; i < labyrinthTilesVector.size(); i++)
+    for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
     {
 		if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
 		{
