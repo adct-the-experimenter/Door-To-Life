@@ -1307,7 +1307,7 @@ bool initPlayers()
 		
          //define dot object that will be in the states, allocate memory for it in heap
          //set speed to 
-        float speed = 80 * 3;
+        float speed = 80 * 2;
         ptrToMC->setSpeed(speed);
         
         mainDotPointer = std::move(ptrToMC);
@@ -1338,12 +1338,15 @@ bool initPlayers()
 		
 		if(mainPlayerManager.GetMultiplePlayersBool())
 		{
+			float joystick_speed = speed*2;
+			
 			//if there is a 2nd player
 			if(mainPlayerManager.GetNumberOfPlayers() > 1)
 			{
 				
 				std::unique_ptr <Dot> ptrToMC2(new Player(10,30,15,20) );
-				ptrToMC2->setSpeed(speed);
+				
+				ptrToMC2->setSpeed(joystick_speed);
 				dotPointer2 = std::move(ptrToMC2);
 				
 				player2 = dynamic_cast<Player*>(dotPointer2.get());
@@ -1361,7 +1364,7 @@ bool initPlayers()
 			if(mainPlayerManager.GetNumberOfPlayers() > 2)
 			{
 				std::unique_ptr <Dot> ptrToMC3(new Player(10,30,15,20) );
-				ptrToMC3->setSpeed(speed);
+				ptrToMC3->setSpeed(joystick_speed);
 				dotPointer3 = std::move(ptrToMC3);
 				
 				player3 = dynamic_cast<Player*>(dotPointer3.get());
@@ -1379,7 +1382,7 @@ bool initPlayers()
 			if(mainPlayerManager.GetNumberOfPlayers() > 3)
 			{
 				std::unique_ptr <Dot> ptrToMC4(new Player(10,30,15,20) );
-				ptrToMC4->setSpeed(speed);
+				ptrToMC4->setSpeed(joystick_speed);
 				dotPointer4 = std::move(ptrToMC4);
 				
 				player4 = dynamic_cast<Player*>(dotPointer4.get());

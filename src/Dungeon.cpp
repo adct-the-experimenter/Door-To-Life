@@ -403,7 +403,6 @@ void Dungeon::handle_events(Event& thisEvent)
         Dungeon::setState(GameState::State::EXIT);
     }
 
-    //mainPlayer->handleEvent(thisEvent);
     
 
 }

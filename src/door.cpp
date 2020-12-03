@@ -142,8 +142,7 @@ void Door::handle_event(Event& thisEvent)
     {
         case Event_ID::SPACE:{ Door::setKeyInsertStatus(true); break;} //make keyInsert true
         case Event_ID::SPACE_RELEASE:{ Door::setKeyInsertStatus(true); break;}
-        case Event_ID::JOYSTICK_0_BUTTON_DOWN_PRESSED:{ Door::setKeyInsertStatus(true); break;}
-        case Event_ID::JOYSTICK_1_BUTTON_DOWN_PRESSED:{ Door::setKeyInsertStatus(true); break;}
+        case Event_ID::JOYSTICK_BUTTON_DOWN_PRESSED:{ Door::setKeyInsertStatus(true); break;}
         default:{ Door::setKeyInsertStatus(false); break;} //make keyInsert false
     }
 }
