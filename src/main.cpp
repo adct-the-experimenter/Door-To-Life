@@ -1338,7 +1338,7 @@ bool initPlayers()
 		
 		if(mainPlayerManager.GetMultiplePlayersBool())
 		{
-			float joystick_speed = speed*2;
+			float joystick_speed = speed*3;
 			
 			//if there is a 2nd player
 			if(mainPlayerManager.GetNumberOfPlayers() > 1)

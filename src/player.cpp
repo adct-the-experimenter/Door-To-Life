@@ -306,7 +306,8 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
         tileType == DungeonTile::TileType::BOTTOM_RIGHT 
         || tileType == DungeonTile::TileType::INVISIBLE_WALL)
     {
-        Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
+		Player::moveBack(timeStep);
+        //Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
     }
     
     if(tileType == DungeonTile::TileType::CENTER)
@@ -389,10 +390,13 @@ void Player::logic(float& timeStep)
 
 void Player::runLogicState_CollideWithWall(float& timeStep)
 {
-    float zeroVelocity = 0;
+	Player::moveBack(timeStep);
+	
+    float velx = -0.1*Dot::getVelX();
+    float vely = -0.1*Dot::getVelY();
     
-    Player::moveBack(timeStep);
-    Player::setVelX(zeroVelocity); Player::setVelY(zeroVelocity);
+    Player::setVelX(velx); Player::setVelY(vely);
+        
     //set player state back to normal
     Player::setPlayerState(PlayerState::NORMAL);
 }
