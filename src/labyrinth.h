@@ -135,6 +135,8 @@ public:
     void setPlayerHitLabyrinthExitBool(bool state, int num_player);
     bool getPlayerHitLabyrinthExitBool(int num_player);
     
+    void GetExitTileLocation(int* x, int* y);
+    
 private:
     
     //Generator for nodes

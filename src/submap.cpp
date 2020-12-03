@@ -39,6 +39,7 @@ void SubMap::initParametersFromLabyrinth(Labyrinth& thisLabyrinth)
     mini_width_per_map_width = double( mapViewPort.w) / double( (GRID_WIDTH / 20) * NODE_LEVEL_WIDTH ) ;
     mini_height_per_map_height = double( mapViewPort.h ) / double( (GRID_HEIGHT / 20) * NODE_LEVEL_HEIGHT );
     
+    //set dungeon entrance(s)
     dungeon_entraces_vec.resize(thisLabyrinth.getNumberOfDungeonEntranceLocations());
     
     for(size_t i = 0; i < dungeon_entraces_vec.size(); i++)
@@ -56,6 +57,15 @@ void SubMap::initParametersFromLabyrinth(Labyrinth& thisLabyrinth)
 		
 		dungeon_entraces_vec[i] = thisRect;
 	}
+	
+	//set exit tile rect
+	int x,y;
+	
+	thisLabyrinth.GetExitTileLocation(&x,&y);
+	
+	exit_tile_rect.x = x * mini_width_per_map_width;
+	exit_tile_rect.y = y * mini_height_per_map_height;
+	exit_tile_rect.w = 15; exit_tile_rect.h = 15;
 }
 
 void SubMap::setPosition(std::int16_t x, std::int16_t y)
@@ -146,6 +156,13 @@ void SubMap::renderSubMapAndDot(Dot* thisDot1, Dot* thisDot2, Dot* thisDot3, Dot
 		//render a rectangle
 		SDL_RenderDrawRect(gRenderer,&dungeon_entraces_vec[i]);
 	}
+	
+	//render yellow rectangle for exit tile area
+    SDL_SetRenderDrawColor(gRenderer,
+                           204,204,0,
+                           50);
+    //render a rectangle
+	SDL_RenderDrawRect(gRenderer,&exit_tile_rect);
     
     SDL_SetRenderDrawColor(gRenderer,
                            gray_r,gray_g,gray_b,

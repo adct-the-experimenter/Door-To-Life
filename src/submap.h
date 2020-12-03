@@ -59,6 +59,8 @@ private:
     double mini_height_per_map_height;
     
     std::vector <SDL_Rect> dungeon_entraces_vec;
+    
+    SDL_Rect exit_tile_rect;
 };
 
 #endif

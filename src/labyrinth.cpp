@@ -833,7 +833,7 @@ void Labyrinth::handle_events(Event& thisEvent)
 		PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 		m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
 		
-		if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH && thisEvent.player_num == 1)
 		{
 			labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraOne());
 		}
@@ -842,17 +842,20 @@ void Labyrinth::handle_events(Event& thisEvent)
 		{
 			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
 			
-			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH
+				&& thisEvent.player_num == 2)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraTwo());
 			}
 			
-			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH
+				&& thisEvent.player_num == 3)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraThree());
 			}
 			
-			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH 
+				&& thisEvent.player_num == 4)
 			{
 				labyrinthMap.door_handle_events(thisEvent,m_player_manager_ptr->GetPointerToCameraFour());
 			}
@@ -1845,4 +1848,10 @@ bool Labyrinth::getPlayerHitLabyrinthExitBool(int num_player)
 	}
 	
 	return boolToReturn;
+}
+
+void Labyrinth::GetExitTileLocation(int* x, int* y)
+{
+	*x = exitTile->getBox().x;
+	*y = exitTile->getBox().y;
 }
