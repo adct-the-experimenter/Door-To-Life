@@ -10,6 +10,7 @@ Wear headphones to hear sound effects in 3D audio or use a 5.1, 6.1, 7.1 surroun
 - SDL2 TTF
 - Boost Random library
 - OpenAL Soft
+- Pugixml
 
 ## How to Install
 
