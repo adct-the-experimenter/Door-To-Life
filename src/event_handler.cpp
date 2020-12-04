@@ -31,16 +31,16 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
         switch(sdl_event_ptr->key.keysym.sym)
         {
             case SDLK_UP: {thisEvent.event_id = Event_ID::UP_ARROW; break;}
-            case SDLK_w: {thisEvent.event_id = Event_ID::UP_ARROW; break;}
+           // case SDLK_w: {thisEvent.event_id = Event_ID::UP_ARROW; break;}
             
             case SDLK_DOWN: {thisEvent.event_id = Event_ID::DOWN_ARROW; break;}
-            case SDLK_s: {thisEvent.event_id = Event_ID::DOWN_ARROW; break;}
+           // case SDLK_s: {thisEvent.event_id = Event_ID::DOWN_ARROW; break;}
             
             case SDLK_LEFT: {thisEvent.event_id = Event_ID::LEFT_ARROW; break;}
-            case SDLK_a: {thisEvent.event_id = Event_ID::LEFT_ARROW; break;}
+           // case SDLK_a: {thisEvent.event_id = Event_ID::LEFT_ARROW; break;}
             
             case SDLK_RIGHT: {thisEvent.event_id = Event_ID::RIGHT_ARROW; break;}
-            case SDLK_d: {thisEvent.event_id = Event_ID::RIGHT_ARROW; break;}
+           // case SDLK_d: {thisEvent.event_id = Event_ID::RIGHT_ARROW; break;}
             
             case SDLK_SPACE:{ thisEvent.event_id = Event_ID::SPACE; break;}
             case SDLK_RETURN:{thisEvent.event_id = Event_ID::ENTER; break;}

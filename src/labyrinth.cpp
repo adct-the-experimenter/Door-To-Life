@@ -1430,12 +1430,43 @@ void Labyrinth::sound(AudioRenderer* gAudioRenderer)
     }
     else{alSourceStop(*dgmSource);}
 
-    labyrinthMap.play_door_sounds();
+    //labyrinthMap.play_door_sounds();
+        
+    PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
     
-    m_enemy_inventory.run_enemies_sound(*labyrinthCamera,gAudioRenderer);
+    if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
+    {
+		SDL_Rect* thisCamera = m_player_manager_ptr->GetPointerToCameraOne();
+		m_enemy_inventory.run_enemies_sound(*thisCamera,gAudioRenderer);
+	}
+    
+    if(p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
+    {
+		SDL_Rect* thisCamera = m_player_manager_ptr->GetPointerToCameraTwo();
+		m_enemy_inventory.run_enemies_sound(*thisCamera,gAudioRenderer);
+	}
+	
+	if(p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
+    {
+		SDL_Rect* thisCamera = m_player_manager_ptr->GetPointerToCameraThree();
+		m_enemy_inventory.run_enemies_sound(*thisCamera,gAudioRenderer);
+	}
+	
+	if(p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
+    {
+		SDL_Rect* thisCamera = m_player_manager_ptr->GetPointerToCameraFour();
+		m_enemy_inventory.run_enemies_sound(*thisCamera,gAudioRenderer);
+	}
     
     m_player_manager_ptr->sound(gAudioRenderer);
     
+}
+
+void Labyrinth::StopPlayingTheme()
+{
+	
+    alSourceStop(*dgmSource);
 }
 
 void Labyrinth::freeResources()

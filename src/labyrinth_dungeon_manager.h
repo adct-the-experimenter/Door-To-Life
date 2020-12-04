@@ -113,6 +113,7 @@ private:
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d2;
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d3;
 	std::unique_ptr <CollisonHandler> miniCollisionHandler_d4;
+	
 
 	
 	float player1PosX_beforedungeon;
@@ -130,6 +131,8 @@ private:
 	//winner room
 	
 	std::unique_ptr <WinnerDecisionRoom> m_winner_room;
+	
+	std::unique_ptr <CollisonHandler> miniCollisionHandler_winner_room;
 	
 	bool player1_win;
 	bool player2_win;

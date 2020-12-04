@@ -137,6 +137,8 @@ public:
     
     void GetExitTileLocation(int* x, int* y);
     
+    void StopPlayingTheme();
+    
 private:
     
     //Generator for nodes

@@ -516,6 +516,15 @@ bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* g
 		winRoomPtr->GenerateBaseRoom();
 		
 		winRoomPtr->PlaceWinnerJudges(pm->GetNumberOfPlayers());
+		
+		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
+		if(!ptrToCollisionHandler)
+		{
+			std::cout << "Failed to initialize collision handler for winner room!\n";
+			return false;
+		}
+		
+		miniCollisionHandler_winner_room = std::move(ptrToCollisionHandler); 
 	}
 	else
 	{
@@ -1115,6 +1124,8 @@ void LabyrinthDungeonManager::CheckForWinners()
 		
 		if(player1_win || player2_win || player3_win || player4_win)
 		{
+			m_labyrinth->StopPlayingTheme();
+			
 			LabyrinthDungeonManager::setState(GameState::State::NEXT);
 			
 			//done to stop playing labyrinth theme
@@ -1313,5 +1324,10 @@ void LabyrinthDungeonManager::RunCollisionHandlersOps()
 		mainLabCollisionHandler->run_collision_handler(*m_player_manager_ptr,location);
 	}
 	
+	if(miniCollisionHandler_winner_room && m_player_manager_ptr)
+	{
+		location = PlayerManager::PlayerLocation::WINNER_ROOM;
+		miniCollisionHandler_winner_room->run_collision_handler(*m_player_manager_ptr,location);
+	}
 	
 }
