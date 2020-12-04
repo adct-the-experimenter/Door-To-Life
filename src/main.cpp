@@ -811,7 +811,7 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 130; y = 200;
+				x = 110; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
@@ -824,7 +824,7 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 160; y = 200;
+				x = 120; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
@@ -837,7 +837,7 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 190; y = 200;
+				x = 130; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
