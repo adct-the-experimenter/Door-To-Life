@@ -63,8 +63,8 @@ void SubMap::initParametersFromLabyrinth(Labyrinth& thisLabyrinth)
 	
 	thisLabyrinth.GetExitTileLocation(&x,&y);
 	
-	exit_tile_rect.x = x * mini_width_per_map_width;
-	exit_tile_rect.y = y * mini_height_per_map_height;
+	exit_tile_rect.x = x * mini_width_per_map_width - (exit_tile_rect.w / 2);
+	exit_tile_rect.y = y * mini_height_per_map_height - (exit_tile_rect.h / 2);
 	exit_tile_rect.w = 15; exit_tile_rect.h = 15;
 }
 

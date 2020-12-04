@@ -143,7 +143,7 @@ bool LabyrinthDungeonManager::setupLabyrinth(PlayerManager* mainPlayerManager, G
                                           keyTexture, keySource,keyBuffer,
                                           doorTexture,doorSource,doorBufferOpen,doorBufferFail, &doorClips);
 
-        thisLabyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT);
+        thisLabyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT,rngSeed);
         
         thisLabyrinth.randomlySetExitForMaze(rngSeed);
         thisLabyrinth.randomlySetLabyrinthDoors(rngSeed);
@@ -1116,6 +1116,9 @@ void LabyrinthDungeonManager::CheckForWinners()
 		if(player1_win || player2_win || player3_win || player4_win)
 		{
 			LabyrinthDungeonManager::setState(GameState::State::NEXT);
+			
+			//done to stop playing labyrinth theme
+			m_labyrinth->setState(GameState::State::NEXT);
 		}
 	}
 }

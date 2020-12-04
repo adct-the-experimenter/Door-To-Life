@@ -465,9 +465,11 @@ void NodeGeneration()
     if(labyrinth.generateLabyrinth(rng))
     {
         labyrinth.generateDungeonsInLabyrinth_Debug_Gen(rng);
-
-        labyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT);
-                                      
+		
+		//setup place of dots in labyrinth
+        labyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT,rng);
+        
+        //set exit in maze based on where dot is                              
         labyrinth.randomlySetExitForMaze(rng);
         
         
@@ -536,6 +538,11 @@ void NodeGeneration()
         //state_stack.pop();
     }
 }
+
+bool player1_won = false;
+bool player2_won = false;
+bool player3_won = false;
+bool player4_won = false;
 
 void Dungeon1()
 {
@@ -680,6 +687,9 @@ void Dungeon1()
 				//go to next dungeon
 				baseGameState = nullptr;
 				
+				//get winners
+				gLabyrinthDungeonManager->GetWinnersBool(&player1_won,&player2_won,&player3_won,&player4_won);
+				
 				GameWon();
 				
 				quitGame = true;
@@ -693,346 +703,8 @@ void Dungeon1()
 		}
 		
 }
-	
-
-
-/*
-void Dungeon1()
-{
-	
-    //if labyrinth has not been created
-    if(!labyrinthCreated)
-    {
-		std::unique_ptr <Labyrinth> labyrinthUPtr(new Labyrinth() );
-		
-		//if setup labyrinth was successful
-		if(setupLabyrinth(*labyrinthUPtr.get()))
-		{
-			gLabyrinth = std::move(labyrinthUPtr);
-			labyrinthCreated = true;
-		}
-		//else do nothing
-		else{std::cout << "Failed to setup labyrinth! \n";}
-		
-	}
-	//else if labyrinth has been created
-	else
-	{
-		// GameLoop
-		
-        //set base game state to gDungeon1
-        baseGameState = gLabyrinth.get();
-        baseGameState->setState(GameState::State::RUNNING);
-        //start timers 
-        stepTimer.start();
-        frameRateCap.startFrameCount();
-        
-        
-        bool quit = false;
-        bool toMiniDungeon = false;
-        
-        while(!quit)
-        {
-            //call game loop function
-            DungeonGameLoop();
-            
-            if(baseGameState->getState() == GameState::State::NEXT )
-            {
-				if(gLabyrinth->getPlayerHitDungeonEntraceBool())
-				{
-					num_mini_dungeon_entered = gLabyrinth->GetIndexMiniDungeonEntered();
-					stepTimer.stop();
-					toMiniDungeon = true;
-					quit = true;
-					
-				}
-				else
-				{
-					stepTimer.stop();
-					quit = true;
-				}
-			}
-			
-            else if(baseGameState->getState() == GameState::State::EXIT 
-                || baseGameState->getState() == GameState::State::GAME_OVER)
-            {
-                stepTimer.stop();
-                quit = true;
-            }
-            else if(baseGameState->getState() == GameState::State::PAUSE)
-            {
-                //stop timer
-                
-                stepTimer.stop();
-                runMenuState();
-                //restart timer
-                stepTimer.start();
-            }
-
-        }
-        
-        if(toMiniDungeon)
-        {
-			playerPosX_beforedungeon = mainPlayer->getPosX() + 80;
-			playerPosY_beforedungeon = mainPlayer->getPosY() + 80;
-			
-			baseGameState = nullptr;
-			state_stack.push(gMiniDungeonStateStructure);
-		}
-		else
-		{
-			mainCollisionHandler->EmptyCollisionObjectVector();
-			gameInventory->freeWeapons();
-			
-			//delete doors and keys
-			//delete tiles
-			gLabyrinth->freeResources();
-			
-			if(baseGameState->getState() == GameState::State::EXIT )
-			{	
-				baseGameState = nullptr;
-				labyrinthCreated = false; //remake labyrinth
-				quitGame = true;
-			}
-			else if(baseGameState->getState() == GameState::State::GAME_OVER )
-			{	
-				baseGameState = nullptr;
-				labyrinthCreated = false; //remake labyrinth
-				GameOver();
-			}
-
-			else if(baseGameState->getState() == GameState::State::NEXT)
-			{
-				//go to next dungeon
-				baseGameState = nullptr;
-				
-				GameWon();
-				
-				quitGame = true;
-			}
-			
-		}
-        
-        
-
-        loop += 1;
-        std::cout << "Loop: " <<loop << std::endl;
-		
-	}
-    
-	
-}
-*/
 
 void MiniDungeon(){}
-
-/*
-void MiniDungeon()
-{
-	
-	//initialize dungeon
-	
-	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
-	
-	//generate an empty dungeon
-    dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
-    dungeonUPtr->setPointerToTimer(&stepTimer);
-    
-    dungeonUPtr->SetPointerToPlayerManager(&mainPlayerManager);
-    dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-	dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
-	
-	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
-	
-	std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
-	std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
-
-	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
-    
-    dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
-    
-    std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
-    
-    //get dungeon file 
-    std::string dungeon_file = dungeon_xml_reg.GetXMLDungeonFilePathFromIndex(num_mini_dungeon_entered);
-    
-    //if dungeon file exists, set the tiles    
-    std::ifstream ifile(dungeon_file);
-	if((bool)ifile)
-	{
-		std::cout << "Reading " << dungeon_file << std::endl;
-		
-		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(dungeon_file,dungeonUPtr.get());
-		dungeonUPtr->SetupDungeonParametersAfterXMLRead();
-		dungeonUPtr->PlacePlayerInLocationNearEntrance();
-	}
-	else
-	{		
-		std::cout << "Error: " + dungeon_file + " does not exist!\n";
-		quitGame = true;
-	}
-	
-    
-    
-    
-    std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-    if(!ptrToCollisionHandler){quitGame = true;}
-    else
-    {
-        miniCollisionHandler = std::move(ptrToCollisionHandler);
-        currentCollisionHandler = miniCollisionHandler.get();
-        
-        //Setup camera for collision system
-        miniCollisionHandler->setCameraForCollisionSystem(&camera);
-    }
-	
-	//start game loop
-	
-	
-	// GameLoop 
-	//set base game state to dungeon
-	baseGameState = dungeonUPtr.get();
-	baseGameState->setState(GameState::State::RUNNING);
-	//start timers 
-	stepTimer.start();
-	frameRateCap.startFrameCount();
-	
-	
-	bool quit = false;
-	
-	while(!quit)
-	{
-		//call game loop function
-		DungeonGameLoop();
-		
-
-		if(baseGameState->getState() == GameState::State::EXIT 
-			|| baseGameState->getState() == GameState::State::NEXT
-			|| baseGameState->getState() == GameState::State::GAME_OVER)
-		{
-			stepTimer.stop();
-			quit = true;
-		}
-		else if(baseGameState->getState() == GameState::State::PAUSE)
-		{
-			//stop timer
-			
-			stepTimer.stop();
-			runMenuState();
-			//restart timer
-			stepTimer.start();
-		}
-
-	}
-	
-	dungeonUPtr->freeResources();
-	
-	if(baseGameState->getState() == GameState::State::EXIT )
-	{	
-		baseGameState = nullptr;
-		labyrinthCreated = false; //remake labyrinth
-		quitGame = true;
-	}
-	else if(baseGameState->getState() == GameState::State::GAME_OVER )
-	{	
-		baseGameState = nullptr;
-		labyrinthCreated = false; //remake labyrinth
-		GameOver();
-	}
-
-	else if(baseGameState->getState() == GameState::State::NEXT)
-	{
-		//go back to labyrinth
-		mainPlayer->setPosX(playerPosX_beforedungeon);
-		mainPlayer->setPosY(playerPosY_beforedungeon);
-		baseGameState = nullptr;
-		state_stack.pop();
-	}
-	
-}
-*/
-
-/*
-bool setupLabyrinth(Labyrinth& thisLabyrinth)
-{
-    thisLabyrinth.setTimerPointer(&stepTimer);
-    thisLabyrinth.setPointerToMainDot(mainDotPointer.get());
-    thisLabyrinth.setPointerToPlayerManager(&mainPlayerManager);
-    thisLabyrinth.setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
-	thisLabyrinth.SetPointerToGameInventory(gameInventory.get());
-	
-    //set dimenstions of grid labyrinth will use for generating map
-    std::int16_t x = 0;
-    std::int16_t y = 0;
-    std::int16_t w = 400;
-    std::int16_t h = 400;
-    thisLabyrinth.setGridDimensions(x,y,w,h);
-    thisLabyrinth.randomlySetNumberOfNodesToGenerate(rng);
-   
-    
-    //if able to generate labyrinth
-    if( thisLabyrinth.generateLabyrinth(rng) )
-    {
-        
-       
-        //Setup world of labyrinth
-        thisLabyrinth.generateDungeonsInLabyrinth(rng,
-                                          keyTexture, keySource,keyBuffer,
-                                          doorTexture,doorSource,doorBufferOpen,doorBufferFail, &doorClips);
-
-        thisLabyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT);
-        
-        thisLabyrinth.randomlySetExitForMaze(rng);
-        thisLabyrinth.randomlySetLabyrinthDoors(rng);
-        
-        thisLabyrinth.randomlySetDungeonEntrancesinMaze(rng,&dungeon_xml_reg);
-        
-        thisLabyrinth.setTiles();
-        
-        //setup weapons in labyrinth
-        
-        //setup default weapon for player
-        //std::int16_t xPosPlayer = mainPlayer->getCollisionBox().x - 3 * mainPlayer->getCollisionBox().w;
-        //std::int16_t yPosPlayer = mainPlayer->getCollisionBox().y;
-        //gameInventory->setupDefaultGunForPlayer(xPosPlayer, yPosPlayer);
-        
-        
-        //initialize sub map
-        subMap.initParametersFromLabyrinth(thisLabyrinth);
-        subMap.setPosition(0,0);
-        //thisLabyrinth.setDebugBool(true);
-        
-        
-        //setup camera for audio renderer
-        gAudioRenderer.SetPointerToCamera(&camera);
-        
-        //setup fps timer
-        std::int16_t frame_rate = 60;
-        frameRateCap.setFrameRate(frame_rate);
-        
-         //set camera for labyrinth 
-        thisLabyrinth.setCamera(&camera);
-        
-        //add enemy collision objects to collision handler
-        for(size_t i = 0; i < thisLabyrinth.GetEnemiesInLabyrinthVector()->size(); i++)
-        {
-			if(mainCollisionHandler->repeatPlay)
-			{
-				std::cout << " repeat!\n";
-			}
-			Enemy* thisEnemy = thisLabyrinth.GetEnemiesInLabyrinthVector()->at(i);
-			mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
-			mainCollisionHandler->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
-		}
-        
-        return true;
-    }
-    
-    return false;
-}
-*/
-
-
 
 void GameOver()
 {
@@ -1084,16 +756,97 @@ void GameWon()
     SDL_RenderClear(gRenderer);
     
     ALint musicState;
-
-    while( musicState != AL_STOPPED )
+	
+	bool quit = false;
+	
+    while(!quit)
     {
-         //play sound from winMusicSource
+		//Handle events
+        run_event_handler();
+        
+        //while event queue is not empty
+        while( !isEventQueueEmpty() )
+        {
+			Event thisEvent = getEventInstanceFront();
+			
+            if( thisEvent.event_id == Event_ID::ESCAPE || thisEvent.event_id == Event_ID::QUIT_WINDOW)
+            {
+				quit = true;
+			}
+            //pop element in front of event queue
+            popEventInstanceFromFront();
+        }
+		
+        //play sound from winMusicSource
         alGetSourcei(winMusicSource, AL_SOURCE_STATE, &musicState);
         
         if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(winMusicSource);}
-
+        
+        if(musicState == AL_STOPPED){quit = true;}
+		
+		//render black over entire window
+		SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);
+		SDL_RenderFillRect(gRenderer,NULL);
+		
         //render game win screen
         gameWonTexture.render(0,0,gRenderer);
+        
+        //render winners
+        if(player1_won)
+		{
+			Player* thisPlayer = mainPlayerManager.GetPointerToPlayerOne();
+			if(thisPlayer)
+			{
+				float x,y;
+				x = 100; y = 200;
+				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
+				thisPlayer->setFaceDirection(Sprite::FaceDirection::SOUTH);
+				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+									gDrawManager.GetPointerToRenderer(),nullptr);
+			}
+		}
+		
+		if(player2_won)
+		{
+			Player* thisPlayer = mainPlayerManager.GetPointerToPlayerTwo();
+			if(thisPlayer)
+			{
+				float x,y;
+				x = 130; y = 200;
+				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
+				thisPlayer->faceSouth();
+				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+									gDrawManager.GetPointerToRenderer(),nullptr);
+			}
+		}
+		
+		if(player3_won)
+		{
+			Player* thisPlayer = mainPlayerManager.GetPointerToPlayerThree();
+			if(thisPlayer)
+			{
+				float x,y;
+				x = 160; y = 200;
+				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
+				thisPlayer->faceSouth();
+				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+									gDrawManager.GetPointerToRenderer(),nullptr);
+			}
+		}
+		
+		if(player4_won)
+		{
+			Player* thisPlayer = mainPlayerManager.GetPointerToPlayerFour();
+			if(thisPlayer)
+			{
+				float x,y;
+				x = 190; y = 200;
+				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
+				thisPlayer->faceSouth();
+				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+									gDrawManager.GetPointerToRenderer(),nullptr);
+			}
+		}
 
         //update screen
         SDL_RenderPresent(gRenderer);

@@ -762,26 +762,25 @@ void Labyrinth::setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buff
     dgmBuffer = buffer;
 }
 
-void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight)
+void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight, RNGType& rngSeed)
 {
     if(m_player_manager_ptr)
     {
 		labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerOne(),
                                             screenWidth,screenHeight);
         
-        Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerOne());
+        Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerOne(),rngSeed);
                                             
 		if(m_player_manager_ptr->GetMultiplePlayersBool())
 		{
 			int num_players = m_player_manager_ptr->GetNumberOfPlayers();
-			std::cout << "num players:" << num_players << std::endl;
 			
 			if(num_players > 1)
 			{
 				labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerTwo(),
                                             screenWidth,screenHeight);
                                             
-				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerTwo());
+				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerTwo(),rngSeed);
 			}
 			else
 			{
@@ -794,7 +793,7 @@ void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& scr
 				labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerThree(),
                                             screenWidth,screenHeight);
                                             
-				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerThree());
+				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerThree(),rngSeed);
 			}
 			else
 			{
@@ -807,7 +806,7 @@ void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& scr
 				labyrinthMap.setLabyrinthCameraForDot(m_player_manager_ptr->GetPointerToPlayerFour(),
                                             screenWidth,screenHeight);
                                             
-				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerFour());
+				Labyrinth::randomlyPlaceDotInMazeNode(m_player_manager_ptr->GetPointerToPlayerFour(),rngSeed);
 			}
 			else
 			{
@@ -1442,10 +1441,37 @@ void Labyrinth::freeResources()
     m_enemy_inventory.freeEnemyVector();
 }
 
-void Labyrinth::randomlyPlaceDotInMazeNode(Dot* thisDot)
+void Labyrinth::randomlyPlaceDotInMazeNode(Dot* thisDot,RNGType& rngSeed)
 {
+	//Setup RNG
+	std::array <double,4> probabilitiesDirection;
+	 
+	probabilitiesDirection = {0.3, 0.4,0.2,0.4};
+		
+	//setup rng with set probablities    
+	boost::random::discrete_distribution <int> distDirection(probabilitiesDirection);
+	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > DirectionDie(rngSeed,distDirection);
+    
+    double divider = 1.5;
+    double prevDie = 0;
+    
+    for(size_t i = 0; i < 10; i++)
+    {
+		switch(DirectionDie())
+		{
+			case 0:{ divider += 0.014; divider -= prevDie; prevDie = 0.018; break;} 
+			case 1:{ divider += 0.023; divider -= prevDie; prevDie = 0.01; break;} 
+			case 2:{ divider += 0.031; divider -= prevDie; prevDie = 0.013; break;} 
+			case 3:{ divider += 0.043; divider -= prevDie; prevDie = 0.022; break;} 
+		}
+	}
+    
+    
+    
+    size_t start = double( double(labyrinthMap.labyrinthTilesVector.size()) / divider);
+    
     //1st maze node that isn't nullptr
-    for(size_t i = labyrinthMap.labyrinthTilesVector.size() / 2; i > 0; i--)
+    for(size_t i = start; i > 0; i--)
     {
         if(labyrinthMap.labyrinthTilesVector[i] != nullptr)
         {

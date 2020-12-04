@@ -1,22 +1,26 @@
 ***********************************************************************************************
------------------------------------------ TODO Release 0.3 ------------------------------------
+----------------------------------------- TODO Release 0.4 ------------------------------------
 ***********************************************************************************************
-
 -Work on system for saving and loading game.
     -Add option to title to load a game.
     -Add menu option to save game.
     -Make function to read and write dungeon map info from a text file.
         -Needed for saving a game and coming back to it.
 
+
+***********************************************************************************************
+----------------------------------------- DONE Release 0.3 ------------------------------------
+***********************************************************************************************
+
 -Make zelda-like designed levels for special dungeons you can enter.
     -Make a zelda dungeon level editor outside of game that will save info
-    of dungeon which can be read by a xml DungeonReader in this game.
+    of dungeon which can be read by a xml DungeonReader in this game. DONE.
 
 -Make a gamestate class for a Zelda-like Dungeon. For entering from labyrinth.  DONE.
 
--Multiplayer 
+-Multiplayer  DONE
 
--Game pad support
+-Game pad support DONE
 
 ***********************************************************************************************
 ----------------------------------------- DONE Release 0.2 ------------------------------------

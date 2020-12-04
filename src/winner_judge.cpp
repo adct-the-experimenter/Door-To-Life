@@ -59,7 +59,8 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager
 	if(p1)
 	{
 		//if there is a collision
-		if(p1_loc == location && checkCollision(collider,*p1->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p1_loc == location && checkCollision(collider,*p1->getCollisionObjectPtr()->ptrToCollisionBox)
+			&& p1->getHealth() > 1)
 		{
 			p1_collide = true;
 			player_collision_count++;
@@ -77,7 +78,8 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager
 	if(p2)
 	{
 		//if there is a collision
-		if(p2_loc == location && checkCollision(collider,*p2->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p2_loc == location && checkCollision(collider,*p2->getCollisionObjectPtr()->ptrToCollisionBox)
+			&& p2->getHealth() > 1)
 		{
 			p2_collide = true;
 			player_collision_count++;
@@ -103,7 +105,8 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager
 	if(p3)
 	{
 		//if there is a collision
-		if(p3_loc == location && checkCollision(collider,*p3->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p3_loc == location && checkCollision(collider,*p3->getCollisionObjectPtr()->ptrToCollisionBox)
+			&& p3->getHealth() > 1)
 		{
 			p3_collide = true;
 			player_collision_count++;
@@ -144,7 +147,8 @@ void WinnerJudge::CheckPlayerandJudgeCollisions(PlayerManager* pm, PlayerManager
 	
 	if(p4)
 	{
-		if(p4_loc == location && checkCollision(collider,*p4->getCollisionObjectPtr()->ptrToCollisionBox))
+		if(p4_loc == location && checkCollision(collider,*p4->getCollisionObjectPtr()->ptrToCollisionBox)
+			&& p4->getHealth() > 1)
 		{
 			p4_collide = true;
 			player_collision_count++;
