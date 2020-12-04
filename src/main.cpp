@@ -364,8 +364,8 @@ void DungeonGameLoop()
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     if(g_num_players > 1){playerHealthBar2.updateHealthBar(player2->getHealthAddress());}
-    if(g_num_players > 2){playerHealthBar2.updateHealthBar(player3->getHealthAddress());}
-    if(g_num_players > 3){playerHealthBar2.updateHealthBar(player4->getHealthAddress());}
+    if(g_num_players > 2){playerHealthBar3.updateHealthBar(player3->getHealthAddress());}
+    if(g_num_players > 3){playerHealthBar4.updateHealthBar(player4->getHealthAddress());}
     
     //play audio
     baseGameState->sound(&gAudioRenderer);
@@ -800,7 +800,6 @@ void GameWon()
 				float x,y;
 				x = 100; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->setFaceDirection(Sprite::FaceDirection::SOUTH);
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
@@ -814,7 +813,6 @@ void GameWon()
 				float x,y;
 				x = 130; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->faceSouth();
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
@@ -828,7 +826,6 @@ void GameWon()
 				float x,y;
 				x = 160; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->faceSouth();
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
@@ -842,7 +839,6 @@ void GameWon()
 				float x,y;
 				x = 190; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->faceSouth();
 				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}

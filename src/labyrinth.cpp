@@ -1183,7 +1183,8 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 
 		if(m_player_manager_ptr->GetPointerToPlayerOne())
 		{
-			if(m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0)
+			if(m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0
+				&& p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				player1_active = true;
 			}
@@ -1191,7 +1192,8 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 		
 		if(m_player_manager_ptr->GetPointerToPlayerTwo())
 		{
-			if(m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0)
+			if(m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0
+				&& p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				player2_active = true;
 			}
@@ -1199,7 +1201,8 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 		
 		if(m_player_manager_ptr->GetPointerToPlayerThree())
 		{
-			if(m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0)
+			if(m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0
+			&& p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				player3_active = true;
 			}
@@ -1207,7 +1210,8 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 		
 		if(m_player_manager_ptr->GetPointerToPlayerFour())
 		{
-			if(m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0)
+			if(m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0
+			&& p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
 			{
 				player4_active = true;
 			}

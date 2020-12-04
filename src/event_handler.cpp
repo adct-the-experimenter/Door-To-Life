@@ -218,7 +218,7 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 		//Motion on controller 2
 		if( sdl_event_ptr->jaxis.which == 2 )
 		{                        
-			player_num = 3;
+			player_num = 4;
 			
 			//X axis motion
 			if( sdl_event_ptr->jaxis.axis == 0 )
@@ -457,6 +457,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		else if(sdl_event_ptr->jbutton.which == 1)
 		{
@@ -470,6 +472,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		else if(sdl_event_ptr->jbutton.which == 2)
 		{
@@ -483,9 +487,11 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		
-		pushEventInstance(thisEvent,player_num);
+		
 	}
 	else if(sdl_event_ptr->type == SDL_JOYBUTTONUP)
 	{
@@ -501,6 +507,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_UP_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		else if(sdl_event_ptr->jbutton.which == 1)
 		{
@@ -514,6 +522,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_UP_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		else if(sdl_event_ptr->jbutton.which == 2)
 		{
@@ -527,9 +537,10 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 			{
 				thisEvent.event_id = Event_ID::JOYSTICK_BUTTON_UP_RELEASED;
 			}
+			
+			pushEventInstance(thisEvent,player_num);
 		}
 		
-		pushEventInstance(thisEvent,player_num);
 	}
     else
     {
@@ -539,6 +550,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 		pushEventInstance(thisEvent,2);
 		thisEvent.event_id = Event_ID::NONE;
 		pushEventInstance(thisEvent,3); 
+		thisEvent.event_id = Event_ID::NONE;
+		pushEventInstance(thisEvent,4);
 	}
 }
 

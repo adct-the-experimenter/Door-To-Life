@@ -516,11 +516,51 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	m_player_manager_ptr->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);	
 	
+	bool player1_active = false;
+	bool player2_active = false;
+	bool player3_active = false;
+	bool player4_active = false;
 	
+
+	if(m_player_manager_ptr->GetPointerToPlayerOne())
+	{
+		if(m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 0
+			&& p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+		{
+			player1_active = true;
+		}
+	}
+	
+	if(m_player_manager_ptr->GetPointerToPlayerTwo())
+	{
+		if(m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 0
+			&& p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+		{
+			player2_active = true;
+		}
+	}
+	
+	if(m_player_manager_ptr->GetPointerToPlayerThree())
+	{
+		if(m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 0
+		&& p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+		{
+			player3_active = true;
+		}
+	}
+	
+	if(m_player_manager_ptr->GetPointerToPlayerFour())
+	{
+		if(m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 0
+		&& p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM)
+		{
+			player4_active = true;
+		}
+	}
 	
 	//render sprites of other players if they are in the same dungeon
 	
-	if(p1_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
+	if(player1_active)
 	{
 		gDrawManager->SetToRenderViewPortPlayer1();
 				
@@ -530,9 +570,13 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		}
 		
 		m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+		
+		if(player2_active){m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());}
+		if(player3_active){m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());}
+		if(player4_active){m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());}
 	}
 	
-	if(p2_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
+	if(player2_active)
 	{
 		gDrawManager->SetToRenderViewPortPlayer2();
 		
@@ -542,9 +586,13 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		}
 		
 		m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+		
+		if(player1_active){m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());}
+		if(player3_active){m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());}
+		if(player4_active){m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());}
 	}
 	
-	if(p3_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
+	if(player3_active)
 	{
 		gDrawManager->SetToRenderViewPortPlayer3();
 				
@@ -554,9 +602,13 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		}
 		
 		m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+		
+		if(player2_active){m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());}
+		if(player1_active){m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());}
+		if(player4_active){m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());}
 	}
 	
-	if(p4_loc == PlayerManager::PlayerLocation::WINNER_ROOM )
+	if(player4_active)
 	{
 		gDrawManager->SetToRenderViewPortPlayer4();
 		
@@ -566,6 +618,10 @@ void WinnerDecisionRoom::render(DrawingManager* gDrawManager)
 		}
 		
 		m_player_manager_ptr->GetPointerToPlayerFour()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
+		
+		if(player2_active){m_player_manager_ptr->GetPointerToPlayerTwo()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());}
+		if(player3_active){m_player_manager_ptr->GetPointerToPlayerThree()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());}
+		if(player1_active){m_player_manager_ptr->GetPointerToPlayerOne()->render(*m_player_manager_ptr->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());}
 	}
     
     //render winner judges
