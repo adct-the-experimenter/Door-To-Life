@@ -101,24 +101,34 @@ void LabyrinthMap::freeTiles()
 }
 
 void LabyrinthMap::setLabyrinthCameraForDot(Dot* mainDotPointer, 
-                                        std::int16_t& screenWidth, std::int16_t& screenHeight,
-                                        SDL_Rect* camera)
+                                        std::int16_t& screenWidth, std::int16_t& screenHeight)
 {
     std::int16_t LEVEL_WIDTH = screenWidth;
     std::int16_t LEVEL_HEIGHT = screenHeight;
     //set place for dot to move in
     mainDotPointer->setPlace(screenWidth,screenHeight);
 
-    lCamera = camera;
 }
 
-void LabyrinthMap::moveMainDot(Dot* mainDotPointer,float &timeStep)
+void LabyrinthMap::moveMainDot(Dot* mainDotPointer, float &timeStep, SDL_Rect* thisCamera)
 {
-    //set camera over dot
-    mainDotPointer->setCamera(*lCamera);
-
-    //move dot independent of frames, but rather dependent on time. includes collision detection
+	//move dot independent of frames, but rather dependent on time. includes collision detection
     mainDotPointer->moveOnTiles_TileType(timeStep, labyrinthTilesVector );
+    
+    //set camera over dot
+    //Center the camera over the dot
+	thisCamera->x = ( (int)mainDotPointer->getPosX() + mainDotPointer->getWidth() / 2  ) - thisCamera->w / 2;
+	thisCamera->y = ( (int)mainDotPointer->getPosY() + mainDotPointer->getHeight() / 2  ) - thisCamera->h / 2;
+	
+	//Keep the camera in bounds
+	if( thisCamera->x < 1 )
+	{
+		thisCamera->x = 1;
+	}
+	if( thisCamera->y < 1 )
+	{
+		thisCamera->y = 1;
+	}
 
 }
 
@@ -131,11 +141,63 @@ void LabyrinthMap::renderTiles(SDL_Renderer* gRenderer,LTexture* tileTextureMap)
     }
 }
 
+void LabyrinthMap::renderTiles(PlayerManager* playerManager,DrawingManager* gDrawManager,LTexture* tileTextureMap)
+{
+	int num_players = gDrawManager->GetNumberOfPlayers();
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	playerManager->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+    for(size_t i = 0; i < labyrinthTilesVector.size(); ++i)
+    {
+		if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		{
+			gDrawManager->SetToRenderViewPortPlayer1();
+		
+			labyrinthTilesVector[i]->render(tileTextureMap,
+										*gDrawManager->GetPointerToCameraOne(),
+										gDrawManager->GetPointerToRenderer());
+		}
+		
+		
+		if(gDrawManager->GetMultiplePlayersBool())
+		{
+			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				gDrawManager->SetToRenderViewPortPlayer2();
+			
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraTwo(),
+												gDrawManager->GetPointerToRenderer());
+			}
+			
+			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				gDrawManager->SetToRenderViewPortPlayer3();
+			
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraThree(),
+												gDrawManager->GetPointerToRenderer());
+			}
+			
+			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				gDrawManager->SetToRenderViewPortPlayer4();
+			
+				labyrinthTilesVector[i]->render(tileTextureMap,
+												*gDrawManager->GetPointerToCameraFour(),
+												gDrawManager->GetPointerToRenderer());
+			}
+			
+		}
+										
+    }
+}
 
-void LabyrinthMap::renderDotInLabyrinthMap(SDL_Renderer* gRenderer, Dot* mainDotPointer)
+void LabyrinthMap::renderDotInLabyrinthMap(SDL_Renderer* gRenderer, Dot* mainDotPointer, SDL_Rect* thisCamera)
 {
     //render dot
-    mainDotPointer->render(*lCamera,gRenderer);
+    mainDotPointer->render(*thisCamera,gRenderer);
 }
 
 void setupNewDoorObject(Door* thisDoor,
@@ -147,7 +209,7 @@ void setupNewDoorObject(Door* thisDoor,
 
 bool checkDotCollidesWithDoor(Door* thisDoor, Dot* mainDot);
 
-void LabyrinthMap::doorToDot_Logic(Dot* mainDotPointer,float& timeStep)
+void LabyrinthMap::doorToDot_Logic(Dot* mainDotPointer,float& timeStep, SDL_Rect* thisCamera)
 {
      if( labyrinthDoorsVector.size() == 1)
     {
@@ -165,8 +227,8 @@ void LabyrinthMap::doorToDot_Logic(Dot* mainDotPointer,float& timeStep)
         for(size_t i=0; i < labyrinthDoorsVector.size(); ++i)
         {
             //if either of doors are within camera
-            if( checkCollision(*lCamera,labyrinthDoorsVector[i]->getCollisionBoxDoor1())
-                || checkCollision(*lCamera,labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+            if( checkCollision(*thisCamera,labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+                || checkCollision(*thisCamera,labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
             {
                 //if dot collides with door
                 if( checkDotCollidesWithDoor(labyrinthDoorsVector[i],mainDotPointer) )
@@ -221,15 +283,73 @@ void LabyrinthMap::renderDoors(SDL_Renderer* gRenderer)
     }
 }
 
-void LabyrinthMap::door_handle_events(Event& thisEvent)
+
+void LabyrinthMap::renderDoors(PlayerManager* playerManager,DrawingManager* gDrawManager)
+{
+	int num_players = gDrawManager->GetNumberOfPlayers();
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	playerManager->GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+    for(size_t i = 0; i < labyrinthDoorsVector.size(); ++i)
+    {
+        if( checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+                || checkCollision(*gDrawManager->GetPointerToCameraOne(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+        {
+			if(p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				gDrawManager->SetToRenderViewPortPlayer1();
+				labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraOne(),gDrawManager->GetPointerToRenderer());
+			}
+        }
+        
+        if(gDrawManager->GetMultiplePlayersBool())
+        {
+			
+			if(num_players > 1 && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				if( checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+					|| checkCollision(*gDrawManager->GetPointerToCameraTwo(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+				{
+					gDrawManager->SetToRenderViewPortPlayer2();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraTwo(),gDrawManager->GetPointerToRenderer());
+				}
+			}
+			
+			if(num_players > 2 && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				if( checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+					|| checkCollision(*gDrawManager->GetPointerToCameraThree(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+				{
+					gDrawManager->SetToRenderViewPortPlayer3();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraThree(),gDrawManager->GetPointerToRenderer());
+				}
+			}
+			
+			if(num_players > 3 && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
+			{
+				if( checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor1())
+					|| checkCollision(*gDrawManager->GetPointerToCameraFour(),labyrinthDoorsVector[i]->getCollisionBoxDoor2()))
+				{
+					gDrawManager->SetToRenderViewPortPlayer4();
+					labyrinthDoorsVector[i]->render(*gDrawManager->GetPointerToCameraFour(),gDrawManager->GetPointerToRenderer());
+				}
+			}
+			
+		}
+        
+    }
+}
+
+void LabyrinthMap::door_handle_events(Event& thisEvent,SDL_Rect* thisCamera)
 {
     //for all doors
     for(size_t i = 0; i < labyrinthDoorsVector.size(); ++i)
     {
         //if door 1 collision box is within camera
         //or door 2 collision box is withing camera
-        if(checkCollision( labyrinthDoorsVector[i]->getCollisionBoxDoor1(),*lCamera)  ||
-            checkCollision( labyrinthDoorsVector[i]->getCollisionBoxDoor2(),*lCamera) )
+        if(checkCollision( labyrinthDoorsVector[i]->getCollisionBoxDoor1(),*thisCamera)  ||
+            checkCollision( labyrinthDoorsVector[i]->getCollisionBoxDoor2(),*thisCamera) )
         {
             labyrinthDoorsVector[i]->handle_event(thisEvent);
         }

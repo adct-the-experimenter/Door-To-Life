@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include <iostream>
+#include <cmath>
 
 //constructor
 Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
@@ -32,6 +33,8 @@ Player::Player(int x,int y,int width,int height) : Sprite(x,y,width,height)
 	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);//is not moving in 3d space
 	
 	equippedPlayerWeapon = nullptr;
+	
+	m_player_num = 0;
 }
 
 Player::~Player()
@@ -60,20 +63,220 @@ LTexture* Player::getPointerToTexture(){return Sprite::getPointerToTexture();}
 
 void Player::handleEvent(Event& thisEvent)
 {
-    Sprite::handleEvent(thisEvent);
+	float mVelX = 0;
+	float mVelY = 0;
     
-    //if equipped weapon is not pointing to nullptr
-    if(equippedPlayerWeapon != nullptr)
+    //if first or single player
+    if(m_player_num == 1 || m_player_num == 0 && thisEvent.player_num == 1)
     {
-        switch(thisEvent)
-        {
-            case Event::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
-            case Event::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
-            case Event::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
-            default:{  break;}
-        }
-    }
+		mVelX = Dot::getVelX();
+		mVelY = Dot::getVelY();
+		
+		//if equipped weapon is not pointing to nullptr
+		if(equippedPlayerWeapon != nullptr)
+		{
+			switch(thisEvent.event_id)
+			{
+				case Event_ID::SPACE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+				case Event_ID::SPACE_REPEAT:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				case Event_ID::SPACE_RELEASE:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+				default:{  break;}
+			}
+		}
+		
+		switch(thisEvent.event_id)
+		{
+			case Event_ID::UP_ARROW:{ mVelY -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::DOWN_ARROW:{ mVelY += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::LEFT_ARROW:{ mVelX -= DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::RIGHT_ARROW:{ mVelX += DOT_VEL; Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if repeating, keep at same velocity
+			case Event_ID::UP_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::DOWN_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::LEFT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			case Event_ID::RIGHT_ARROW_REPEAT:{ Sprite::setSpriteState(Sprite::State::WALK); break;}
+			
+			//if released, stop
+			case Event_ID::UP_ARROW_RELEASE:{ mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::DOWN_ARROW_RELEASE:{  mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::LEFT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			case Event_ID::RIGHT_ARROW_RELEASE:{ mVelX = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			
+			case Event_ID::NONE:{ Sprite::setSpriteState(Sprite::State::STAND); break;}
+			
+			default:{ mVelX = 0; mVelY = 0; Sprite::setSpriteState(Sprite::State::STAND); break;}
+		}
+		
+		Dot::setVelX(mVelX);
+		Dot::setVelY(mVelY);
+	}
+	//if second player
+	else if(m_player_num == 2 && thisEvent.player_num == 2)
+	{
+		int xDir = thisEvent.joystick_xDir;
+		int yDir = thisEvent.joystick_yDir;
+		
+		//std::cout << "xDir: " << xDir << ", yDir: " << yDir << std::endl;
+				
+		Sprite::setSpriteState(Sprite::State::WALK);
+		
+		//start at zero velocity by default
+		mVelX = 0;
+		mVelY = 0;
+		
+		if(xDir == -1){mVelX -= DOT_VEL;}
+		else if(xDir == 1){mVelX += DOT_VEL;}
+		else{mVelX = Dot::getVelX();}
+		
+		if(yDir == -1){mVelY -= DOT_VEL;}
+		else if(yDir == 1){mVelY += DOT_VEL; }
+		else{mVelY = Dot::getVelY();}
+		
+		//Correct angle
+		if( xDir == 0 && yDir == 0 )
+		{
+			mVelX = 0; mVelY = 0;
+			Sprite::setSpriteState(Sprite::State::STAND);
+		}
+	    
+	    
+		switch(thisEvent.event_id)
+		{
+			case Event_ID::JOYSTICK_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			
+			case Event_ID::JOYSTICK_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}			
+			default:{break;}
+			
+		}
+		
+		Dot::setVelX(mVelX);
+		Dot::setVelY(mVelY);
+	}
+	
+	//if third player
+	else if(m_player_num == 3 && thisEvent.player_num == 3)
+	{
+		int xDir = thisEvent.joystick_xDir;
+		int yDir = thisEvent.joystick_yDir;
+		
+		//std::cout << "xDir: " << xDir << ", yDir: " << yDir << std::endl;
+				
+		Sprite::setSpriteState(Sprite::State::WALK);
+		
+		//start at zero velocity by default
+		mVelX = 0;
+		mVelY = 0;
+		
+		if(xDir == -1){mVelX -= DOT_VEL;}
+		else if(xDir == 1){mVelX += DOT_VEL;}
+		else{mVelX = Dot::getVelX();}
+		
+		if(yDir == -1){mVelY -= DOT_VEL;}
+		else if(yDir == 1){mVelY += DOT_VEL; }
+		else{mVelY = Dot::getVelY();}
+		
+		//Correct angle
+		if( xDir == 0 && yDir == 0 )
+		{
+			mVelX = 0; mVelY = 0;
+			Sprite::setSpriteState(Sprite::State::STAND);
+		}
+	    
+	    
+		switch(thisEvent.event_id)
+		{
+			case Event_ID::JOYSTICK_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			
+			case Event_ID::JOYSTICK_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}			
+			default:{break;}
+			
+		}
+		
+		Dot::setVelX(mVelX);
+		Dot::setVelY(mVelY);
+		
+	}
+	else if(m_player_num == 4 && thisEvent.player_num == 4)
+	{
+		int xDir = thisEvent.joystick_xDir;
+		int yDir = thisEvent.joystick_yDir;
+		
+		//std::cout << "xDir: " << xDir << ", yDir: " << yDir << std::endl;
+				
+		Sprite::setSpriteState(Sprite::State::WALK);
+		
+		//start at zero velocity by default
+		mVelX = 0;
+		mVelY = 0;
+		
+		if(xDir == -1){mVelX -= DOT_VEL;}
+		else if(xDir == 1){mVelX += DOT_VEL;}
+		else{mVelX = Dot::getVelX();}
+		
+		if(yDir == -1){mVelY -= DOT_VEL;}
+		else if(yDir == 1){mVelY += DOT_VEL; }
+		else{mVelY = Dot::getVelY();}
+		
+		//Correct angle
+		if( xDir == 0 && yDir == 0 )
+		{
+			mVelX = 0; mVelY = 0;
+			Sprite::setSpriteState(Sprite::State::STAND);
+		}
+	    
+	    
+		switch(thisEvent.event_id)
+		{
+			case Event_ID::JOYSTICK_BUTTON_DOWN_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_DOWN_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}
+			
+			case Event_ID::JOYSTICK_BUTTON_UP_PRESSED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_ACTIVATED); break;}
+			case Event_ID::JOYSTICK_BUTTON_UP_RELEASED:{ equippedPlayerWeapon->setWeaponState(Weapon::WeaponState::STAND_WITH_HANDLER_NO_ACTION); break;}			
+			default:{break;}
+			
+		}
+		
+		Dot::setVelX(mVelX);
+		Dot::setVelY(mVelY);
+	}
     
+    
+    
+}
+
+void Player::handleEvent(SDL_Joystick* joystick_controller)
+{
+	
+	float mVelX = Dot::getVelX();
+    float mVelY = Dot::getVelY();
+    
+    int hat_dir = SDL_HAT_CENTERED;
+    
+    SDL_JoystickGetHat(joystick_controller,hat_dir);
+	std::cout << "hat:" << hat_dir << std::endl;
+	
+	switch(hat_dir)
+	{
+		case SDL_HAT_CENTERED:{ mVelX = 0; mVelY = 0; break;}
+		case SDL_HAT_UP:{ mVelY -= DOT_VEL; break;}
+		case SDL_HAT_RIGHT:{mVelX += DOT_VEL; break;}
+		case SDL_HAT_DOWN:{ mVelY += DOT_VEL; break;}
+		case SDL_HAT_LEFT:{mVelX -= DOT_VEL; break;}
+		case SDL_HAT_RIGHTUP:{mVelY -= DOT_VEL; mVelX += DOT_VEL; break;}
+		case SDL_HAT_RIGHTDOWN:{ mVelX -= DOT_VEL; mVelX += DOT_VEL; break;}
+		case SDL_HAT_LEFTUP:{mVelY -= DOT_VEL; mVelX -= DOT_VEL; break;}
+		case SDL_HAT_LEFTDOWN:{mVelY += DOT_VEL; mVelX -= DOT_VEL; break;}
+	}
+    
+    
+	Dot::setVelX(mVelX);
+    Dot::setVelY(mVelY);
 }
 
 
@@ -103,7 +306,8 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
         tileType == DungeonTile::TileType::BOTTOM_RIGHT 
         || tileType == DungeonTile::TileType::INVISIBLE_WALL)
     {
-        Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
+		Player::moveBack(timeStep);
+        //Player::setPlayerState(Player::PlayerState::COLLIDING_CONTRA_WALL);
     }
     
     if(tileType == DungeonTile::TileType::CENTER)
@@ -118,9 +322,7 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
 void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
 {
     
-    if(Player::getPlayerState() != PlayerState::FALLING_IN_HOLE){Sprite::render(camera,gRenderer,clip); }
-    else{Sprite::render(camera,gRenderer,&clipPlayer);}
-    
+    Sprite::render(camera,gRenderer,&clipPlayer);
     
     //render collision box of player
     //Player::renderPlayerCollisionBox(camera,gRenderer);
@@ -186,10 +388,13 @@ void Player::logic(float& timeStep)
 
 void Player::runLogicState_CollideWithWall(float& timeStep)
 {
-    float zeroVelocity = 0;
+	Player::moveBack(timeStep);
+	
+    float velx = -0.1*Dot::getVelX();
+    float vely = -0.1*Dot::getVelY();
     
-    Player::moveBack(timeStep);
-    Player::setVelX(zeroVelocity); Player::setVelY(zeroVelocity);
+    Player::setVelX(velx); Player::setVelY(vely);
+        
     //set player state back to normal
     Player::setPlayerState(PlayerState::NORMAL);
 }
@@ -283,7 +488,7 @@ void Player::reactToCollision(float& timeStep)
 {
     //reset count push back
     //count_PushBackPlayer = 0;
-    switch(Player::getCollisionType())
+    switch(Player::getCollisionObjectPtr()->typeOfCollision)
     {
         
         case CollisionType::NONE:{ break;} // Do Nothing
@@ -312,12 +517,27 @@ void Player::reactToCollision(float& timeStep)
             
             break;
         }
-        case CollisionType::COLLIDING_WITH_HOLE:
+        case CollisionType::HIT_BY_BULLET:
         {
-            Player::decrementHealth(cockroachDamage);
-            Player::setPlayerState( PlayerState::FALLING_IN_HOLE);
+			//std::cout << "Player hit by bullet!\n";
+			Player::decrementHealth(greedZombieDamage); //decrease health
+            
+            //put in state of push back
+            Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+            std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+            Player::setNumTimesPushBackPlayer(numTimes);
             break;
-        }
+		}
+		case CollisionType::HIT_BY_SWORD:
+        {
+			Player::decrementHealth(greedZombieDamage); //decrease health
+            
+            //put in state of push back
+            Player::setPlayerState(Player::PlayerState::PUSHED_BACKED_BY_ENEMY);
+            std::int8_t numTimes = cockroach_PushBackHero / onePushBack; 
+            Player::setNumTimesPushBackPlayer(numTimes);
+            break;
+		}
         
        
         default:{break;}
@@ -528,3 +748,9 @@ void Player::FaceListenerNorthWest()
 }
 
 int Player::getPlayerHeight(){return Sprite::getHeight();}
+
+void Player::SetPlayerNumber(int num){m_player_num = num;}
+
+int Player::GetPlayerNumber(){return m_player_num;}
+
+Weapon* Player::getPointerToEquippedPlayerWeapon(){return equippedPlayerWeapon;}

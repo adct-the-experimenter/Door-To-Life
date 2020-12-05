@@ -100,3 +100,22 @@ void HealthBar::render(std::int16_t& x, std::int16_t& y, SDL_Renderer* gRenderer
     //render health clip
     healthTexture->render(healthX,healthY,gRenderer,&healthClip);
 }
+
+void HealthBar::render(SDL_Renderer* gRenderer)
+{
+	std::int16_t containerX = xPos - containerClip.w;
+    if(containerX < 0){containerX = 0;}
+    std::int16_t containerY = yPos - containerClip.h;
+    if(containerY < 0){containerY = 0;}
+    std::int16_t healthX = containerX + 6;
+    std::int16_t healthY = containerY + 6;
+    //render container clip
+    healthTexture->render(containerX,containerY,gRenderer,&containerClip);
+    //render health clip
+    healthTexture->render(healthX,healthY,gRenderer,&healthClip);
+}
+
+void HealthBar::SetPosition(std::int16_t x, std::int16_t y)
+{
+	xPos = x; yPos = y;
+}

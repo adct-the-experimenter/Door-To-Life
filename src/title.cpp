@@ -59,4 +59,9 @@ void Title::render(SDL_Renderer* gRenderer)
     titleMenu.render(gRenderer);
 }
 
+void Title::render(DrawingManager* gDrawManager)
+{
+	titleMenu.render(gDrawManager->GetPointerToRenderer());
+}
+
 TitleMenu::TitleOptions Title::getTitleMenuOptionSelect(){return titleMenu.getTitleOption();}

@@ -44,6 +44,7 @@ Bullet::Bullet()
 	bulletSpriteSheet = nullptr;
 	spriteClip = nullptr;
 }
+
 Bullet::~Bullet(){posX = 0; posY = 0; bulletSpeed = 0; collisionBox = {0,0,0,0};}
 
 //Dimensions
@@ -205,6 +206,22 @@ void Bullet::render(SDL_Rect& camera,SDL_Renderer* gRenderer)
 		{
 			bulletSpriteSheet->render( x, y, gRenderer,Bullet::getSpriteClip());
 		}
+		
+		//render collision box
+		/*
+		SDL_SetRenderDrawColor(gRenderer,
+                           200,
+                           0,
+                           0,
+                           50);
+    
+		SDL_Rect pBox = {  x ,
+							 y ,
+							Bullet::getCollisionBox().w,
+							Bullet::getCollisionBox().h };
+							
+		SDL_RenderDrawRect(gRenderer,&pBox);
+		*/
 	}
 }
 

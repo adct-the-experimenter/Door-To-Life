@@ -102,6 +102,11 @@ void PauseMenu::render(SDL_Renderer* gRenderer)
     }
 }
 
+void PauseMenu::render(DrawingManager* gDrawManager)
+{
+	
+}
+
 
 void PauseMenu::sound(AudioRenderer* gAudioRenderer)
 {

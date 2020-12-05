@@ -14,9 +14,14 @@ public:
 	
 	void SetPointerToPlayerInventory(PlayerInventory* thisInventory);
 	void SetPointerToCollisionHandler(CollisonHandler* thisInventory);
-	//function to setup a default sword for player to use in beginning
+	
+	//function to set up a default sword for player to pick up and use in beginning
 	//set near player
-	void setupDefaultGunForPlayer(std::int16_t& x, std::int16_t& y);
+	void setupDefaultGunForPlayer_grounditem(std::int16_t& x, std::int16_t& y);
+	
+	//function to set up a default gun for player to have at the beginning of the game
+	//weapon is equipped to player at the beginning of the game
+	void setupDefaultGunForPlayer_equippedweapon(Player* thisPlayer);
 
 	//function to check if weapon on ground state collided with Hero
 	void checkWeaponsOnGround_Collision(PlayerInventory* p_inventory);

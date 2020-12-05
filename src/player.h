@@ -80,6 +80,16 @@ public:
 	void sound(AudioRenderer* gAudioRenderer);
 	
 	int getPlayerHeight();
+	
+//Player Number
+	void SetPlayerNumber(int num);
+	int GetPlayerNumber();
+	
+//Joystick controller
+	void handleEvent(SDL_Joystick* joystick_controller);
+	
+	Weapon* getPointerToEquippedPlayerWeapon();
+	
 private:
 
 //members not inherited from sprite class
@@ -150,6 +160,11 @@ private:
     void FaceListenerSouthWest();
     void FaceListenerWest();
     void FaceListenerNorthWest();
+    
+    //variable to indicate which player i.e first player, second player, etc.
+    int m_player_num;
+    
+    
     
 };
 

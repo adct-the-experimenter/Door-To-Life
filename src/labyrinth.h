@@ -1,5 +1,5 @@
-#ifndef LABYRINTH
-#define LABYRINTH
+#ifndef LABYRINTH_H
+#define LABYRINTH_H
 
 #include <array>
 #include "MazeGenerator.h"
@@ -14,6 +14,10 @@
 #include "game_inventory.h"
 
 #include "DungeonXMLRegistry.h"
+
+#include "DrawingManager.h"
+
+#include "player_manager.h"
 
 struct DungeonEntrance
 {
@@ -58,14 +62,13 @@ public:
     //function to set pointer to timer
     void setTimerPointer(LTimer* timer);
     void setPointerToMainDot(Dot* mainDot);
-    void setPointerToMainPlayer(Player* mainPlayer);
+    void setPointerToPlayerManager(PlayerManager* pm);
     
     //function to set pointers to media
     void setPointersToMedia(LTexture* tileMap,ALuint* source,ALuint* buffer);
     
     //function to set Dot in labyrinth
-    void setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight,
-                                SDL_Rect* camera);
+    void setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight,RNGType& rngSeed);
                                 
    //function to setup exit in maze based on dot position in maze                             
     void randomlySetExitForMaze(RNGType& rngSeed);                             
@@ -84,6 +87,8 @@ public:
     void SetPointerToGameInventory(GameInventory* thisInventory);
     
 //Game Loop
+	
+	
     virtual void setState(GameState::State thisState);
     virtual GameState::State getState();
 
@@ -92,9 +97,13 @@ public:
     virtual void handle_events_RNG(RNGType& rngSeed);
     
     virtual void logic();
+    
+    //function used in labyrinthDungeonManager to share timer with Dungeon
+    void logic_alt(float& timeStep); 
+    
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
-    
+    virtual void render(DrawingManager* gDrawManager);
     
     void renderNodeGeneration(SDL_Renderer* gRenderer);
     void renderMazeGeneration(SDL_Renderer* gRenderer);
@@ -110,12 +119,25 @@ public:
     
     friend class SubMap;
     
-    void setPlayerHitDungeonEntranceBool(bool state);
-    bool getPlayerHitDungeonEntraceBool();
+    // mini dungeon 
+    void setPlayerHitDungeonEntranceBool(bool state, int num_player);
+    bool getPlayerHitDungeonEntraceBool(int num_player);
     void randomlySetDungeonEntrancesinMaze(RNGType& rngSeed, DungeonXMLRegistry* dungeon_xml_reg);
     
     void SetIndexMiniDungeonEntered(std::int16_t num);
     std::int16_t GetIndexMiniDungeonEntered();
+    
+    void getDungeonEntranceLocationForThisIndex(size_t& index, int* x, int* y);
+    size_t getNumberOfDungeonEntranceLocations();
+    
+    //exit tile
+    
+    void setPlayerHitLabyrinthExitBool(bool state, int num_player);
+    bool getPlayerHitLabyrinthExitBool(int num_player);
+    
+    void GetExitTileLocation(int* x, int* y);
+    
+    void StopPlayingTheme();
     
 private:
     
@@ -169,7 +191,7 @@ private:
     
     //main character
     Dot* mainDotPointer;
-    Player* mainPlayerPointer;
+    PlayerManager* m_player_manager_ptr; 
     
     LTexture* tileTextureMap;
     ALuint* dgmBuffer; //buffer for dungeon music 
@@ -183,7 +205,7 @@ private:
     std::int16_t TILE_HEIGHT;
     
     //function to randomly place dot in maze
-    void randomlyPlaceDotInMazeNode();
+    void randomlyPlaceDotInMazeNode(Dot* thisDot,RNGType& rngSeed);
     //pointer to dungeon tile dot starts at
     DungeonTile* dotStartTile;
     
@@ -213,12 +235,22 @@ private:
 	
 	GameInventory* m_game_inventory_ptr;
 	
-	bool hitDungeonEntrace;
+	bool hitDungeonEntrace_p1;
+	bool hitDungeonEntrace_p2;
+	bool hitDungeonEntrace_p3;
+	bool hitDungeonEntrace_p4;
 	
 	void DungeonEntranceHitOperations();
 	
 	std::int16_t indexMiniDungeonEntered;
 	std::vector <DungeonEntrance> dungeonEntrances;
+	
+	//exit tile
+	bool hitLabyrinthExit_p1;
+	bool hitLabyrinthExit_p2;
+	bool hitLabyrinthExit_p3;
+	bool hitLabyrinthExit_p4;
+	
 };
 
 #endif

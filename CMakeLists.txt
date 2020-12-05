@@ -9,7 +9,7 @@ option(DATAPATH "Path to data Directory" ON)
 
 #-DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -DDATADIR=${DATAPATH} -fPIE")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -DDATADIR=${DATAPATH} -fPIE")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -Wall -DDATADIR=${DATAPATH} -fPIE")
 
 #SDL2 specific stuff and its add on libraries
 INCLUDE(FindPkgConfig)
@@ -48,18 +48,19 @@ if (MINGW)
 endif ()
 
 set(SOURCES src/main.cpp
-src/Dungeon.cpp
+src/labyrinth_dungeon_manager.cpp src/WinnerDecisionRoom.cpp src/winner_judge.cpp src/labyrinth.cpp src/Dungeon.cpp 
 src/DungeonXMLRegistry.cpp src/DungeonXMLReader.cpp 
 src/submap.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp
 src/enemy_inventory.cpp
+src/winner_media_loader.cpp
 src/dungeon_media_loader.cpp
 src/enemy_media_loader.cpp
 src/player_media_loader.cpp
 src/game_inventory.cpp
 src/weapons_loader.cpp
-src/labyrinth.cpp
+
 src/MazeGenerator.cpp src/NodeGenerator.cpp src/LabyrinthMap.cpp
 src/hashtable.cpp src/linkedlist.cpp src/item.cpp
 src/MazeNode.cpp src/Node.cpp
@@ -70,7 +71,7 @@ src/gun.cpp src/bullet.cpp src/sword.cpp src/weapon.cpp
 src/greedy_zombie.cpp
 src/othercockroach.cpp
 src/enemy.cpp src/lineofsight.cpp
-src/player.cpp src/healthbar.cpp src/player_inventory.cpp
+src/player_manager.cpp src/player.cpp src/healthbar.cpp src/player_inventory.cpp
 src/sprite.cpp src/dot_final.cpp
 src/title.cpp src/titlemenu.cpp
 src/pause_menu.cpp src/menu.cpp src/graphicalbutton.cpp
@@ -78,6 +79,7 @@ src/gamestate.cpp
 src/frame_rate_cap.cpp
 src/event_handler.cpp
 src/collisionobject.cpp
+src/DrawingManager.cpp
 src/LTexture.cpp src/LTimer.cpp
 src/damage_values.cpp
 src/globalvariables.cpp

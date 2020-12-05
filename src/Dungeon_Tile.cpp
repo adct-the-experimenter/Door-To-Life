@@ -184,19 +184,19 @@ void DungeonTile::genRuleChangeExitTile()
 /**Render Tiles **/
 void DungeonTile::render( LTexture* tileTextureMap,SDL_Rect& camera, SDL_Renderer* gRenderer )
 {
-    //If the tile is on screen
-    if( checkCollision( camera, mBox ) )
+	if(tileTextureMap != nullptr)
     {
-        if(tileTextureMap != nullptr)
-        {
-            int renderX; int renderY; 
-            renderX = mBox.x - camera.x;
-            renderY = mBox.y - camera.y;
-            
-            //Show the tile
-            tileTextureMap->render( renderX  , renderY , gRenderer, &dTileClip );
-        }
-        
+		//If the tile is on screen
+		if( checkCollision( camera, mBox ) )
+		{
+			
+				int renderX; int renderY; 
+				renderX = mBox.x - camera.x;
+				renderY = mBox.y - camera.y;
+				
+				//Show the tile
+				tileTextureMap->render( renderX  , renderY , gRenderer, &dTileClip );
+		}
     }
 }
 

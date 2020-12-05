@@ -7,7 +7,7 @@ extern std::vector <SDL_Rect> player_clips;
 
 void setupPlayerSpriteClips();
 
-bool setup_loadPlayerMedia(Player* thisPlayer,SDL_Renderer* gRenderer);
+bool setup_loadPlayerMedia(Player* thisPlayer,SDL_Renderer* gRenderer, int num_player);
 
 
 #endif

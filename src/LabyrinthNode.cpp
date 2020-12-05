@@ -17,7 +17,7 @@ ALuint* source,ALuint* buffer)
     {
         //if tileTextureMap loaded successfully
         
-        std::string path = std::string("/Sound/Threshing-Floor-VG-Ambient-Beautiful-Haunting-Remix.ogg");
+        std::string path = std::string("/Sound/door-to-life-theme-mb22.mp3");
         if(!LoadBuffer(buffer,path))
         {
 			printf("Failed to load dungeon music! \n");
@@ -951,7 +951,7 @@ void LabyrinthNode::handle_events(Event& thisEvent)
    // std::cout << "Handle events called! \n";
 
     //User requests pause by pressing escape
-    if( thisEvent == Event::ESCAPE )
+    if( thisEvent.event_id == Event_ID::ESCAPE )
     {
         std::cout<< "Escape key pressed! \n";
         //LabyrinthNode::setEscapeBool(true);
@@ -959,7 +959,7 @@ void LabyrinthNode::handle_events(Event& thisEvent)
         LabyrinthNode::setState(GameState::State::PAUSE);
     }
     //User requests quit by X out window
-    else if(thisEvent == Event::QUIT_WINDOW)
+    else if(thisEvent.event_id == Event_ID::QUIT_WINDOW)
     {
         //LabyrinthNode::setEscapeBool(true);
         LabyrinthNode::setState(GameState::State::EXIT);
@@ -1196,6 +1196,11 @@ void LabyrinthNode::render(SDL_Renderer* gRenderer)
     }
 */
 
+}
+
+void LabyrinthNode::render(DrawingManager* gDrawManager)
+{
+	
 }
 
 //Set States

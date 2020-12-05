@@ -53,16 +53,16 @@ bool Menu::loadMedia(SDL_Renderer *gRenderer,SDL_Window* gWindow)
 void Menu::handle_events(Event& thisEvent)
 {	
     
-    switch(thisEvent)
+    switch(thisEvent.event_id)
     {
-        case Event::ESCAPE:{Menu::setKeyPress(Menu::KeyPress::K_ESCAPE); break;}
+        case Event_ID::ESCAPE:{Menu::setKeyPress(Menu::KeyPress::K_ESCAPE); break;}
         //case SDLK_n:{Menu::setKeyPress(Menu::KeyPress::K_NO); break;}
         //case SDLK_y:{Menu::setKeyPress(Menu::KeyPress::K_YES); break;}
-        case Event::UP_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_UP); break;}
-        case Event::DOWN_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_DOWN); break;}
-        case Event::LEFT_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_LEFT); break;}
-        case Event::RIGHT_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_RIGHT); break;}
-        case Event::ENTER:{Menu::setKeyPress(Menu::KeyPress::K_ENTER); break;}
+        case Event_ID::UP_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_UP); break;}
+        case Event_ID::DOWN_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_DOWN); break;}
+        case Event_ID::LEFT_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_LEFT); break;}
+        case Event_ID::RIGHT_ARROW:{Menu::setKeyPress(Menu::KeyPress::K_RIGHT); break;}
+        case Event_ID::ENTER:{Menu::setKeyPress(Menu::KeyPress::K_ENTER); break;}
         default:{ Menu::setKeyPress(Menu::KeyPress::K_NONE); break;}
     }
 
