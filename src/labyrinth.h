@@ -69,6 +69,8 @@ public:
     
     //function to set Dot in labyrinth
     void setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& screenHeight,RNGType& rngSeed);
+    
+    void setupDotInLabyrinth_Debug(Dot* thisDot,std::int16_t& screenWidth, std::int16_t& screenHeight,RNGType& rngSeed);
                                 
    //function to setup exit in maze based on dot position in maze                             
     void randomlySetExitForMaze(RNGType& rngSeed);                             

@@ -450,7 +450,8 @@ void NodeGeneration()
 {
     Labyrinth labyrinth;
     
-    labyrinth.setPointerToMainDot(mainDotPointer.get());
+    Player somePlayer(0,0,20,20);
+    labyrinth.setPointerToMainDot(&somePlayer);
     
     //set dimenstions of grid labyrinth will use for generating map
     std::int16_t x = 20;
@@ -468,7 +469,7 @@ void NodeGeneration()
         labyrinth.generateDungeonsInLabyrinth_Debug_Gen(rng);
 		
 		//setup place of dots in labyrinth
-        labyrinth.setupDotInLabyrinth(SCREEN_WIDTH, SCREEN_HEIGHT,rng);
+        labyrinth.setupDotInLabyrinth_Debug(&somePlayer,SCREEN_WIDTH, SCREEN_HEIGHT,rng);
         
         //set exit in maze based on where dot is                              
         labyrinth.randomlySetExitForMaze(rng);

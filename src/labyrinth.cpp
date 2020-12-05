@@ -819,6 +819,14 @@ void Labyrinth::setupDotInLabyrinth(std::int16_t& screenWidth, std::int16_t& scr
     
 }
 
+void Labyrinth::setupDotInLabyrinth_Debug(Dot* thisDot,std::int16_t& screenWidth, std::int16_t& screenHeight,RNGType& rngSeed)
+{
+	labyrinthMap.setLabyrinthCameraForDot(thisDot,
+                                            screenWidth,screenHeight);
+        
+    Labyrinth::randomlyPlaceDotInMazeNode(thisDot,rngSeed);
+}
+
 void Labyrinth::handle_events(Event& thisEvent)
 {
     if( thisEvent.event_id == Event_ID::QUIT_WINDOW || thisEvent.event_id == Event_ID::ESCAPE )
