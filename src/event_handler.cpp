@@ -23,7 +23,11 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 	Event thisEvent;
 	int player_num = 0;
 	
-    if(sdl_event_ptr->type == SDL_QUIT){thisEvent.event_id = Event_ID::QUIT_WINDOW; player_num = 1;}
+    if(sdl_event_ptr->type == SDL_QUIT)
+    {
+		thisEvent.event_id = Event_ID::QUIT_WINDOW; player_num = 1;
+		pushEventInstance(thisEvent,player_num);
+	}
     //If key was pressed
     else if(sdl_event_ptr->type == SDL_KEYDOWN && sdl_event_ptr->key.repeat == 0)
     {
