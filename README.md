@@ -29,7 +29,7 @@ Wear headphones to hear sound effects in 3D audio or use a 5.1, 6.1, 7.1 surroun
 
 - Joystick to move. Any button on joystick to activate weapon or open door.
 
--Keyboard controls player 1 by default. Players 2,3, and 4 controlled by gamepad controllers .
+-Keyboard controls player 1 by default. Players 2,3, and 4 are controlled by gamepad controllers .
 
 ## Adding Custom Mini Dungeons to the Game
 

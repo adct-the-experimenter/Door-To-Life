@@ -114,83 +114,6 @@ void CollisonHandler::run_collision_handler(PlayerManager& playerManager,PlayerM
 	
 	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
 	playerManager.GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
-	
-	//for at least 2 player game
-	if(num_players > 1 && m_player2CollisionObject_ptr && m_player1CollisionObject_ptr)
-	{
-		if(p1_loc == location && p2_loc == p1_loc)
-		{
-			//check if player 1 collides with player 2
-			CollisonHandler::runPlayer1CollisionOperations(*m_player2CollisionObject_ptr);
-			CollisonHandler::runPlayer2CollisionOperations(*m_player1CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player2CollisionObject_ptr);
-			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player1CollisionObject_ptr);
-		}
-	}
-	
-	//for at least 3 player game
-	if(num_players > 2 && m_player3CollisionObject_ptr 
-		&& m_player2CollisionObject_ptr 
-		&& m_player1CollisionObject_ptr)
-	{
-		if(p1_loc == location && p3_loc == location)
-		{
-			//check if player 1 and player 3 collide
-			CollisonHandler::runPlayer1CollisionOperations(*m_player3CollisionObject_ptr);
-			CollisonHandler::runPlayer3CollisionOperations(*m_player1CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player3CollisionObject_ptr);
-			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player1CollisionObject_ptr);
-		}
-		
-		if(p2_loc == location && p3_loc == p2_loc)
-		{
-			//check if player 2 and player 3 collide
-			CollisonHandler::runPlayer2CollisionOperations(*m_player3CollisionObject_ptr);
-			CollisonHandler::runPlayer3CollisionOperations(*m_player2CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player3CollisionObject_ptr);
-			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player2CollisionObject_ptr);
-		}
-	}
-	
-	//for at least 4 player game
-	if(num_players > 3 && m_player4CollisionObject_ptr
-		&& m_player3CollisionObject_ptr 
-		&& m_player2CollisionObject_ptr 
-		&& m_player1CollisionObject_ptr)
-	{
-		if(p1_loc == location && p4_loc == p1_loc)
-		{
-			//check if player 1 and player 4 collide
-			CollisonHandler::runPlayer1CollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4CollisionOperations(*m_player1CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player1CollisionObject_ptr);
-		}
-		
-		if(p2_loc == location && p4_loc == p2_loc)
-		{
-			//check if player 2 and player 4 collide
-			CollisonHandler::runPlayer2CollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4CollisionOperations(*m_player2CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player2CollisionObject_ptr);
-		}
-		
-		if(p3_loc == location && p4_loc == p3_loc)
-		{
-			//check if player 3 and player 4 collide
-			CollisonHandler::runPlayer3CollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4CollisionOperations(*m_player3CollisionObject_ptr);
-			
-			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player4CollisionObject_ptr);
-			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player3CollisionObject_ptr);
-		}
-	}
 							
 	
     //for every collision object element in vector
@@ -255,6 +178,8 @@ void CollisonHandler::run_collision_handler(PlayerManager& playerManager,PlayerM
 						}
 						
 					}
+					
+					
 				}
 				else
 				{
@@ -271,6 +196,85 @@ void CollisonHandler::run_collision_handler(PlayerManager& playerManager,PlayerM
         }
                
     }
+    
+    CollisonHandler::runPlayerToPlayerCollisionOperations(playerManager,location);
+}
+
+void CollisonHandler::runPlayerToPlayerCollisionOperations(PlayerManager& playerManager,PlayerManager::PlayerLocation& location)
+{
+	
+	int num_players = playerManager.GetNumberOfPlayers();
+	
+	PlayerManager::PlayerLocation p1_loc, p2_loc, p3_loc, p4_loc;
+	playerManager.GetLocationEnumOfPlayers(&p1_loc,&p2_loc,&p3_loc,&p4_loc);
+	
+	//for at least 2 player game
+	if(num_players > 1 && m_player2CollisionObject_ptr && m_player1CollisionObject_ptr)
+	{
+		if(p1_loc == location && p2_loc == p1_loc)
+		{
+			//check if player 1 collides with player 2
+			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player2CollisionObject_ptr);
+			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player1CollisionObject_ptr);
+		}
+	}
+	
+	//for at least 3 player game
+	if(num_players > 2 && m_player3CollisionObject_ptr 
+		&& m_player2CollisionObject_ptr 
+		&& m_player1CollisionObject_ptr)
+	{
+		if(p1_loc == location && p3_loc == p1_loc)
+		{
+			
+			//check if player 1 and player 3 collide
+			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player3CollisionObject_ptr);
+			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player1CollisionObject_ptr);
+						
+		}
+		
+		if(p2_loc == location && p3_loc == p2_loc)
+		{
+						
+			//check if player 2 and player 3 collide
+			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player3CollisionObject_ptr);
+			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player2CollisionObject_ptr);
+			
+		}
+	}
+	
+	//for at least 4 player game
+	if(num_players > 3 && m_player4CollisionObject_ptr
+		&& m_player3CollisionObject_ptr 
+		&& m_player2CollisionObject_ptr 
+		&& m_player1CollisionObject_ptr)
+	{
+		if(p1_loc == location && p4_loc == p1_loc)
+		{
+			
+			//check if player 1 and player 4 collide
+			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player1CollisionObject_ptr);
+			CollisonHandler::runPlayer1WeaponCollisionOperations(*m_player4CollisionObject_ptr);
+			
+		}
+		
+		if(p2_loc == location && p4_loc == p2_loc)
+		{
+					
+			//check if player 2 and player 4 collide
+			CollisonHandler::runPlayer2WeaponCollisionOperations(*m_player4CollisionObject_ptr);
+			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player2CollisionObject_ptr);
+			
+		}
+		
+		if(p3_loc == location && p4_loc == p3_loc)
+		{
+			//check if player 3 and player 4 collide
+			CollisonHandler::runPlayer3WeaponCollisionOperations(*m_player4CollisionObject_ptr);
+			CollisonHandler::runPlayer4WeaponCollisionOperations(*m_player3CollisionObject_ptr);
+			
+		}
+	}
 }
 
 

@@ -322,9 +322,7 @@ DungeonTile::TileType Player::moveOnTiles_TileType(float& timeStep, std::vector<
 void Player::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* clip)
 {
     
-    if(Player::getPlayerState() != PlayerState::FALLING_IN_HOLE){Sprite::render(camera,gRenderer,clip); }
-    else{Sprite::render(camera,gRenderer,&clipPlayer);}
-    
+    Sprite::render(camera,gRenderer,&clipPlayer);
     
     //render collision box of player
     //Player::renderPlayerCollisionBox(camera,gRenderer);
@@ -490,7 +488,7 @@ void Player::reactToCollision(float& timeStep)
 {
     //reset count push back
     //count_PushBackPlayer = 0;
-    switch(Player::getCollisionType())
+    switch(Player::getCollisionObjectPtr()->typeOfCollision)
     {
         
         case CollisionType::NONE:{ break;} // Do Nothing
@@ -519,14 +517,9 @@ void Player::reactToCollision(float& timeStep)
             
             break;
         }
-        case CollisionType::COLLIDING_WITH_HOLE:
-        {
-            Player::decrementHealth(cockroachDamage);
-            Player::setPlayerState( PlayerState::FALLING_IN_HOLE);
-            break;
-        }
         case CollisionType::HIT_BY_BULLET:
         {
+			//std::cout << "Player hit by bullet!\n";
 			Player::decrementHealth(greedZombieDamage); //decrease health
             
             //put in state of push back

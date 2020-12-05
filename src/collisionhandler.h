@@ -57,13 +57,17 @@ private:
 	CollisionObject* m_player3CollisionObject_ptr;
 	CollisionObject* m_player4CollisionObject_ptr;
 
-	Weapon* m_playerEquippedWeaponPtr;
 	std::vector <CollisionObject*> collisionObjectsVector;
 	
 	SDL_Rect* cameraCollisionHandler;
 	SDL_Rect* cameraCollisionHandler2;
 	SDL_Rect* cameraCollisionHandler3;
 	SDL_Rect* cameraCollisionHandler4;
+	
+	Weapon* playerEquippedWeapon;
+	Weapon* playerEquippedWeapon2;
+	Weapon* playerEquippedWeapon3;
+	Weapon* playerEquippedWeapon4;
 	
 	void runPlayer1CollisionOperations(CollisionObject& thisObject);
 	void runPlayer2CollisionOperations(CollisionObject& thisObject);
@@ -75,10 +79,9 @@ private:
 	void runPlayer3WeaponCollisionOperations(CollisionObject& thisObject);
 	void runPlayer4WeaponCollisionOperations(CollisionObject& thisObject);
 	
-	Weapon* playerEquippedWeapon;
-	Weapon* playerEquippedWeapon2;
-	Weapon* playerEquippedWeapon3;
-	Weapon* playerEquippedWeapon4;
+	void runPlayerToPlayerCollisionOperations(PlayerManager& playerManager,PlayerManager::PlayerLocation& location);
+	
+	
 };
 
 

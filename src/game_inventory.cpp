@@ -77,6 +77,10 @@ void GameInventory::setupDefaultGunForPlayer_equippedweapon(Player* thisPlayer)
 	float defGun_BulletSpeed = 480;
 	thisBullet1->setBulletSpeed(defGun_BulletSpeed);
 	
+	std::int8_t bullet_width = 10;
+	std::int8_t bullet_height = 10;
+	thisBullet1->setBulletWidth(bullet_width);
+	thisBullet1->setBulletHeight(bullet_height);
 	
 	//setup gun resources
 	Gun* def_gun1 = new Gun();

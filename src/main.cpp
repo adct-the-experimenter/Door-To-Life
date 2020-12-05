@@ -353,6 +353,7 @@ void DungeonGameLoop()
     {
 		gLabyrinthDungeonManager->RunCollisionHandlersOps();
 	}
+	
     //calculate FPS 
     frameRateCap.calculateFPS();
     
@@ -780,9 +781,9 @@ void GameWon()
         //play sound from winMusicSource
         alGetSourcei(winMusicSource, AL_SOURCE_STATE, &musicState);
         
-        if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(winMusicSource);}
+        if (musicState == AL_INITIAL){ alSourcePlay(winMusicSource);}
         
-        if(musicState == AL_STOPPED){quit = true;}
+        if(musicState == AL_STOPPED){alSourceStop(winMusicSource); quit = true;}
 		
 		//render black over entire window
 		SDL_SetRenderDrawColor(gRenderer,0x00,0x00,0x00,0x00);

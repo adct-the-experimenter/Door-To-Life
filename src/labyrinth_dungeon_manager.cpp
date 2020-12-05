@@ -518,13 +518,80 @@ bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* g
 		winRoomPtr->PlaceWinnerJudges(pm->GetNumberOfPlayers());
 		
 		std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
-		if(!ptrToCollisionHandler)
+		if(!ptrToCollisionHandler){std::cout << "Failed to initialize main labyrinth collision handler!\n"; return false;}
+		else
 		{
-			std::cout << "Failed to initialize collision handler for winner room!\n";
-			return false;
+			miniCollisionHandler_winner_room = std::move(ptrToCollisionHandler); 
+						
+			//add player to collision system
+			miniCollisionHandler_winner_room->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),nullptr,nullptr,nullptr);
+			miniCollisionHandler_winner_room->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																 nullptr,nullptr,nullptr);
+																 
+			miniCollisionHandler_winner_room->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																			nullptr,nullptr,nullptr);
+			
+			//if there is a 2nd player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 1)
+			{
+				//add player to collision system
+				miniCollisionHandler_winner_room->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  nullptr,nullptr);
+																	  
+				miniCollisionHandler_winner_room->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 nullptr,nullptr);
+																	 
+				miniCollisionHandler_winner_room->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				nullptr,nullptr);
+			}
+			
+			//if there is a 3rd player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 2)
+			{
+				//add player to collision system
+				miniCollisionHandler_winner_room->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  m_player_manager_ptr->GetPointerToCameraThree(),
+																	  nullptr);
+																	  
+				miniCollisionHandler_winner_room->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionObjectPtr(),
+																	 nullptr);
+																	 
+				miniCollisionHandler_winner_room->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerThree()->getPointerToEquippedPlayerWeapon(),
+																				nullptr);
+			}
+			
+			//if there is a 4th player
+			if(m_player_manager_ptr->GetNumberOfPlayers() > 3)
+			{
+				//add player to collision system
+				miniCollisionHandler_winner_room->SetCamerasForCollisionSystem(m_player_manager_ptr->GetPointerToCameraOne(),
+																	  m_player_manager_ptr->GetPointerToCameraTwo(),
+																	  m_player_manager_ptr->GetPointerToCameraThree(),
+																	  m_player_manager_ptr->GetPointerToCameraFour());
+																	  
+				miniCollisionHandler_winner_room->addPlayersToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionObjectPtr(),
+																	 m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionObjectPtr());
+																	 
+				miniCollisionHandler_winner_room->addPlayerEquippedWeaponsToCollisionSystem(m_player_manager_ptr->GetPointerToPlayerOne()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerTwo()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerThree()->getPointerToEquippedPlayerWeapon(),
+																				m_player_manager_ptr->GetPointerToPlayerFour()->getPointerToEquippedPlayerWeapon());
+			}
+			
+			
 		}
 		
-		miniCollisionHandler_winner_room = std::move(ptrToCollisionHandler); 
+		
 	}
 	else
 	{
