@@ -133,11 +133,11 @@ void WinnerDecisionRoom::GenerateBaseRoom()
                             numTiles);
     
     //set tile types
-    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
+    for(size_t i = 0; i < dungeonTileSet.size(); i++)
     {
 		DungeonTile::TileType type = DungeonTile::TileType::RED;
 		
-		if(i % 2 != 0){type = DungeonTile::TileType::BLUE;}
+		if(i % 2 == 0){type = DungeonTile::TileType::BLUE;}
 		
 		if(i % 4 == 0){type = DungeonTile::TileType::GREEN;}
 		

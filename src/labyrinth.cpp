@@ -928,29 +928,41 @@ void Labyrinth::logic_alt(float& timeStep)
         if( checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerOne()->getCollisionBox() ) 
 			&& p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
         {
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,1); 
+			if(m_player_manager_ptr->GetPointerToPlayerOne()->getHealth() > 1)
+			{
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,1); 
+			}
 			//Labyrinth::setPlayerHitLabyrinthExitBool(true,1);
 		}
 		
 		if(num_players > 1 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerTwo()->getCollisionBox() ) 
 			&& p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
 		{
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,2); 
+			if(m_player_manager_ptr->GetPointerToPlayerTwo()->getHealth() > 1)
+			{
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,2); 
+			}
 			//Labyrinth::setPlayerHitLabyrinthExitBool(true,2);
 		}
 		
 		if(num_players > 2 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerThree()->getCollisionBox() ) 
 			&& p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
 		{
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,3); 
+			if(m_player_manager_ptr->GetPointerToPlayerThree()->getHealth() > 1)
+			{
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,3); 
+			}
 			//Labyrinth::setPlayerHitLabyrinthExitBool(true,3);
 		}
 		
 		if(num_players > 3 && checkCollision(exitTile->getBox(),m_player_manager_ptr->GetPointerToPlayerFour()->getCollisionBox() ) 
 			&& p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
 		{
-			m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,4); 
-			//Labyrinth::setPlayerHitLabyrinthExitBool(true,4);
+			if(m_player_manager_ptr->GetPointerToPlayerFour()->getHealth() > 1)
+			{
+				m_player_manager_ptr->SetLocationEnumOfPlayer(PlayerManager::PlayerLocation::LABYRINTH_2_WINNER_ROOM,4);
+			}
+			 
 		}
         
         Labyrinth::DungeonEntranceHitOperations();
@@ -1217,7 +1229,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			}
 		}
 		
-		if(player1_active && p1_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		if(player1_active)
 		{
 			gDrawManager->SetToRenderViewPortPlayer1();
 			labyrinthMap.renderDotInLabyrinthMap(gDrawManager->GetPointerToRenderer(),
@@ -1252,7 +1264,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			}
 		}
 										
-		if(player2_active && p2_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		if(player2_active)
 		{
 			//render player 2 in player 2 view port										
 			gDrawManager->SetToRenderViewPortPlayer2();
@@ -1296,7 +1308,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			
 		}
 		
-		if(player3_active && p3_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		if(player3_active)
 		{
 			//render player 3 in player 3 view port										
 			gDrawManager->SetToRenderViewPortPlayer3();
@@ -1340,7 +1352,7 @@ void Labyrinth::render(DrawingManager* gDrawManager)
 			
 		}
 		
-		if(player4_active  && p4_loc == PlayerManager::PlayerLocation::LABYRINTH)
+		if(player4_active)
 		{
 			//render player 4 in player 4 view port										
 			gDrawManager->SetToRenderViewPortPlayer4();

@@ -508,8 +508,8 @@ bool LabyrinthDungeonManager::setupWinnerRoom(PlayerManager* pm,GameInventory* g
 									&winner_judge1_texture,&winner_judge2_texture,&winner_judge3_texture,&winner_judge4_texture,
 									&winner_room_MusicSource, &winner_room_MusicBuffer);
 		
-		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 2;
-		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
+		std::int16_t LEVEL_WIDTH = SCREEN_WIDTH;
+		std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT;
 
 		winRoomPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
 		
@@ -993,12 +993,12 @@ void LabyrinthDungeonManager::logic()
 		
 		bool one_player_in_lab = true;
 		
-		if(num_players > 1)
+		if(num_players == 2)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
-		if(num_players > 2)
+		else if(num_players == 3)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
 			{
@@ -1006,7 +1006,7 @@ void LabyrinthDungeonManager::logic()
 			}
 		}
 		
-		if(num_players > 3)
+		else if(num_players == 4)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
 				&& p3_loc == p1_loc && p4_loc == p1_loc)
@@ -1223,12 +1223,12 @@ void LabyrinthDungeonManager::sound(AudioRenderer* gAudioRenderer)
 		
 		bool one_player_in_lab = true;
 		
-		if(num_players > 1)
+		if(num_players == 2)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc){one_player_in_lab = false;}
 		}
 		
-		if(num_players > 2)
+		else if(num_players == 3)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
 			{
@@ -1236,7 +1236,7 @@ void LabyrinthDungeonManager::sound(AudioRenderer* gAudioRenderer)
 			}
 		}
 		
-		if(num_players > 3)
+		else if(num_players == 4)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
 				&& p3_loc == p1_loc && p4_loc == p1_loc)
@@ -1278,7 +1278,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 		
 		bool one_player_in_lab = true;
 		
-		if(num_players > 1)
+		if(num_players == 2)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc)
 			{
@@ -1286,7 +1286,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 			}
 		}
 		
-		if(num_players > 2)
+		else if(num_players == 3)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc && p3_loc == p1_loc)
 			{
@@ -1294,7 +1294,7 @@ void LabyrinthDungeonManager::render(DrawingManager* gDrawManager)
 			}
 		}
 		
-		if(num_players > 3)
+		else if(num_players == 4)
 		{
 			if(p1_loc != PlayerManager::PlayerLocation::LABYRINTH && p2_loc == p1_loc 
 				&& p3_loc == p1_loc && p4_loc == p1_loc)

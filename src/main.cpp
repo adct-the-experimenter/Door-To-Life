@@ -792,6 +792,8 @@ void GameWon()
         //render game win screen
         gameWonTexture.render(0,0,gRenderer);
         
+        SDL_Rect big_camera = {0,0,SCREEN_WIDTH,SCREEN_HEIGHT};
+        
         //render winners
         if(player1_won)
 		{
@@ -799,9 +801,9 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 100; y = 200;
+				x = 50; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+				thisPlayer->render(big_camera, 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
 		}
@@ -812,9 +814,9 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 110; y = 200;
+				x = 100; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+				thisPlayer->render(big_camera, 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
 		}
@@ -825,9 +827,9 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 120; y = 200;
+				x = 150; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+				thisPlayer->render(big_camera, 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
 		}
@@ -838,9 +840,9 @@ void GameWon()
 			if(thisPlayer)
 			{
 				float x,y;
-				x = 130; y = 200;
+				x = 200; y = 200;
 				thisPlayer->setPosX(x); thisPlayer->setPosY(y);
-				thisPlayer->render(*gDrawManager.GetPointerToCameraOne(), 
+				thisPlayer->render(big_camera, 
 									gDrawManager.GetPointerToRenderer(),nullptr);
 			}
 		}
